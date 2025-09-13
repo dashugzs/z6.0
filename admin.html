@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>导航数据管理</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .container { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+    .form-group { margin: 10px 0; }
+    label { display: inline-block; width: 100px; }
+    input, textarea { width: 80%; padding: 8px; margin: 5px 0; }
+    button { padding: 8px 15px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+    button:hover { background: #0056b3; }
+    .category { margin: 15px 0; padding: 10px; background: #f5f5f5; border-radius: 4px; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h1>小牛导航数据管理</h1>
+  
+  <!-- 管理员验证 -->
+  <div class="container">
+    <h3>管理员验证</h3>
+    <input type="password" id="adminKey" placeholder="输入管理密钥（ADMIN_KEY）">
+    <button onclick="authenticate()">验证</button>
+    <div id="authStatus" class="error"></div>
+  </div>
+
+  <!-- 新增分类 -->
+  <div class="container">
+    <h3>新增分类</h3>
+    <div class="form-group">
+      <label>分类标题：</label>
+      <input type="text" id="newCategoryTitle" placeholder="例如：旗下产品">
+    </div>
+    <button onclick="addCategory()">添加分类</button>
+    <div id="addStatus" class="error"></div>
+  </div>
+
+  <!-- 现有分类管理 -->
+  <div class="container">
+    <h3>现有分类管理</h3>
+    <div id="categoriesContainer"></div>
+  </div>
+
+  <!-- 全量更新 -->
+  <div class="container">
+    <h3>全量数据更新（JSON格式）</h3>
+    <textarea id="fullData" rows="10" placeholder="粘贴完整JSON数据（数组格式）"></textarea>
+    <br>
+    <button onclick="updateFullData()">更新全量数据</button>
+    <div id="fullDataStatus" class="error"></div>
+  </div>
+
+  <script>
+    // 替换为你的 Worker 网址（在 Worker 部署页获取，如 https://xiaoniu-navigation.username.workers.dev）
+    const WORKER_URL = "https://dhsj.xnss.fun";
+    let isAuthenticated = false;
+
+    // 验证管理员身份
+    function authenticate() {
+      const key = document.getElementById("adminKey").value;
+      if (!key) {
+        document.getElementById("authStatus").textContent = "请输入密钥";
+        return;
+      }
+      localStorage.setItem("adminKey", key);
+      isAuthenticated = true;
+      document.getElementById("authStatus").textContent = "验证成功！";
+      loadData(); // 加载数据
+    }
+
+    // 加载现有数据并渲染
+    async function loadData() {
+      if (!isAuthenticated) return;
+      
+      try {
+        // 从 Worker 获取数据
+        const res = await fetch(WORKER_URL);
+        const dataText = await res.text();
+        // 提取 JSON 部分（去掉 "const navigationData = " 和末尾分号）
+        const jsonData = dataText.replace("const navigationData = ", "").replace(";", "");
+        document.getElementById("fullData").value = jsonData;
+
+        // 渲染分类列表
+        const categories = JSON.parse(jsonData);
+        const container = document.getElementById("categoriesContainer");
+        container.innerHTML = categories.map((cat, index) => `
+          <div class="category">
+            <h4>
+              ${cat.title} 
+              <button onclick="deleteCategory(${index})">删除分类</button>
+            </h4>
+            <div>
+              ${cat.links.map((link, linkIdx) => `
+                <div class="form-group">
+                  链接 ${linkIdx + 1}：
+                  <input type="text" placeholder="名称" value="${link.name}" 
+                    onchange="updateLink(${index}, ${linkIdx}, 'name', this.value)">
+                  <input type="text" placeholder="URL" value="${link.url}" 
+                    onchange="updateLink(${index}, ${linkIdx}, 'url', this.value)">
+                  <button onclick="deleteLink(${index}, ${linkIdx})">删除</button>
+                </div>
+              `).join("")}
+            </div>
+            <button onclick="addLink(${index})">添加链接</button>
+          </div>
+        `).join("");
+      } catch (e) {
+        document.getElementById("fullDataStatus").textContent = "加载失败: " + e.message;
+      }
+    }
+
+    // 添加分类
+    async function addCategory() {
+      const title = document.getElementById("newCategoryTitle").value;
+      if (!title) return alert("标题不能为空");
+      
+      try {
+        await fetch(WORKER_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("adminKey")}`
+          },
+          body: JSON.stringify({ title, links: [] })
+        });
+        loadData(); // 重新加载数据
+        document.getElementById("newCategoryTitle").value = "";
+      } catch (e) {
+        document.getElementById("addStatus").textContent = "添加失败: " + e.message;
+      }
+    }
+
+    // 删除分类
+    async function deleteCategory(index) {
+      if (!confirm("确定删除？")) return;
+      try {
+        await fetch(WORKER_URL, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("adminKey")}`
+          },
+          body: JSON.stringify({ index })
+        });
+        loadData();
+      } catch (e) {
+        alert("删除失败: " + e.message);
+      }
+    }
+
+    // 添加链接到分类
+    async function addLink(categoryIndex) {
+      const currentData = JSON.parse(document.getElementById("fullData").value);
+      currentData[categoryIndex].links.push({
+        name: "新链接",
+        url: "#",
+        rel: "nofollow",
+        target: "_blank"
+      });
+      document.getElementById("fullData").value = JSON.stringify(currentData, null, 2);
+      await updateFullData(); // 全量更新
+    }
+
+    // 更新链接信息
+    function updateLink(categoryIndex, linkIndex, key, value) {
+      const currentData = JSON.parse(document.getElementById("fullData").value);
+      currentData[categoryIndex].links[linkIndex][key] = value;
+      document.getElementById("fullData").value = JSON.stringify(currentData, null, 2);
+    }
+
+    // 删除链接
+    async function deleteLink(categoryIndex, linkIndex) {
+      const currentData = JSON.parse(document.getElementById("fullData").value);
+      currentData[categoryIndex].links.splice(linkIndex, 1);
+      document.getElementById("fullData").value = JSON.stringify(currentData, null, 2);
+      await updateFullData(); // 全量更新
+    }
+
+    // 全量更新数据
+    async function updateFullData() {
+      try {
+        const data = document.getElementById("fullData").value;
+        JSON.parse(data); // 验证格式
+        await fetch(WORKER_URL, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "text/plain",
+            "Authorization": `Bearer ${localStorage.getItem("adminKey")}`
+          },
+          body: data
+        });
+        alert("更新成功！");
+        loadData(); // 重新加载
+      } catch (e) {
+        document.getElementById("fullDataStatus").textContent = "更新失败: " + e.message;
+      }
+    }
+  </script>
+</body>
+</html>
