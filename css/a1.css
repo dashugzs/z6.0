@@ -297,102 +297,110 @@ a {
     color: #00B8FF;
 }
 
+/* 按钮容器样式 */
+#button-container {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2000000;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* 通用贴边按钮样式 */
+/* 通用贴边按钮样式 */
+.edge-button {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    transition: 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.8);
+    border-radius: 8px 0 0 8px; /* 右侧贴边圆角处理 */
+    margin: 5px 0;
+    position: relative; /* 确保right偏移基于自身位置计算 */
+}
+
+/* 按钮隐藏状态 */
+.edge-button.hidden {
+    display: none !important;
+}
+
+/* 当一个面板激活时隐藏另一个按钮 */
+#menu.on ~ #settings-button:not(.on),
+#settings-button.on ~ #menu:not(.on) {
+    display: none;
+}
+
+/* 按钮文字样式 */
+.button-text {
+    color: var(--text-color);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* 导航按钮（上）样式 */
+.top-button {
+    margin-bottom: 3px;
+}
+
+/* 设置按钮（下）样式 */
+.bottom-button {
+    margin-top: 3px;
+}
+
+/* 导航按钮样式 */
 #menu {
     width: 50px;
     height: 50px;
-    transform: scale(0.8);
-    position: absolute;
-    right: 10px;
-    top: 5px;/*右上角菜单图标上下位置*/
+    position: relative;
     z-index: 2000000;
     cursor: pointer;
     transition: 0.5s;
 }
 
-#menu i {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: 24px auto;
-    width: 25px;
-    height: 3px;
-    background: var(--text-color);/*右上角菜单图标*/
-    border-radius:25px;
-}
-
-#menu i:before {
-    content: '';
-    width: 15px;
-    height: 3px;
-    top: -8px;
-    background: var(--text-color);/*右上角菜单图标*/
-    position: absolute;
-    right: 0;
-    border-radius:25px;
-}
-
-#menu i:after {
-    content: '';
-    width: 13px;
-    height: 3px;
-    bottom: -8px;
-    background: var(--text-color);/*右上角菜单图标*/
-    position: absolute;
-    left: 0;
-    border-radius:25px;
-}
-
+/* 导航按钮激活状态 */
 #menu.on {
-    right: 380px;/*箭头位置*/
+    right: 380px;/* 337px(面板宽) + 40px(右侧内边距) + 3px(间隙)，保持原计算逻辑 */
     background: rgba(255,255,255,1);
     border-radius: 25px;
 }
 
-#menu.on i {
-    width: 20px;
-    background: var(--text-color);/*箭头颜色*/
-}
-
-#menu.on i:before {
-    top: -5px;
-    transform: rotate(45deg);
-    width: 14px;
-    right: -1px;
-    left: auto;
-    background: var(--text-color);/*箭头颜色*/
-}
-
-#menu.on i:after {
-    bottom: -5px;
-    transform: rotate(-45deg);
-    width: 14px;
-    right: -1px;
-    left: auto;
-    background: var(--text-color);/*箭头颜色*/
+/* 移除原菜单图标样式 */
+#menu i,
+#menu i:before,
+#menu i:after {
+    display: none;
 }
 
 .list {
-    width: 337px;
-    padding: -1 40px;/*书签左右位置*/
-    height: 100%;/*书签上下位置*/
+    width: 337px;/* 保持原宽度，不影响按钮定位 */
+    padding: 0 40px;/* 保留原外内边距，避免面板整体偏移 */
+    height: 100%;
     overflow: hidden;
     overflow-y: auto;
     position: absolute;
-    right: -15px;
+    right: -15px;/* 恢复原定位，确保与按钮联动正确 */
     z-index: 2000;
-    /* 与搜索框保持一致的背景样式 */
     background: var(--search-bg-light);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: var(--search-shadow-light);
     transition: 0.3s all linear;
 }
+
+/* 修改为露出30px宽度 */
 .list.closed {
-    right: -380px;
+    right: -450px;
 }
 
 .list ul {
-    width: 330px;
+    width: calc(110% + 20px);/* 向左扩展30px */
+    margin-left: -20px;/* 向左偏移30px，利用左侧空间 */
     float: left;
     padding: 0 0 20px;
     margin-bottom: 10px;
@@ -401,7 +409,7 @@ a {
 .list ul li {
     float: left;
     margin: 3px;/*书签间距*/
-    width: 100px;
+    width: calc(25% - 6px);
     height: 20px;
     text-align: left;
     line-height: 20px;
@@ -470,6 +478,8 @@ a {
     width: 300px;
     opacity: 1;
 }
+
+/* 移动端适配调整 */
 @media (max-width: 640px) {
     .list {
         width: 227px;
@@ -477,11 +487,18 @@ a {
     .list ul {
         width: 220px;
     }
+    .list ul li {
+        width: calc(25% - 4px);
+    }
     #menu {
         top: 5px;
     }
     #menu.on {
         right: 270px;
+    }
+    /* 移动端露出20px宽度 */
+    .list.closed {
+        right: -207px;
     }
     .bgo{
         background: url();
@@ -548,59 +565,75 @@ body.dark-mode {
     color: #f0f0f0;
 }
 
-/* 夜间模式搜索模块样式 */
+/* 夜间模式下导航列表样式 */
+.dark-mode .list {
+    background: var(--search-bg-dark);
+    box-shadow: var(--search-shadow-dark);
+}
+
+.dark-mode .s-type-list {
+    background: rgba(30, 30, 30, 0.9);
+}
+
+.dark-mode .search-type input:checked+label,
+
+.dark-mode .search-type input:hover+label {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 .dark-mode #search {
     background: var(--search-bg-dark);
     box-shadow: var(--search-shadow-dark);
 }
 
-/* 夜间模式切换时的样式调整 */
 .dark-mode #search-text {
     background-color: var(--search-input-dark);
-    color: #ffffff;
 }
 
-.dark-mode .list {
-    background: rgba(30, 30, 30, 0.9);
+.dark-mode #menu.on {
+    background: rgba(50, 50, 50, 1);
 }
 
-.dark-mode .list ul li a {
-    color: #e0e0e0;
+.dark-mode .wei:hover {
+    background: rgba(70, 70, 70, 0.44);
 }
 
-.dark-mode .list ul li.title {
-    color: #61a0ff;
+/* 夜间模式适配按钮 */
+.dark-mode .edge-button {
+    background: rgba(50,50,50,0.8);
 }
 
-.dark-mode a {
-    color: #61a0ff;
+.dark-mode #menu.on,
+.dark-mode #settings-button.on {
+    background: rgba(50,50,50,1);
 }
 
-.dark-mode .search-type input:checked+label,
-.dark-mode .search-type input:hover+label {
-    background-color: rgba(255, 255, 255, 0.1);
+/* 底部信息样式 */
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 15px 0 30px; /* 底部留出更多空间给版权信息 */
+    z-index: 90; /* 确保在背景之上但不遮挡主要内容 */
 }
 
-.dark-mode .floating-alert {
-    background-color: #333333;
+.site-info {
+    font-size: 14px;
+    color: var(--text-color);
+    margin-bottom: 10px; /* 与版权信息区域保持距离 */
 }
 
-/* 夜间模式下的背景图调整 */
-.dark-mode .bgo {
-    filter: brightness(0.5);
+.copyright {
+    height: 20px; /* 预留版权信息高度 */
+    font-size: 12px;
+    color: var(--text-color);
+    opacity: 0.8;
 }
 
-/* 夜间模式搜索类型选择框样式 */
-.dark-mode .s-type-list {
-    background: rgba(40, 40, 40, 0.95);
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.5);
-}
-
-/* 夜间模式图标样式 */
-#darkModeToggle i {
-    color: #FFD700 !important;
-}
-
-.dark-mode #darkModeToggle i {
-    color: #FFFF00 !important;
+/* 夜间模式适配 */
+.dark-mode .site-info,
+.dark-mode .copyright {
+    color: #bbb;
 }
