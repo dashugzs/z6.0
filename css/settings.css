@@ -1,80 +1,28 @@
 /* settings.css */
 /* 设置按钮样式 */
 #settings-button {
-    position: absolute;
-    left: 10px;
-    top: 5px;
     width: 50px;
     height: 50px;
-    transform: scale(0.8);
+    position: relative;
     z-index: 2000000;
     cursor: pointer;
     transition: 0.5s;
 }
 
-#settings-button i {
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: 24px auto;
-    width: 25px;
-    height: 3px;
-    background: #000000;
-    border-radius: 25px;
-}
-
-#settings-button i:before {
-    content: '';
-    width: 15px;
-    height: 3px;
-    top: -8px;
-    background: #000000;
-    position: absolute;
-    right: 0;
-    border-radius: 25px;
-}
-
+/* 移除原设置按钮图标样式 */
+#settings-button i,
+#settings-button i:before,
 #settings-button i:after {
-    content: '';
-    width: 13px;
-    height: 3px;
-    bottom: -8px;
-    background: #000000;
-    position: absolute;
-    left: 0;
-    border-radius: 25px;
+    display: none;
 }
 
+/* 设置按钮激活状态 */
 #settings-button.on {
-    left: 380px;
     background: rgba(255,255,255,1);
     border-radius: 25px;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    right: 380px; /* 与设置面板宽度匹配（324px内容+40px*2边距） */
 }
-
-#settings-button.on i {
-    width: 20px;
-    background: #000000;
-}
-
-#settings-button.on i:before {
-    top: -5px;
-    transform: rotate(45deg);
-    width: 14px;
-    right: -1px;
-    left: auto;
-    background: #000000;
-}
-
-#settings-button.on i:after {
-    bottom: -5px;
-    transform: rotate(-45deg);
-    width: 14px;
-    right: -1px;
-    left: auto;
-    background: #000000;
-}
-
 /* 夜间模式下设置按钮样式 */
 .dark-mode #settings-button i,
 .dark-mode #settings-button i:before,
@@ -90,11 +38,12 @@
 
 /* 设置面板样式 - 修复初始显示异常并优化UI */
 #settings-panel {
-    width: 337px;
+    width: 324px;
     padding: 0 40px;
     height: 100%;
     position: absolute;
-    left: -417px; /* 修复：将面板完全隐藏（宽度+内边距总和） */
+    right: -417px; /* 关键修复：总宽度=337+40*2=417，完全隐藏在右侧 */
+    left: auto; /* 清除左侧定位影响 */
     top: 0;
     z-index: 2000;
     background: rgba(255,255,255,0.97);
@@ -110,7 +59,8 @@
 }
 
 #settings-panel.open {
-    left: 0; /* 完全展开时的位置 */
+    right: 0; /* 从右侧完全展开 */
+    left: auto; /* 清除左侧定位 */
 }
 
 .dark-mode #settings-panel {
@@ -311,13 +261,15 @@
 @media (max-width: 640px) {
     #settings-panel {
         width: 227px;
-        left: -267px; /* 修复：移动端完全隐藏（宽度+内边距总和） */
+        right: -267px; /* 移动端完全隐藏在右侧 */
+        left: auto; /* 清除左侧定位 */
         padding: 0 20px;
     }
     
     #settings-button.on {
-        left: 270px;
+        right: 267px; /* 与移动端面板总宽度匹配（227px+20px*2） */
     }
+}
     
     .settings-section {
         margin: 20px 0;
