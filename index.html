@@ -24,9 +24,14 @@
     <link rel="stylesheet" href="css/settings.css" />
 </head> 
 <body>
-    <div id="menu">
-        <i class="iconfont icon-menu"></i>
-    </div> 
+<div id="button-container">
+    <div id="menu" class="edge-button top-button">
+        <span class="button-text">导航</span>
+    </div>
+    <div id="settings-button" class="edge-button bottom-button">
+        <span class="button-text">设置</span>
+    </div>
+</div>
     <div class="list closed"> 
         <ul>
             <!-- 导航内容将通过JS动态生成 -->
@@ -49,7 +54,7 @@
                 <span class="type-text">常用》</span>
                 <ul class="search-type">
                     <li><input checked="" hidden="" type="radio" name="type" id="type-baidu" value="https://www.baidu.com/s?wd=" data-placeholder="百度一下 点击左上角常用》按钮可切换搜索源" /><label for="type-baidu"><span>百度</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-google" value="https://m.xnss.fun/mima/" data-placeholder="输入密令" /><label for="type-google"><span>蜜码</span></label></li>
+                    <li><input hidden="" type="radio" name="type" id="type-google" value="/mima/" data-placeholder="输入密令" /><label for="type-google"><span>蜜码</span></label></li>
                     <li><input hidden="" type="radio" name="type" id="type-taobao" value="https://s.taobao.com/search?q=" data-placeholder="输入商品的名字关键词" /><label for="type-taobao"><span>淘宝</span></label></li>
                     <li><input hidden="" type="radio" name="type" id="type-bing1" value="https://search.jd.com/Search?keyword=" data-placeholder="输入商品的名字关键词" /><label for="type-bing1"><span>京东</span></label></li>
                     <li><input hidden="" type="radio" name="type" id="type-jiexi8" value="https://www.nmme.xyz/s/1/" data-placeholder="输入视频网址或电影名字" /><label for="type-jiexi8"><span>橘子盘搜</span></label></li>
@@ -61,7 +66,7 @@
                 <span class="type-text">搜索》</span>
                 <ul class="search-type">
                     <li><input hidden="" type="radio" name="type" id="type-search" value="https://www.baidu.com/s?wd=" data-placeholder="百度一下" /><label for="type-search"><span>百度</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-google2" value="https://m.xnss.fun/mima/" data-placeholder="输入密令" /><label for="type-google2"><span>蜜码</span></label></li>
+                    <li><input hidden="" type="radio" name="type" id="type-google2" value="/mima/" data-placeholder="输入密令" /><label for="type-google2"><span>蜜码</span></label></li>
                     <li><input hidden="" type="radio" name="type" id="type-360" value="https://www.so.com/s?q=" data-placeholder="360好搜" /><label for="type-360"><span>360</span></label></li>
                     <li><input hidden="" type="radio" name="type" id="type-sogo" value="https://www.sogou.com/web?query=" data-placeholder="搜狗搜索" /><label for="type-sogo"><span>搜狗</span></label></li>
                     <li><input hidden="" type="radio" name="type" id="type-bing" value="https://cn.bing.com/search?q=" data-placeholder="微软Bing搜索" /><label for="type-bing"><span>Bing</span></label></li>
@@ -112,8 +117,9 @@
    </div>
    </div>
   </div> 
-<div style="position: relative; height:700px;">  
-  <div style="position: absolute; bottom: 0; width: 100%; text-align: center; transform: translateY(10%);">小牛搜索-XiaoNiuSs.Top</div>  
+<div class="footer">
+  <div class="site-info">小牛搜索-XiaoNiuSs.Top</div>
+  <div class="copyright">© 2023 小牛搜索 - 保留所有权利</div>
 </div>
     <script src="js/wallpaper-config.js"></script>
     <script src="js/navigation-utils.js"></script>
@@ -127,4 +133,3 @@
 </html>
 
     
-
