@@ -7,11 +7,12 @@
     .container { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
     .form-group { margin: 10px 0; }
     label { display: inline-block; width: 100px; }
-    input, textarea { width: 80%; padding: 8px; margin: 5px 0; }
+    input, textarea, select { width: 80%; padding: 8px; margin: 5px 0; }
     button { padding: 8px 15px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
     button:hover { background: #0056b3; }
     .category { margin: 15px 0; padding: 10px; background: #f5f5f5; border-radius: 4px; }
     .error { color: red; }
+    .category-selector { margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -39,6 +40,14 @@
   <!-- 现有分类管理 -->
   <div class="container">
     <h3>现有分类管理</h3>
+    <!-- 新增分类选择器 -->
+    <div class="category-selector">
+      <label>选择分类：</label>
+      <select id="categorySelector" onchange="renderSelectedCategory()">
+        <option value="">-- 请选择分类 --</option>
+      </select>
+      <button onclick="renderAllCategories()">显示全部</button>
+    </div>
     <div id="categoriesContainer"></div>
   </div>
 
@@ -52,9 +61,10 @@
   </div>
 
   <script>
-    // 替换为你的 Worker 网址（在 Worker 部署页获取，如 https://xiaoniu-navigation.username.workers.dev）
+    // 替换为你的 Worker 网址
     const WORKER_URL = "https://dhsj.xnss.fun";
     let isAuthenticated = false;
+    let allCategories = []; // 存储所有分类数据
 
     // 验证管理员身份
     function authenticate() {
@@ -69,7 +79,7 @@
       loadData(); // 加载数据
     }
 
-    // 加载现有数据并渲染
+    // 加载现有数据并初始化
     async function loadData() {
       if (!isAuthenticated) return;
       
@@ -77,37 +87,113 @@
         // 从 Worker 获取数据
         const res = await fetch(WORKER_URL);
         const dataText = await res.text();
-        // 提取 JSON 部分（去掉 "const navigationData = " 和末尾分号）
+        // 提取 JSON 部分
         const jsonData = dataText.replace("const navigationData = ", "").replace(";", "");
         document.getElementById("fullData").value = jsonData;
 
-        // 渲染分类列表
-        const categories = JSON.parse(jsonData);
-        const container = document.getElementById("categoriesContainer");
-        container.innerHTML = categories.map((cat, index) => `
-          <div class="category">
-            <h4>
-              ${cat.title} 
-              <button onclick="deleteCategory(${index})">删除分类</button>
-            </h4>
-            <div>
-              ${cat.links.map((link, linkIdx) => `
-                <div class="form-group">
-                  链接 ${linkIdx + 1}：
-                  <input type="text" placeholder="名称" value="${link.name}" 
-                    onchange="updateLink(${index}, ${linkIdx}, 'name', this.value)">
-                  <input type="text" placeholder="URL" value="${link.url}" 
-                    onchange="updateLink(${index}, ${linkIdx}, 'url', this.value)">
-                  <button onclick="deleteLink(${index}, ${linkIdx})">删除</button>
-                </div>
-              `).join("")}
-            </div>
-            <button onclick="addLink(${index})">添加链接</button>
-          </div>
-        `).join("");
+        // 保存所有分类数据
+        allCategories = JSON.parse(jsonData);
+        
+        // 更新分类选择器
+        updateCategorySelector();
+        
+        // 【修改部分】初始显示第一个分类而非全部
+        if (allCategories.length > 0) {
+          // 设置选择器选中第一个分类
+          const selector = document.getElementById("categorySelector");
+          selector.value = "0"; // 第一个分类的索引为0
+          renderSelectedCategory(); // 渲染第一个分类
+        } else {
+          // 没有分类时清空容器并显示提示
+          document.getElementById("categoriesContainer").innerHTML = "暂无分类数据";
+        }
       } catch (e) {
         document.getElementById("fullDataStatus").textContent = "加载失败: " + e.message;
       }
+    }
+
+    // 更新分类选择器下拉框
+    function updateCategorySelector() {
+      const selector = document.getElementById("categorySelector");
+      // 保存当前选中的值
+      const currentValue = selector.value;
+      
+      // 清空现有选项（保留第一个提示选项）
+      selector.innerHTML = '<option value="">-- 请选择分类 --</option>';
+      
+      // 添加所有分类选项
+      allCategories.forEach((cat, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = cat.title;
+        selector.appendChild(option);
+      });
+      
+      // 恢复选中状态（如果存在）
+      if (currentValue && allCategories.length > currentValue) {
+        selector.value = currentValue;
+      }
+    }
+
+    // 渲染选中的单个分类
+    function renderSelectedCategory() {
+      const selector = document.getElementById("categorySelector");
+      const index = parseInt(selector.value);
+      
+      if (isNaN(index) || index < 0 || index >= allCategories.length) {
+        return;
+      }
+      
+      const container = document.getElementById("categoriesContainer");
+      const cat = allCategories[index];
+      
+      container.innerHTML = `
+        <div class="category">
+          <h4>
+            ${cat.title} 
+            <button onclick="deleteCategory(${index})">删除分类</button>
+          </h4>
+          <div>
+            ${cat.links.map((link, linkIdx) => `
+              <div class="form-group">
+                链接 ${linkIdx + 1}：
+                <input type="text" placeholder="名称" value="${link.name}" 
+                  onchange="updateLink(${index}, ${linkIdx}, 'name', this.value)">
+                <input type="text" placeholder="URL" value="${link.url}" 
+                  onchange="updateLink(${index}, ${linkIdx}, 'url', this.value)">
+                <button onclick="deleteLink(${index}, ${linkIdx})">删除</button>
+              </div>
+            `).join("")}
+          </div>
+          <button onclick="addLink(${index})">添加链接</button>
+        </div>
+      `;
+    }
+
+    // 渲染所有分类
+    function renderAllCategories() {
+      const container = document.getElementById("categoriesContainer");
+      container.innerHTML = allCategories.map((cat, index) => `
+        <div class="category">
+          <h4>
+            ${cat.title} 
+            <button onclick="deleteCategory(${index})">删除分类</button>
+          </h4>
+          <div>
+            ${cat.links.map((link, linkIdx) => `
+              <div class="form-group">
+                链接 ${linkIdx + 1}：
+                <input type="text" placeholder="名称" value="${link.name}" 
+                  onchange="updateLink(${index}, ${linkIdx}, 'name', this.value)">
+                <input type="text" placeholder="URL" value="${link.url}" 
+                  onchange="updateLink(${index}, ${linkIdx}, 'url', this.value)">
+                <button onclick="deleteLink(${index}, ${linkIdx})">删除</button>
+              </div>
+            `).join("")}
+          </div>
+          <button onclick="addLink(${index})">添加链接</button>
+        </div>
+      `).join("");
     }
 
     // 添加分类
