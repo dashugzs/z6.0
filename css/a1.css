@@ -637,3 +637,6 @@ body.dark-mode {
 .dark-mode .copyright {
     color: #bbb;
 }
+.search-type input[name="search-type"] {
+    display: none;
+}
