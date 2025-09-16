@@ -22,6 +22,10 @@
     <link rel="shortcut icon" href="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" type="image/png" /> 
     <link rel="stylesheet" href="css/a1.css" />  
     <link rel="stylesheet" href="css/settings.css" />
+    <!-- 调整脚本加载顺序：先加载核心工具类 -->
+    <script src="js/a2jquery1.min.js"></script>
+    <script src="js/navigation-utils.js"></script>
+    <script src="js/search-utils.js"></script>
 </head> 
 <body>
 <div id="button-container">
@@ -38,108 +42,222 @@
         </ul> 
     </div> 
     <!-- <iframe src="https://sucai.xiaoniuss.top/2/" width="100%" height="100%"></iframe>-->
-    <div id="search" class="s-search">
-        <div id="search-list" class="hide-type-list">
-            <div class="s-type">
-                <span></span>
-                <div class="s-type-list animated fadeInUp">
-                    <label for="type-baidu">常用</label>
-                    <label for="type-search">搜索</label>
-                    <label for="type-wangpan1">音视</label>
-                    <label for="type-zhihu">社区</label>
-                    <label for="type-jiexi">解析</label>
-                </div>
-            </div>
-            <div class="search-group group-a">
-                <span class="type-text">常用》</span>
-                <ul class="search-type">
-                    <li><input checked="" hidden="" type="radio" name="type" id="type-baidu" value="https://www.baidu.com/s?wd=" data-placeholder="百度一下 点击左上角常用》按钮可切换搜索源" /><label for="type-baidu"><span>百度</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-google" value="https://m.xnss.fun/mima/" data-placeholder="输入密令" /><label for="type-google"><span>蜜码</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-taobao" value="https://s.taobao.com/search?q=" data-placeholder="输入商品的名字关键词" /><label for="type-taobao"><span>淘宝</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-bing1" value="https://search.jd.com/Search?keyword=" data-placeholder="输入商品的名字关键词" /><label for="type-bing1"><span>京东</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-jiexi8" value="https://www.nmme.xyz/s/1/" data-placeholder="输入视频网址或电影名字" /><label for="type-jiexi8"><span>橘子盘搜</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-wangpan" value="https://www.alipansou.com/search?k=" data-placeholder="输入电视电影资源名字" /><label for="type-wangpan"><span>猫狸盘搜</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-wangpan7" value="https://music.163.com/#/search/m/?s=" data-placeholder="输入音乐的名字" /><label for="type-wangpan7"><span>网易云</span></label></li>
-                </ul>
-            </div>
-            <div class="search-group group-b">
-                <span class="type-text">搜索》</span>
-                <ul class="search-type">
-                    <li><input hidden="" type="radio" name="type" id="type-search" value="https://www.baidu.com/s?wd=" data-placeholder="百度一下" /><label for="type-search"><span>百度</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-google2" value="https://m.xnss.fun/mima/" data-placeholder="输入密令" /><label for="type-google2"><span>蜜码</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-360" value="https://www.so.com/s?q=" data-placeholder="360好搜" /><label for="type-360"><span>360</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-sogo" value="https://www.sogou.com/web?query=" data-placeholder="搜狗搜索" /><label for="type-sogo"><span>搜狗</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-bing" value="https://cn.bing.com/search?q=" data-placeholder="微软Bing搜索" /><label for="type-bing"><span>Bing</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-sm" value="https://yz.m.sm.cn/s?q=" data-placeholder="UC移动端搜索" /><label for="type-sm"><span>神马</span></label></li>
-                </ul>
-            </div>
-            <div class="search-group group-c">
-                <span class="type-text">音视》</span>
-                <ul class="search-type">
-                    <li><input hidden="" type="radio" name="type" id="type-wangpan1" value="https://music.163.com/#/search/m/?s=" data-placeholder="输入音乐的名字" /><label for="type-wangpan1"><span>网易云</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-wangpan8" value="https://y.qq.com/n/ryqq/search?searchid=1&remoteplace=txt.yqq.top&w=" data-placeholder="输入音乐的名字" /><label for="type-wangpan8"><span>qq音乐</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-wangpan2" value="https://search.bilibili.com/all?keyword=" data-placeholder="输入电视电影资源名字" /><label for="type-wangpan2"><span>bilibili</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-wangpan3" value="https://v.qq.com/x/search/?q=" data-placeholder="输入电视电影资源名字" /><label for="type-wangpan3"><span>腾讯</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-wangpan4" value="https://so.iqiyi.com/so/q_" data-placeholder="输入电视电影资源名字" /><label for="type-wangpan4"><span>爱奇艺</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-wangpan5" value="https://so.youku.com/search_video/q_" data-placeholder="输入电视电影资源名字" /><label for="type-wangpan5"><span>优酷</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-wangpan6" value="https://so.mgtv.com/so?k=" data-placeholder="输入电视电影资源名字" /><label for="type-wangpan6"><span>芒果</span></label></li>
-                </ul>
-            </div>
-            <div class="search-group group-d">
-                <span class="type-text">社区》</span>
-                <ul class="search-type">
-                    <li><input hidden="" type="radio" name="type" id="type-zhihu" value="https://www.zhihu.com/search?type=content&amp;q=" data-placeholder="知乎" /><label for="type-zhihu"><span>知乎</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-wechat" value="http://weixin.sogou.com/weixin?type=2&amp;query=" data-placeholder="微信" /><label for="type-wechat"><span>微信</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-weibo" value="http://s.weibo.com/weibo/" data-placeholder="微博" /><label for="type-weibo"><span>微博</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-douban" value="https://www.douban.com/search?q=" data-placeholder="豆瓣" /><label for="type-douban"><span>豆瓣</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-why" value="https://ask.seowhy.com/search/?q=" data-placeholder="SEO问答社区" /><label for="type-why"><span>搜外问答</span></label></li>
-                </ul>
-            </div>
-            <div class="search-group group-e">
-                <span class="type-text">解析》</span>
-                <ul class="search-type">
-                    <li><input hidden="" type="radio" name="type" id="type-jiexi" value="https://z1.m1907.cn/?jx=" data-placeholder="M1907解析接口粘贴需要解析的网址【支持网址剧名电影名】" /><label for="type-jiexi"><span>M1907</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-jiexi1" value="https://vip.bljiex.com/?v=" data-placeholder="BL智能解析接口粘贴需要解析的网址【支持网址剧名电影名】" /><label for="type-jiexi1"><span>BL智能</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-jiexi2" value="https://17kyun.com/api.php?url=" data-placeholder="17kyun解析接口粘贴需要解析的网址【仅支持网址】" /><label for="type-jiexi2"><span>17kyun</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-jiexi3" value="https://jx.618g.com/?url=" data-placeholder="618G解析接口粘贴需要解析的网址【仅支持网址】" /><label for="type-jiexi3"><span>618G</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-jiexi4" value="https://okjx.cc/?url=" data-placeholder="OK解析接口粘贴需要解析的网址【仅支持网址】" /><label for="type-jiexi4"><span>OK解析</span></label></li>
-                    <li><input hidden="" type="radio" name="type" id="type-jiexi5" value="https://jx.m3u8.tv/jiexi/?url=" data-placeholder="M3U8解析接口粘贴需要解析的网址【仅支持网址】" /><label for="type-jiexi5"><span>M3U8解析接口</span></label></li>
-                </ul>
+
+<!-- 修改搜索框HTML -->
+<div id="search" class="s-search">
+    <div id="search-list" class="hide-type-list">
+        <div class="s-type">
+            <span class="type-text"></span>
+            <div class="s-type-list animated fadeInUp">
+                <!-- 由JS动态生成 -->
             </div>
         </div>
-        <form action="https://www.baidu.com/s?wd=" method="get" target="_blank" id="super-search-fm">
-            <input type="text" id="search-text" placeholder="输入关键字搜索" style="outline:0" />
-            <button type="submit"><i class="iconfont icon-xdss"></i></button>
-            <ul id="ul" class="ko"></ul>
-        </form>
-
+        <!-- 搜索组由JS动态生成 -->
+    </div>
+    <form action="https://www.baidu.com/s?wd=" method="get" target="_blank" id="super-search-fm">
+        <input type="text" id="search-text" placeholder="输入关键字搜索" style="outline:0" />
+        <button type="submit"><i class="iconfont icon-xdss"></i></button>
+        <ul id="ul" class="ko"></ul>
+    </form>
     <input type="checkbox" id="set-search-blank" class="bubble-3" autocomplete="off" style="display:none"/>
-   </div>
+</div>
+
    </div>
   </div> 
 <div class="footer">
   <div class="site-info">小牛搜索-XiaoNiuSs.Top</div>
   <!--<div class="copyright">©项目中大部分素材来自网络如有侵权可联系删除</div> -->
 </div>
-    <script src="js/navigation-utils.js"></script>
-    <script type="text/javascript" src="js/a3sousuo.js"></script> 
-    <script src="js/a2jquery1.min.js"></script>
+    <script src="js/a3sousuo.js"></script> 
     <script src="js/wallpaper-config.js" defer></script>
     <script src="js/settings.js" defer></script>
     <script src="js/notices.js" defer></script>
-    <script src="https://dhsj.xnss.fun"></script>
+<script>
+  // 增强版数据加载逻辑：增加重试、缓存和备份机制
+  (async function loadRemoteData() {
+    const API_URL = 'https://dhsssj.xnss.fun';
+    const MAX_RETRIES = 2; // 最大重试次数
+    let retryCount = 0;
 
+    // 从本地缓存读取备份数据
+    function getBackupData() {
+      try {
+        const navBackup = localStorage.getItem('navDataBackup');
+        const searchBackup = localStorage.getItem('searchDataBackup');
+        return {
+          navigationData: navBackup ? JSON.parse(navBackup) : [],
+          searchData: searchBackup ? JSON.parse(searchBackup) : []
+        };
+      } catch (e) {
+        console.error('读取备份数据失败:', e);
+        return { navigationData: [], searchData: [] };
+      }
+    }
+
+    // 保存数据到本地缓存
+    function saveBackupData(data) {
+      try {
+        if (data.navigationData) {
+          localStorage.setItem('navDataBackup', JSON.stringify(data.navigationData));
+        }
+        if (data.searchData) {
+          localStorage.setItem('searchDataBackup', JSON.stringify(data.searchData));
+        }
+      } catch (e) {
+        console.error('保存备份数据失败:', e);
+      }
+    }
+
+    // 核心加载函数（支持重试）
+    async function fetchDataWithRetry() {
+      try {
+        // 使用AbortController设置超时
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        
+        const response = await fetch(API_URL, {
+          signal: controller.signal,
+          cache: 'no-store' // 禁用缓存，确保获取最新数据
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP错误: ${response.status}`);
+        }
+        
+        const dataText = await response.text();
+        console.log('远程接口原始数据:', dataText);
+
+        // 修复JSON提取逻辑（适配workers.js返回的"const appData = ..."格式）
+        const jsonStr = dataText.replace(/^const\s+appData\s*=\s*/, '').replace(/;$/, '');
+        const appData = JSON.parse(jsonStr);
+        
+        // 严格验证数据结构
+        if (!Array.isArray(appData.navigationData)) {
+          throw new Error('导航数据不是数组');
+        }
+        if (!Array.isArray(appData.searchData)) {
+          throw new Error('搜索数据不是数组');
+        }
+        
+        // 数据清洗与格式化
+        const cleanData = {
+          navigationData: appData.navigationData.map(cat => ({
+            title: cat.title || '未命名分类',
+            links: Array.isArray(cat.links) ? cat.links.map(link => ({
+              name: link.name || '未命名链接',
+              url: link.url || '#',
+              rel: link.rel || 'nofollow',
+              target: link.target || '_blank'
+            })) : []
+          })),
+          searchData: appData.searchData.map(cat => ({
+            id: cat.id || `group-${Date.now()}`,
+            title: cat.title || '未命名搜索分类',
+            options: Array.isArray(cat.options) ? cat.options.map(opt => ({
+              id: opt.id || `opt-${Date.now()}`,
+              value: opt.value || '#',
+              placeholder: opt.placeholder || '请输入搜索内容',
+              name: opt.name || '未命名搜索',
+              checked: opt.checked || false
+            })) : []
+          }))
+        };
+        
+        // 保存备份
+        saveBackupData(cleanData);
+        return cleanData;
+        
+      } catch (error) {
+        // 重试逻辑
+        if (retryCount < MAX_RETRIES) {
+          retryCount++;
+          console.log(`数据加载失败，正在重试（${retryCount}/${MAX_RETRIES}）:`, error);
+          return fetchDataWithRetry();
+        }
+        throw error; // 达到最大重试次数，抛出错误
+      }
+    }
+
+    // 执行加载流程
+    try {
+      // 先尝试从远程加载
+      const data = await fetchDataWithRetry();
+      
+      // 更新全局数据
+      window.navigationData = data.navigationData;
+      window.searchData = data.searchData;
+      
+      // 触发UI更新
+      if (window.NavigationUtils) {
+        NavigationUtils.updateNavigation(window.navigationData);
+      }
+      if (window.SearchUtils) {
+        SearchUtils.renderSearchOptions();
+        SearchUtils.setupEventListeners();
+      }
+      
+    } catch (error) {
+      console.error('所有加载尝试失败，使用备份数据:', error);
+      
+      // 尝试使用备份数据
+      const backupData = getBackupData();
+      window.navigationData = backupData.navigationData;
+      window.searchData = backupData.searchData;
+      
+      // 触发UI更新
+      if (window.NavigationUtils) {
+        NavigationUtils.updateNavigation(window.navigationData);
+      }
+      if (window.SearchUtils) {
+        SearchUtils.renderSearchOptions();
+        SearchUtils.setupEventListeners();
+      }
+      
+      // 显示用户提示
+      const alertEl = document.createElement('div');
+      alertEl.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;background:#ff4444;color:white;border-radius:4px;z-index:9999';
+      alertEl.textContent = '数据加载失败，已使用缓存数据';
+      document.body.appendChild(alertEl);
+      setTimeout(() => alertEl.remove(), 3000);
+    }
+  })();
+
+  // 搜索表单提交验证
+  document.getElementById('super-search-fm').addEventListener('submit', function(e) {
+    // 检查是否有可用的搜索数据
+    if (!window.searchData || window.searchData.length === 0) {
+      e.preventDefault();
+      alert('搜索数据未加载完成，请稍候再试');
+      return false;
+    }
+    
+    // 检查输入内容
+    const searchText = document.getElementById('search-text').value.trim();
+    if (!searchText) {
+      e.preventDefault();
+      document.getElementById('search-text').focus();
+      return false;
+    }
+    
+    // 动态修改表单提交地址
+    const activeOption = document.querySelector('input[name="search-type"]:checked');
+    if (activeOption) {
+      e.preventDefault();
+      const url = activeOption.value + encodeURIComponent(searchText);
+      window.open(url, '_blank');
+      return false;
+    }
+    
+    return true;
+  });
+</script>
 
 <!-- 外部脚本：异步加载（不阻塞，加载完成后立即执行） -->
 <!-- <script src="https://dhsj.xnss.fun" async></script> -->
 
+
     <div class="bgo"></div> 
 </body>
 </html>
-
-    
-
-
-
-
-
