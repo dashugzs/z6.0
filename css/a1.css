@@ -640,3 +640,7 @@ body.dark-mode {
 .search-type input[name="search-type"] {
     display: none;
 }
+.mod-header {
+  position: absolute; /* 保持原有定位方式 */
+  z-index: 100 !important; /* 强制覆盖原有z-index，需大于搜索框的z-index:99 */
+}
