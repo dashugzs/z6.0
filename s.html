@@ -24,6 +24,58 @@
     <script src="js/block-nav-renderer.js"></script>
     <!-- 新增搜索表单处理JS -->
     <script src="js/msearch-form-handler.js"></script>
+<style>
+    /* 顶部导航栏基础样式（日间模式） */
+    .mod-header {
+        background-color: rgba(180,180,180,0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    /* 夜间模式下的顶部导航栏样式 */
+    .dark-mode .mod-header {
+        background-color: rgba(30, 31, 33, 0.8);
+    }
+    
+    .dark-mode .mod-header-nav .top-cat a {
+        color: #ddd;
+    }
+    
+    .dark-mode .mod-header-nav .top-cat a:hover {
+        color: #fff;
+    }
+    
+    .dark-mode .mod-header-user .try,
+    .dark-mode .mod-header-user .console {
+        color: #000;
+    }
+    
+    .dark-mode .mod-header-user .try:hover,
+    .dark-mode .mod-header-user .console:hover {
+        color: #fff;
+    }
+    
+    .dark-mode .cat-tit {
+        color: #ddd;
+    }
+    
+    .dark-mode .cat-item a {
+        color: #bbb;
+    }
+    
+    .dark-mode .cat-item a:hover {
+        color: #fff;
+    }
+    
+    .dark-mode .cat-tag {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #bbb;
+    }
+    
+    .dark-mode .mod-header-nav .slider {
+        background-color: #61a0ff;
+    }
+</style>
     <style>
         /* 页面布局设置 */
         body {
@@ -205,6 +257,122 @@
         }
     </style>
 </head> 
+<link rel="stylesheet" href="js/dhl/css/ai.css">
+<div class="mod-header">
+  <div class="cat">
+    <div class="cat-box" data-cat="engine">
+      <div class="layout">
+        <div class="cat-group">
+          <h3 class="cat-tit"><div class="cat-ico"><i class="ico-lan"></i></div>小游戏</h3>
+          <ul class="cat-list">
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>模拟器</span>
+              </div>
+              <div class="cat-item-sub">
+                <div class="cat-item-row">
+                  <a href="https://fc.xiaoniuss.top/"target="_blank">FC模拟器<i class="cat-tag is-beta"></i></a>
+                </div>
+              </div>
+            </li>
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>棋牌</span>
+              </div>
+              <div class="cat-item-sub">
+                <div class="cat-item-row">
+                  <a href="https://c.xiaoniuss.top/wzq/ "target="_blank">五子棋</a>
+                  <a href="https://c.xiaoniuss.top/xq/"target="_blank">象棋<i class="cat-tag is-new"></i></a>
+                  <a href="https://c.xiaoniuss.top/zhizhu/"target="_blank">蜘蛛纸牌<i class="cat-tag is-new"></i></a>
+                </div>
+              </div>
+            </li>
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <a href="https://c.xiaoniuss.top/2048/"target="_blank">2048<i class="cat-tag is-hot"></i></a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="cat-group">
+          <h3 class="cat-tit"><div class="cat-ico"><i class="ico-image"></i></div>小插件</h3>
+          <ul class="cat-list">
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>开发者工具<i class="cat-tag is-hot"></i></span>
+              </div>
+              <div class="cat-item-sub">
+                <div class="cat-item-row">
+                  <a href="https://c.xiaoniuss.top/ys/"target="_blank">色值选择器</a>
+                  <a href="https://c.xiaoniuss.top/bjq/"target="_blank">代码编辑器</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="cat-group">
+          <h3 class="cat-tit"><div class="cat-ico"><i class="ico-voice"></i></div>导航产品</h3>
+          <ul class="cat-list">
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>行业运营</span>
+              </div>
+              <div class="cat-item-sub">
+                <div class="cat-item-row">
+                  <a href="https://xydh.fun/guoxiaohan"target="_blank">运营官1号</a>
+                  <a href="https://xydh.fun/dianshang"target="_blank">运营官<i class="cat-tag is-new"></i></a>
+                  <a href="https://b.xiaoniuss.top"target="_blank">小牛书签<i class="cat-tag is-new"></i></a>
+                </div>
+              </div>
+            </li>
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <a href="https://xiaoniuss.top"target="_blank">小牛搜索<i class="cat-tag is-new"></i></a>
+              </div>
+            </li>
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>小牛搜索简洁版(即将开放)</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout clearfix">
+    <a href="" class="mod-header-logo"></a>
+
+    <div class="mod-header-nav">
+      <ul id="jmod-header-nav">
+        <li id="nav-header-serv" class="top-cat hassub" data-cat="engine">
+          <h2><a href="javascript:void(0);">旗下产品</a><i class="top-cat-arrow"></i></h2>
+        </li><!---->
+        <li id="nav-header-accelerator" class="top-cat"><h2><a href="https://xiaoniuss.top/"target="_blank">主站首页</a></h2></li>
+        <li id="nav-header-info" class="top-cat"><h2><a href="https://y.xiaoniuss.top/"target="_blank">小游戏平台</a></h2></li>
+        <li id="nav-header-hr" class="top-cat"><h2><a href="https://v.xiaoniuss.top/"target="_blank">vip视频解析</a></h2></li>
+        <li id="nav-header-join" class="top-cat"><h2><a href="https://xydh.fun/guoxiaohan"target="_blank">运营官1号</a></h2></li>
+        <li id="nav-header-doc" class="top-cat"><h2><a href="https://c.xiaoniuss.top/"target="_blank">小插件</a></h2></li>
+        <li id="nav-header-doc" class="top-cat"><h2><a href="https://b.xiaoniuss.top/zhuye"target="_blank">网址发布页</a></h2></li>
+      </ul>
+      <i class="jmod-nav-slider slider hidden" style="transform: translateX(0px);"></i>
+    </div>
+
+    <div class="mod-header-user">
+      <a href="https://support.qq.com/products/336749" target="_blank" class="try jmod-header-try">留言板</a>
+      <a href="https://support.qq.com/products/336749" target="_blank" class="console jmod-header-console hidden">留言板</a>
+    </div>
+  </div>
+
+</div>
+
+  <div class="banner jmod_banner">
+    <div class="ban cur" style="background-color: rgba(30, 31, 33, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); height: 62px;">
+    </div>
+  </div>
+<script src="js/dhl/js/jquery.min.js"></script>
+<script src="js/dhl/js/ai.js"></script>
 <body>
     <!-- 仅保留设置按钮容器及设置按钮 -->
     <div id="button-container">
