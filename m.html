@@ -17,6 +17,7 @@
     <link rel="shortcut icon" href="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" type="image/png" /> 
     <link rel="stylesheet" href="css/a1.css" />  
     <link rel="stylesheet" href="css/settings.css" />
+    <link rel="stylesheet" href="css/s-custom.css" />
     <script src="js/a2jquery1.min.js"></script>
     <script src="js/navigation-utils.js"></script>
     <script src="js/search-utils.js"></script>
@@ -153,17 +154,27 @@
         
         /* 滚动条样式优化 */
         .links-container::-webkit-scrollbar {
-            width: 5px;
+            width: 0;
+            height: 0;
         }
         
         .links-container::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 3px;
+            background: transparent;
         }
         
         .links-container::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 3px;
+            background: transparent;
+        }
+
+        /* 针对导航容器的全局滚动条隐藏 */
+        #navigation-container::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+        
+        #navigation-container {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
         }
         
         /* 夜间模式适配 */
