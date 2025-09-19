@@ -17,6 +17,7 @@
     <link rel="shortcut icon" href="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" type="image/png" /> 
     <link rel="stylesheet" href="css/a1.css" />  
     <link rel="stylesheet" href="css/settings.css" />
+    <link rel="stylesheet" href="css/s-custom.css" />
     <script src="js/a2jquery1.min.js"></script>
     <script src="js/navigation-utils.js"></script>
     <script src="js/search-utils.js"></script>
@@ -94,13 +95,14 @@
             box-sizing: border-box;
         }
         
-        #navigation-container {
-            height: 66.666vh; /* 使用视口高度确保占比准确 */
-            padding: 10px; /* 减少外间距 */
-            box-sizing: border-box;
-            overflow-y: auto;
-            min-height: 300px; /* 确保内容区域至少可见 */
-        }
+#navigation-container {
+    height: calc(66.666vh - 62px); /* 减去顶部导航栏高度 */
+    padding: 10px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    min-height: 300px;
+    margin-top: 10px; /* 增加顶部间距避免被遮挡 */
+}
         
         /* 方块导航布局 */
         .horizontal-navigation {
@@ -203,19 +205,32 @@
         }
         
         /* 滚动条样式优化 */
+        /* 滚动条样式优化 - 隐藏滚动条但保留功能 */
         .links-container::-webkit-scrollbar {
-            width: 5px;
+            width: 0;
+            height: 0;
         }
         
         .links-container::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 3px;
+            background: transparent;
         }
         
         .links-container::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 3px;
+            background: transparent;
         }
+
+        /* 针对导航容器的全局滚动条隐藏 */
+        #navigation-container::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+        }
+        
+        #navigation-container {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+        
+
         
         /* 夜间模式适配 */
         .dark-mode .horizontal-navigation {
@@ -711,6 +726,7 @@
 </body>
 
 </html>
+
 
 
 
