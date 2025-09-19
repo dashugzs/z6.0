@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head> 
+    <meta charset="UTF-8" /> 
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    <meta name="apple-touch-fullscreen" content="yes" /> 
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+    <meta name="full-screen" content="yes" />
+    <meta name="browsermode" content="application" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="x5-page-mode" content="app" /> 
+    <title>小牛搜索- XiaoNiuss.Top</title> 
+    <meta name="keywords" content="信仰圣光.一款业余的导航网站">
+    <meta name="description" content="可能是最简洁的搜索导航，给你简单舒爽的搜索体验。">
+    <link rel="shortcut icon" href="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" type="image/png" /> 
+    <link rel="stylesheet" href="css/a1.css" />  
+    <link rel="stylesheet" href="css/settings.css" />
+    <script src="js/a2jquery1.min.js"></script>
+    <script src="js/navigation-utils.js"></script>
+    <script src="js/search-utils.js"></script>
+    <!-- 引入新的方块导航渲染工具 -->
+    <script src="js/block-nav-renderer.js"></script>
+    <!-- 新增搜索表单处理JS -->
+    <script src="js/msearch-form-handler.js"></script>
+<style>
+    /* 顶部导航栏基础样式（日间模式） */
+    .mod-header {
+        background-color: rgba(180,180,180,0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    /* 夜间模式下的顶部导航栏样式 */
+    .dark-mode .mod-header {
+        background-color: rgba(30, 31, 33, 0.8);
+    }
+    
+    .dark-mode .mod-header-nav .top-cat a {
+        color: #ddd;
+    }
+    
+    .dark-mode .mod-header-nav .top-cat a:hover {
+        color: #fff;
+    }
+    
+    .dark-mode .mod-header-user .try,
+    .dark-mode .mod-header-user .console {
+        color: #000;
+    }
+    
+    .dark-mode .mod-header-user .try:hover,
+    .dark-mode .mod-header-user .console:hover {
+        color: #fff;
+    }
+    
+    .dark-mode .cat-tit {
+        color: #ddd;
+    }
+    
+    .dark-mode .cat-item a {
+        color: #bbb;
+    }
+    
+    .dark-mode .cat-item a:hover {
+        color: #fff;
+    }
+    
+    .dark-mode .cat-tag {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #bbb;
+    }
+    
+    .dark-mode .mod-header-nav .slider {
+        background-color: #61a0ff;
+    }
+</style>
+    <style>
+        /* 页面布局设置 */
+        body {
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        #search-container {
+            height: 33.333%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        #navigation-container {
+            height: 66.666vh; /* 使用视口高度确保占比准确 */
+            padding: 10px; /* 减少外间距 */
+            box-sizing: border-box;
+            overflow-y: auto;
+            min-height: 300px; /* 确保内容区域至少可见 */
+        }
+        
+        /* 方块导航布局 */
+        .horizontal-navigation {
+            width: 100%;
+            background: var(--search-bg-light);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: var(--search-shadow-light);
+            border-radius: 18px;
+            padding: 15px; /* 减少内边距 */
+            box-sizing: border-box;
+            min-height: 100px; /* 避免内容过短时容器消失 */
+        }
+        
+        /* 分类方块容器 */
+        .categories-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px; /* 减少分类间间距 */
+        }
+        
+        /* 单个分类方块 */
+        .category-block {
+            flex: 1;
+            min-width: 280px;
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            padding: 12px; /* 减少内边距 */
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+        
+        /* 分类标题 */
+        .category-title {
+            font-size: 15px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 0px; /* 减少标题下方间距 */
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(200, 200, 200, 0.3);
+            color: var(--text-color);
+        }
+        
+        /* 链接容器 - 限制为5行高度 */
+        .links-container {
+            height: 156px; /* 5行 * 45px = 225px */
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .links-container:hover {
+            overflow-y: auto;
+        }
+        
+        /* 链接网格 - 每行显示3个 */
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0px; /* 减少链接间间距 */
+        }
+        
+        /* 单个链接样式 - 取消按钮样式，预留8个汉字位置 */
+        .nav-link {
+            padding: 6px 5px; /* 减少内边距 */
+            border-radius: 6px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 14px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: all 0.2s ease;
+            min-width: 0; /* 确保内容不会溢出 */
+            /* 8个汉字宽度（约16px/字） */
+            max-width: 128px;
+            justify-self: center;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(203, 203, 203, 0.26);
+            transform: translateY(-1px);
+        }
+        
+        /* 空数据提示样式 */
+        .empty-state {
+            text-align: center;
+            padding: 20px 10px; /* 减少内边距 */
+            color: #888;
+            font-size: 14px;
+        }
+        
+        .category-empty {
+            color: #888;
+            padding: 5px 0 10px 5px;
+            font-size: 13px;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+        
+        /* 滚动条样式优化 */
+        .links-container::-webkit-scrollbar {
+            width: 5px;
+        }
+        
+        .links-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 3px;
+        }
+        
+        .links-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+        }
+        
+        /* 夜间模式适配 */
+        .dark-mode .horizontal-navigation {
+            background: var(--search-bg-dark);
+            box-shadow: var(--search-shadow-dark);
+        }
+        
+        .dark-mode .category-block {
+            background-color: rgba(50, 50, 50, 0.7);
+        }
+        
+        .dark-mode .nav-link {
+            color: #ddd;
+        }
+        
+        .dark-mode .nav-link:hover {
+            background-color: rgba(100, 100, 100, 0.6);
+        }
+        
+        .dark-mode .empty-state,
+        .dark-mode .category-empty {
+            color: #aaa;
+        }
+        
+        .dark-mode .category-title {
+            border-bottom-color: rgba(100, 100, 100, 0.3);
+        }
+        
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .category-block {
+                min-width: 100%;
+                max-width: 100%;
+            }
+            
+            .links-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head> 
+<link rel="stylesheet" href="js/dhl/css/ai.css">
+<div class="mod-header">
+  <div class="cat">
+    <div class="cat-box" data-cat="engine">
+      <div class="layout">
+        <div class="cat-group">
+          <h3 class="cat-tit"><div class="cat-ico"><i class="ico-lan"></i></div>小游戏</h3>
+          <ul class="cat-list">
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>模拟器</span>
+              </div>
+              <div class="cat-item-sub">
+                <div class="cat-item-row">
+                  <a href="https://fc.xiaoniuss.top/"target="_blank">FC模拟器<i class="cat-tag is-beta"></i></a>
+                </div>
+              </div>
+            </li>
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>棋牌</span>
+              </div>
+              <div class="cat-item-sub">
+                <div class="cat-item-row">
+                  <a href="https://c.xiaoniuss.top/wzq/ "target="_blank">五子棋</a>
+                  <a href="https://c.xiaoniuss.top/xq/"target="_blank">象棋<i class="cat-tag is-new"></i></a>
+                  <a href="https://c.xiaoniuss.top/zhizhu/"target="_blank">蜘蛛纸牌<i class="cat-tag is-new"></i></a>
+                </div>
+              </div>
+            </li>
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <a href="https://c.xiaoniuss.top/2048/"target="_blank">2048<i class="cat-tag is-hot"></i></a>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="cat-group">
+          <h3 class="cat-tit"><div class="cat-ico"><i class="ico-image"></i></div>小插件</h3>
+          <ul class="cat-list">
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>开发者工具<i class="cat-tag is-hot"></i></span>
+              </div>
+              <div class="cat-item-sub">
+                <div class="cat-item-row">
+                  <a href="https://c.xiaoniuss.top/ys/"target="_blank">色值选择器</a>
+                  <a href="https://c.xiaoniuss.top/bjq/"target="_blank">代码编辑器</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="cat-group">
+          <h3 class="cat-tit"><div class="cat-ico"><i class="ico-voice"></i></div>导航产品</h3>
+          <ul class="cat-list">
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>行业运营</span>
+              </div>
+              <div class="cat-item-sub">
+                <div class="cat-item-row">
+                  <a href="https://xydh.fun/guoxiaohan"target="_blank">运营官1号</a>
+                  <a href="https://xydh.fun/dianshang"target="_blank">运营官<i class="cat-tag is-new"></i></a>
+                  <a href="https://b.xiaoniuss.top"target="_blank">小牛书签<i class="cat-tag is-new"></i></a>
+                </div>
+              </div>
+            </li>
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <a href="https://xiaoniuss.top"target="_blank">小牛搜索<i class="cat-tag is-new"></i></a>
+              </div>
+            </li>
+            <li class="cat-item">
+              <div class="cat-item-main">
+                <span>小牛搜索简洁版(即将开放)</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout clearfix">
+    <a href="" class="mod-header-logo"></a>
+
+    <div class="mod-header-nav">
+      <ul id="jmod-header-nav">
+        <li id="nav-header-serv" class="top-cat hassub" data-cat="engine">
+          <h2><a href="javascript:void(0);">旗下产品</a><i class="top-cat-arrow"></i></h2>
+        </li><!---->
+        <li id="nav-header-accelerator" class="top-cat"><h2><a href="https://xiaoniuss.top/"target="_blank">主站首页</a></h2></li>
+        <li id="nav-header-info" class="top-cat"><h2><a href="https://y.xiaoniuss.top/"target="_blank">小游戏平台</a></h2></li>
+        <li id="nav-header-hr" class="top-cat"><h2><a href="https://v.xiaoniuss.top/"target="_blank">vip视频解析</a></h2></li>
+        <li id="nav-header-join" class="top-cat"><h2><a href="https://xydh.fun/guoxiaohan"target="_blank">运营官1号</a></h2></li>
+        <li id="nav-header-doc" class="top-cat"><h2><a href="https://c.xiaoniuss.top/"target="_blank">小插件</a></h2></li>
+        <li id="nav-header-doc" class="top-cat"><h2><a href="https://b.xiaoniuss.top/zhuye"target="_blank">网址发布页</a></h2></li>
+      </ul>
+      <i class="jmod-nav-slider slider hidden" style="transform: translateX(0px);"></i>
+    </div>
+
+    <div class="mod-header-user">
+      <a href="https://support.qq.com/products/336749" target="_blank" class="try jmod-header-try">留言板</a>
+      <a href="https://support.qq.com/products/336749" target="_blank" class="console jmod-header-console hidden">留言板</a>
+    </div>
+  </div>
+
+</div>
+
+  <div class="banner jmod_banner">
+    <div class="ban cur" style="background-color: rgba(30, 31, 33, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); height: 62px;">
+    </div>
+  </div>
+<script src="js/dhl/js/jquery.min.js"></script>
+<script src="js/dhl/js/ai.js"></script>
+<body>
+    <!-- 仅保留设置按钮容器及设置按钮 -->
+    <div id="button-container">
+        <div id="settings-button" class="edge-button bottom-button">
+            <span class="button-text">设置</span>
+        </div>
+    </div>
+
+    <!-- 搜索模块容器 (上1/3) -->
+    <div id="search-container">
+        <!-- 搜索模块 - 直接从index.html复制 -->
+        <div id="search" class="s-search">
+            <div id="search-list" class="hide-type-list">
+                <div class="s-type">
+                    <span class="type-text"></span>
+                    <div class="s-type-list animated fadeInUp">
+                        <!-- 由JS动态生成 -->
+                    </div>
+                </div>
+                <!-- 搜索组由JS动态生成 -->
+            </div>
+            <form action="https://www.baidu.com/s?wd=" method="get" target="_blank" id="super-search-fm">
+                <input type="text" id="search-text" placeholder="输入关键字搜索" style="outline:0" />
+                <button type="submit"><i class="iconfont icon-xdss"></i></button>
+                <ul id="ul" class="ko"></ul>
+            </form>
+            <input type="checkbox" id="set-search-blank" class="bubble-3" autocomplete="off" style="display:none"/>
+        </div>
+    </div>
+
+    <!-- 导航数据容器 (下2/3) -->
+    <div id="navigation-container">
+        <div class="horizontal-navigation">
+            <!-- 导航内容将通过JS动态生成 -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <!--<div class="site-info">小牛搜索-XiaoNiuSs.Top</div>-->
+    </div>
+
+    <script src="js/a3sousuo.js"></script> 
+    <script src="js/wallpaper-config.js" defer></script>
+    <script src="js/settings.js" defer></script>
+    <script src="js/notices.js" defer></script>
+
+    <!-- 新的方块导航渲染器 -->
+    <script>
+        // 方块导航渲染工具 - 专门处理m.html的方块式导航面板渲染
+        const BlockNavRenderer = {
+            /**
+             * 渲染方块式导航面板
+             * @param {Array} navigationData - 导航数据数组
+             */
+            render: function(navigationData) {
+                // 获取导航容器
+                const container = document.querySelector('.horizontal-navigation');
+                if (!container) {
+                    console.error('导航容器未找到 (.horizontal-navigation)');
+                    return;
+                }
+                
+                // 清空容器
+                container.innerHTML = '';
+                
+                // 确保数据是数组
+                const safeData = Array.isArray(navigationData) ? navigationData : [];
+                
+                // 处理空数据场景
+                if (safeData.length === 0) {
+                    const emptyEl = document.createElement('div');
+                    emptyEl.className = 'empty-state';
+                    emptyEl.innerHTML = '暂无导航数据<br>请联系管理员添加或检查网络连接';
+                    container.appendChild(emptyEl);
+                    return;
+                }
+                
+                // 创建分类容器
+                const categoriesContainer = document.createElement('div');
+                categoriesContainer.className = 'categories-container';
+                container.appendChild(categoriesContainer);
+                
+                // 渲染导航分类方块
+                safeData.forEach((category, catIndex) => {
+                    // 验证分类有效性
+                    if (!category || typeof category !== 'object') {
+                        console.warn('跳过无效分类数据:', category);
+                        return;
+                    }
+                    
+                    // 创建分类方块
+                    const categoryBlock = document.createElement('div');
+                    categoryBlock.className = 'category-block';
+                    
+                    // 分类标题
+                    const titleEl = document.createElement('div');
+                    titleEl.className = 'category-title';
+                    titleEl.textContent = category.title || `未命名分类${catIndex + 1}`;
+                    categoryBlock.appendChild(titleEl);
+                    
+                    // 链接容器
+                    const linksContainer = document.createElement('div');
+                    linksContainer.className = 'links-container';
+                    
+                    // 链接网格
+                    const linksGrid = document.createElement('div');
+                    linksGrid.className = 'links-grid';
+                    
+                    // 处理链接数据
+                    const links = Array.isArray(category.links) ? category.links : [];
+                    
+                    if (links.length === 0) {
+                        // 无链接时显示提示
+                        const noLinksEl = document.createElement('div');
+                        noLinksEl.className = 'category-empty';
+                        noLinksEl.textContent = '该分类暂无链接';
+                        linksGrid.appendChild(noLinksEl);
+                    } else {
+                        // 渲染有效链接
+                        links.forEach((link, linkIndex) => {
+                            if (!link || typeof link !== 'object') {
+                                console.warn(`分类 ${catIndex} 中的无效链接数据，已跳过`, link);
+                                return;
+                            }
+                            
+                            const linkEl = document.createElement('a');
+                            linkEl.className = 'nav-link';
+                            linkEl.href = link.url || '#';
+                            linkEl.textContent = link.name || `未命名链接${linkIndex + 1}`;
+                            linkEl.rel = link.rel || 'nofollow';
+                            linkEl.target = link.target || '_blank';
+                            linksGrid.appendChild(linkEl);
+                        });
+                    }
+                    
+                    linksContainer.appendChild(linksGrid);
+                    categoryBlock.appendChild(linksContainer);
+                    categoriesContainer.appendChild(categoryBlock);
+                });
+            }
+        };
+    </script>
+
+    <script>
+        // 默认导航数据 - 确保数据安全
+        const DEFAULT_NAV_DATA = [
+            {
+                title: "常用网站",
+                links: [
+                    { name: "百度", url: "https://www.baidu.com", rel: "nofollow", target: "_blank" },
+                    { name: "谷歌", url: "https://www.google.com", rel: "nofollow", target: "_blank" },
+                    { name: "B站", url: "https://www.bilibili.com", rel: "nofollow", target: "_blank" },
+                    { name: "知乎", url: "https://www.zhihu.com", rel: "nofollow", target: "_blank" },
+                    { name: "微博", url: "https://www.weibo.com", rel: "nofollow", target: "_blank" },
+                    { name: "淘宝", url: "https://www.taobao.com", rel: "nofollow", target: "_blank" },
+                    { name: "京东", url: "https://www.jd.com", rel: "nofollow", target: "_blank" },
+                    { name: "网易云音乐", url: "https://music.163.com", rel: "nofollow", target: "_blank" },
+                    { name: "腾讯视频", url: "https://v.qq.com", rel: "nofollow", target: "_blank" },
+                    { name: "爱奇艺", url: "https://www.iqiyi.com", rel: "nofollow", target: "_blank" },
+                    { name: "优酷", url: "https://www.youku.com", rel: "nofollow", target: "_blank" },
+                    { name: "抖音", url: "https://www.douyin.com", rel: "nofollow", target: "_blank" }
+                ]
+            },
+            {
+                title: "工具导航",
+                links: [
+                    { name: "翻译", url: "https://fanyi.baidu.com", rel: "nofollow", target: "_blank" },
+                    { name: "地图", url: "https://map.baidu.com", rel: "nofollow", target: "_blank" },
+                    { name: "天气", url: "https://tianqi.baidu.com", rel: "nofollow", target: "_blank" },
+                    { name: "快递", url: "https://www.kuaidi100.com", rel: "nofollow", target: "_blank" },
+                    { name: "日历", url: "https://www.rili.com", rel: "nofollow", target: "_blank" },
+                    { name: "计算器", url: "https://www.jisuanqi.com", rel: "nofollow", target: "_blank" },
+                    { name: "词典", url: "https://www.zdic.net", rel: "nofollow", target: "_blank" }
+                ]
+            }
+        ];
+
+        function getBackupData() {
+            try {
+                const navBackup = localStorage.getItem('navDataBackup');
+                const searchBackup = localStorage.getItem('searchDataBackup');
+                // 备份数据验证
+                const navData = navBackup ? JSON.parse(navBackup) : [];
+                return {
+                    navigationData: Array.isArray(navData) ? navData : [],
+                    searchData: searchBackup ? JSON.parse(searchBackup) : []
+                };
+            } catch (e) {
+                console.error('读取备份数据失败:', e);
+                return { navigationData: [], searchData: [] };
+            }
+        }
+
+        function saveBackupData(data) {
+            try {
+                if (data.navigationData) {
+                    localStorage.setItem('navDataBackup', JSON.stringify(data.navigationData));
+                }
+                if (data.searchData) {
+                    localStorage.setItem('searchDataBackup', JSON.stringify(data.searchData));
+                }
+            } catch (e) {
+                console.error('保存备份数据失败:', e);
+            }
+        }
+
+        // 增强版数据加载逻辑：增加重试、缓存和备份机制
+        (async function loadRemoteData() {
+            const API_URL = 'https://dhsssj.xnss.fun';
+            const MAX_RETRIES = 2; // 最大重试次数
+            let retryCount = 0;
+
+            async function fetchDataWithRetry() {
+                try {
+                    // 使用AbortController设置超时
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 8000);
+                    
+                    const response = await fetch(API_URL, {
+                        signal: controller.signal,
+                        cache: 'no-store' // 禁用缓存，确保获取最新数据
+                    });
+                    
+                    clearTimeout(timeoutId);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
+                    
+                    const dataText = await response.text();
+                    console.log('远程接口原始数据:', dataText);
+
+                    // 修复JSON提取逻辑（适配workers.js返回的"const appData = ..."格式）
+                    const jsonStr = dataText.replace(/^const\s+appData\s*=\s*/, '').replace(/;$/, '');
+                    const appData = JSON.parse(jsonStr);
+                    
+                    // 严格验证数据结构
+                    if (!Array.isArray(appData.navigationData)) {
+                        throw new Error('导航数据不是数组');
+                    }
+                    if (!Array.isArray(appData.searchData)) {
+                        throw new Error('搜索数据不是数组');
+                    }
+                    
+                    // 数据清洗与格式化
+                    const cleanData = {
+                        navigationData: appData.navigationData
+                            ? appData.navigationData.map(cat => ({
+                                title: cat?.title || '未命名分类',
+                                links: Array.isArray(cat?.links) 
+                                    ? cat.links.map(link => ({
+                                        name: link?.name || '未命名链接',
+                                        url: link?.url || '#',
+                                        rel: link?.rel || 'nofollow',
+                                        target: link?.target || '_blank'
+                                    })) 
+                                    : []
+                            })) 
+                            : DEFAULT_NAV_DATA,
+                            
+                        searchData: Array.isArray(appData.searchData)
+                            ? appData.searchData.map(cat => ({
+                                id: cat?.id || `group-${Date.now()}`,
+                                title: cat?.title || '未命名搜索分类',
+                                options: Array.isArray(cat?.options)
+                                    ? cat.options.map(opt => ({
+                                        id: opt?.id || `opt-${Date.now()}`,
+                                        value: opt?.value || '#',
+                                        placeholder: opt?.placeholder || '请输入搜索内容',
+                                        name: opt?.name || '未命名搜索',
+                                        checked: opt?.checked || false
+                                    }))
+                                    : []
+                            }))
+                            : []
+                    };
+                    
+                    // 确保导航数据至少有默认值
+                    if (!Array.isArray(cleanData.navigationData) || cleanData.navigationData.length === 0) {
+                        cleanData.navigationData = DEFAULT_NAV_DATA;
+                    }
+                    
+                    saveBackupData(cleanData);
+                    return cleanData;
+                    
+                } catch (error) {
+                    if (retryCount < MAX_RETRIES) {
+                        retryCount++;
+                        console.log(`数据加载失败，正在重试（${retryCount}/${MAX_RETRIES}）:`, error);
+                        return fetchDataWithRetry();
+                    }
+                    throw error;
+                }
+            }
+
+            try {
+                const data = await fetchDataWithRetry();
+                
+                window.navigationData = data.navigationData;
+                window.searchData = data.searchData;
+                console.log('导航数据加载成功，共', window.navigationData.length, '个分类');
+                
+                // 使用新的方块导航渲染器
+                BlockNavRenderer.render(window.navigationData);
+                
+                if (window.SearchUtils) {
+                    SearchUtils.renderSearchOptions();
+                    SearchUtils.setupEventListeners();
+                }
+                
+            } catch (error) {
+                console.error('所有加载尝试失败，使用备份数据:', error);
+                
+                const backupData = getBackupData();
+                window.navigationData = backupData.navigationData;
+                window.searchData = backupData.searchData;
+                
+                // 使用新的方块导航渲染器
+                BlockNavRenderer.render(window.navigationData);
+                
+                if (window.SearchUtils) {
+                    SearchUtils.renderSearchOptions();
+                    SearchUtils.setupEventListeners();
+                }
+                
+                const alertEl = document.createElement('div');
+                alertEl.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;background:#ff4444;color:white;border-radius:4px;z-index:9999';
+                alertEl.textContent = '数据加载失败，已使用默认导航数据';
+                document.body.appendChild(alertEl);
+                setTimeout(() => alertEl.remove(), 3000);
+            }
+        })();
+    </script>
+
+    <div class="bgo"></div> 
+</body>
+
+</html>
+
+
+
