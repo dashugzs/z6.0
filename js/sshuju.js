@@ -1599,7 +1599,7 @@
         },
         {
           "id": "type-google",
-          "value": "/mima/",
+          "value": "https://m.xnss.fun/mima/",
           "placeholder": "输入密令",
           "name": "蜜码"
         },
