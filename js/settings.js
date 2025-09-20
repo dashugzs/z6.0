@@ -46,10 +46,22 @@ function autoDetectDarkMode() {
 }
 
 // 从本地存储加载其他设置（除了夜间模式，因为已经自动检测）
+// 从本地存储加载其他设置（除了夜间模式，因为已经自动检测）
 function loadOtherSettings() {
     // 加载壁纸设置
-    const wallpaper = getSetting('wallpaper');
-    const wallpaperType = getSetting('wallpaperType');
+    let wallpaper = getSetting('wallpaper');
+    let wallpaperType = getSetting('wallpaperType');
+    
+    // 如果没有保存的壁纸设置，默认使用第4张预设壁纸（索引为3）
+    if (!wallpaper || wallpaper === 'none' || !wallpaperType) {
+        if (typeof wallpaperConfig !== 'undefined' && wallpaperConfig.defaultWallpapers && wallpaperConfig.defaultWallpapers.length > 3) {
+            wallpaper = wallpaperConfig.defaultWallpapers[3].fullUrl;
+            wallpaperType = 'default';
+            // 保存默认设置到本地存储
+            saveSetting('wallpaper', wallpaper);
+            saveSetting('wallpaperType', wallpaperType);
+        }
+    }
     
     if (wallpaper && wallpaper !== 'none' && wallpaperType) {
         setWallpaper(wallpaper);
