@@ -224,7 +224,9 @@
     </div>
     <form action="https://www.baidu.com/s?wd=" method="get" target="_blank" id="super-search-fm">
         <input type="text" id="search-text" placeholder="输入关键字搜索" style="outline:0" />
-        <button type="submit"><i class="iconfont icon-xdss"></i></button>
+<button type="submit">
+  <!-- 替换原图标为图片链接，alt属性用于图片加载失败时的提示文字 -->
+  <img src="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" alt="输入图标" style="width: 30px; height: 30px; vertical-align: middle;">
         <ul id="ul" class="ko"></ul>
     </form>
     <input type="checkbox" id="set-search-blank" class="bubble-3" autocomplete="off" style="display:none"/>
@@ -425,4 +427,5 @@
 </script>
 
 <!-- 外部脚本：异步加载（不阻塞，加载完成后立即执行） -->
+
 
