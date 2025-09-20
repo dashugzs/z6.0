@@ -16,7 +16,7 @@
     <meta name="keywords" content="信仰圣光.一款业余的导航网站">
     <meta name="description" content="可能是最简洁的搜索导航，给你简单舒爽的搜索体验。">
     <link rel="shortcut icon" href="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" type="image/png" /> 
-    <link rel="stylesheet" href="css/a1.css" />  
+    <link rel="stylesheet" href="css/sa1.css" />  
     <link rel="stylesheet" href="css/settings.css" />
     <link rel="stylesheet" href="css/s-custom.css" />
     <script src="js/a2jquery1.min.js"></script>
@@ -97,33 +97,61 @@
         }
         
 #navigation-container {
-    height: calc(66.666vh - 62px); /* 减去顶部导航栏高度 */
+    height: calc(66.666vh - -40px); /* 减去顶部导航栏高度 */
     padding: 10px;
     box-sizing: border-box;
-    overflow-y: auto;
+    overflow: hidden; /* 禁用外层滚动 */
     min-height: 300px;
-    margin-top: 10px; /* 增加顶部间距避免被遮挡 */
+    margin-top: -100px; /* 增加顶部间距避免被遮挡 */
 }
         
         /* 方块导航布局 */
-        .horizontal-navigation {
-            width: 100%;
-            background: var(--search-bg-light);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: var(--search-shadow-light);
-            border-radius: 18px;
-            padding: 15px; /* 减少内边距 */
-            box-sizing: border-box;
-            min-height: 100px; /* 避免内容过短时容器消失 */
-        }
+.horizontal-navigation {
+    width: 100%;
+    background: var(--search-bg-light);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: var(--search-shadow-light);
+    border-radius: 18px;
+    padding: 15px; /* 减少内边距 */
+    box-sizing: border-box;
+    min-height: 100px; /* 避免内容过短时容器消失 */
+    height: 100%; /* 充满外层容器 */
+    overflow: hidden; /* 禁用中间层滚动 */
+}
         
         /* 分类方块容器 */
-        .categories-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px; /* 减少分类间间距 */
-        }
+.categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* 减少分类间间距 */
+    height: 100%; /* 充满父容器 */
+    overflow-y: auto; /* 仅分类容器滚动 */
+    padding-right: 5px; /* 避免滚动条遮挡内容 */
+}
+/* 新增滚动条样式 */
+.categories-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.categories-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+.categories-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+/* 夜间模式滚动条适配 */
+.dark-mode .categories-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .categories-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
         
         /* 单个分类方块 */
         .category-block {
@@ -412,7 +440,9 @@
             </div>
             <form action="https://www.baidu.com/s?wd=" method="get" target="_blank" id="super-search-fm">
                 <input type="text" id="search-text" placeholder="输入关键字搜索" style="outline:0" />
-                <button type="submit"><i class="iconfont icon-xdss"></i></button>
+<button type="submit">
+  <!-- 替换原图标为图片链接，alt属性用于图片加载失败时的提示文字 -->
+  <img src="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" alt="输入图标" style="width: 30px; height: 30px; vertical-align: middle;">
                 <ul id="ul" class="ko"></ul>
             </form>
             <input type="checkbox" id="set-search-blank" class="bubble-3" autocomplete="off" style="display:none"/>
