@@ -16,9 +16,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // 自动检测并应用夜间模式
+// 自动检测并应用夜间模式
 function autoDetectDarkMode() {
     // 1. 优先检查用户之前的设置，如果没有设置则使用自动模式
-    const savedMode = getSetting('darkMode') || 'auto';
+    let savedMode = getSetting('darkMode');
+    // 关键修复：如果本地存储中没有设置，强制默认为auto并保存
+    if (!savedMode) {
+        savedMode = 'auto';
+        saveSetting('darkMode', 'auto'); // 确保默认值被保存
+    }
+
     if (savedMode === 'enabled') {
         enableDarkMode(true);
         return;
@@ -508,3 +515,4 @@ function updateSearchStyle() {
         searchInput.style.backgroundColor = isDarkMode ? 'var(--search-input-dark)' : 'var(--search-input-light)';
     }
 }
+
