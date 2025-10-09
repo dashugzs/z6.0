@@ -60,7 +60,7 @@ function loadOtherSettings() {
     let wallpaperType = getSetting('wallpaperType');
     
     // 如果没有保存的壁纸设置，默认使用第4张预设壁纸（索引为3）
-    if (!wallpaper || wallpaper === 'none' || !wallpaperType) {
+    if ((!wallpaper || !wallpaperType) && wallpaper !== 'none') {
         if (typeof wallpaperConfig !== 'undefined' && wallpaperConfig.defaultWallpapers && wallpaperConfig.defaultWallpapers.length > 3) {
             wallpaper = wallpaperConfig.defaultWallpapers[3].fullUrl;
             wallpaperType = 'default';
