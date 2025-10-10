@@ -2,15 +2,25 @@
 <html lang="zh-CN">
 <head> 
     <meta charset="UTF-8" /> 
+    
+    <!-- 视图与设备适配 -->
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
+    
+    <!-- 缓存与应用模式 -->
     <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <meta name="browsermode" content="application" /> 
+    
+    <!-- 苹果设备特性 -->
     <meta name="apple-mobile-web-app-capable" content="yes" /> 
     <meta name="apple-touch-fullscreen" content="yes" /> 
     <meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+    
+    <!-- 全屏特性 -->
     <meta name="full-screen" content="yes" />
-    <meta name="browsermode" content="application" />
     <meta name="x5-fullscreen" content="true" />
     <meta name="x5-page-mode" content="app" /> 
+    
+    <!-- 页面信息 -->
     <title>小牛搜索- XiaoNiuss.Top</title> 
     <meta name="keywords" content="信仰圣光.一款业余的导航网站">
     <meta name="description" content="可能是最简洁的搜索导航，给你简单舒爽的搜索体验。">
@@ -21,10 +31,11 @@
     <link rel="stylesheet" href="css/s/settings.css" />
     <link rel="stylesheet" href="css/s/s-custom.css" />
     <link rel="stylesheet" href="css/s/main.css" />
-    <!-- 前置JavaScript -->
-    <script src="js/sousuo/search-module.js"></script>
+    
+    <!-- 前置JavaScript（核心依赖库） -->
     <script src="js/daohangmb/a2jquery1.min.js"></script>
     <script src="js/daohangmb/navigation-utils.js"></script>
+    <script src="js/sousuo/search-module.js"></script>
     <script src="js/sousuo/sousuogn.js"></script>
     <script src="js/dbdhl/navbar.js" defer></script>
 </head> 
@@ -37,12 +48,11 @@
         } 
     </script>
 
-    <!-- 导航面板 -->
+    <!-- 导航面板（JS动态生成内容） -->
     <div class="list closed"> 
-        <ul>
-            <!-- 导航内容将通过JS动态生成 -->
-        </ul> 
+        <ul></ul> 
     </div>
+    
     <!-- 功能按钮区域 -->
     <div id="button-container">
         <div id="menu" class="edge-button bottom-button">
@@ -52,35 +62,28 @@
             <span class="button-text">设置</span>
         </div>
     </div>
-    <!-- 搜索模块容器 (上1/3) -->
-    <div id="search-container">
-        <!-- 搜索模块将由search-module.js动态生成 -->
-    </div>
-    <!-- 导航数据容器 (下2/3) -->
+    
+    <!-- 搜索模块容器（上1/3，JS动态生成） -->
+    <div id="search-container"></div>
+    
+    <!-- 导航数据容器（下2/3，JS动态生成） -->
     <div id="navigation-container">
-        <div class="horizontal-navigation">
-            <!-- 导航内容将通过JS动态生成 -->
-        </div>
+        <div class="horizontal-navigation"></div>
     </div>
+    
     <!-- 页脚 -->
-    <div class="footer">
-            <!-- <div class="site-info">小牛搜索-XiaoNiuSs.Top</div>-->
-    </div>
+    <div class="footer"></div>
+    
     <!-- 背景元素 -->
     <div class="bgo"></div> 
-    <!-- 后置JavaScript -->
+    
+    <!-- 后置JavaScript（功能模块） -->
     <script src="js/1a3sousuo.js"></script> 
     <script src="js/bizhibeij/wallpaper-config.js" defer></script>
     <script src="js/shezhimb/settings.js" defer></script>
     <script src="js/shezhimb/notices.js" defer></script>
-    <!-- 引入新的搜索模块JS -->
-
     <script src="js/fangkuai/block-nav-renderer.js"></script>
     <script src="js/daohangmb/default-nav-data.js"></script>
     <script src="js/daohangmb/sinit-data.js"></script>
 </body>
-
 </html>
-
-
-
