@@ -36,7 +36,7 @@ const BlockNavRenderer = {
         safeData.forEach((category, catIndex) => {
             // 验证分类有效性
             if (!category || typeof category !== 'object') {
-                console.warn('无效的导航分类数据，已跳过', category);
+                console.warn('跳过无效分类数据:', category);
                 return;
             }
             
@@ -44,13 +44,13 @@ const BlockNavRenderer = {
             const categoryBlock = document.createElement('div');
             categoryBlock.className = 'category-block';
             
-            // 创建分类标题
+            // 分类标题
             const titleEl = document.createElement('div');
             titleEl.className = 'category-title';
             titleEl.textContent = category.title || `未命名分类${catIndex + 1}`;
             categoryBlock.appendChild(titleEl);
             
-            // 创建链接容器
+            // 链接容器
             const linksContainer = document.createElement('div');
             linksContainer.className = 'links-container';
             
