@@ -124,7 +124,7 @@
             
             const alertEl = document.createElement('div');
             alertEl.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;background:#ff4444;color:white;border-radius:4px;z-index:9999';
-            alertEl.textContent = '数据加载失败，已使用默认导航数据';
+            alertEl.textContent = '如遇异常Ctrl+F5强制刷新或Ctrl+Shift+R清除缓存';
             document.body.appendChild(alertEl);
             setTimeout(() => alertEl.remove(), 3000);
         });
@@ -137,4 +137,5 @@
     }
 
 })();
+
 
