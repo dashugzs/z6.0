@@ -21,11 +21,9 @@
     <link rel="stylesheet" href="css/s/settings.css" />
     <link rel="stylesheet" href="css/s/s-custom.css" />
     <link rel="stylesheet" href="css/s/main.css" />
-    
     <!-- 前置JavaScript -->
     <script src="js/daohangmb/a2jquery1.min.js"></script>
     <script src="js/daohangmb/navigation-utils.js"></script>
-    <script src="js/sousuo/search-utils.js"></script>
     <script src="js/sousuo/sousuogn.js"></script>
     <script src="js/dbdhl/navbar.js" defer></script>
 </head> 
@@ -44,9 +42,6 @@
             <!-- 导航内容将通过JS动态生成 -->
         </ul> 
     </div>
-
-    <!-- 横幅区域 -->
-
     <!-- 功能按钮区域 -->
     <div id="button-container">
         <div id="menu" class="edge-button bottom-button">
@@ -56,50 +51,29 @@
             <span class="button-text">设置</span>
         </div>
     </div>
-
     <!-- 搜索模块容器 (上1/3) -->
     <div id="search-container">
-        <div id="search" class="s-search">
-            <div id="search-list" class="hide-type-list">
-                <div class="s-type">
-                    <span class="type-text"></span>
-                    <div class="s-type-list animated fadeInUp">
-                        <!-- 由JS动态生成 -->
-                    </div>
-                </div>
-                <!-- 搜索组由JS动态生成 -->
-            </div>
-            <form action="https://www.baidu.com/s?wd=" method="get" target="_blank" id="super-search-fm">
-                <input type="text" id="search-text" placeholder="输入关键字搜索" style="outline:0" />
-                <button type="submit">
-                    <img src="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" alt="搜索图标" style="width: 30px; height: 30px; vertical-align: middle;">
-                </button>
-                <ul id="ul" class="ko"></ul>
-            </form>
-            <input type="checkbox" id="set-search-blank" class="bubble-3" autocomplete="off" style="display:none"/>
-        </div>
+        <!-- 搜索模块将由search-module.js动态生成 -->
     </div>
-
     <!-- 导航数据容器 (下2/3) -->
     <div id="navigation-container">
         <div class="horizontal-navigation">
             <!-- 导航内容将通过JS动态生成 -->
         </div>
     </div>
-
     <!-- 页脚 -->
     <div class="footer">
             <!-- <div class="site-info">小牛搜索-XiaoNiuSs.Top</div>-->
     </div>
-
     <!-- 背景元素 -->
     <div class="bgo"></div> 
-
     <!-- 后置JavaScript -->
     <script src="js/1a3sousuo.js"></script> 
     <script src="js/bizhibeij/wallpaper-config.js" defer></script>
     <script src="js/shezhimb/settings.js" defer></script>
     <script src="js/shezhimb/notices.js" defer></script>
+    <!-- 引入新的搜索模块JS -->
+    <script src="js/sousuo/search-module.js"></script>
 
     <!-- 方块导航渲染器 -->
     <script>
@@ -232,7 +206,7 @@
     <script>
         // 数据加载与处理
         (function() {
-            const WORKER_URL = "js/shuju/sshuju.js";
+            const WORKER_URL = "https://dhsssj.xnss.fun";
             const MAX_RETRIES = 3;
             
             // 备份与恢复数据
@@ -369,3 +343,4 @@
 </body>
 
 </html>
+
