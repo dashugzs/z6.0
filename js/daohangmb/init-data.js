@@ -1,6 +1,6 @@
 // 数据加载与处理https://dhsssj.xnss.fun/js/shuju/sshuju.js
 (function() {
-    const WORKER_URL = "https://dhsssj.xnss.fun";
+    const WORKER_URL = " ";
     const MAX_RETRIES = 3;
     
     // 备份与恢复数据
@@ -137,3 +137,4 @@
     }
 
 })();
+
