@@ -166,24 +166,13 @@ const SearchUtils = {
    * 初始化搜索功能
    */
   init: function() {
-    // 延迟初始化，等待远程数据加载
-    const checkData = setInterval(() => {
-      if (typeof window.searchData !== 'undefined' && Array.isArray(window.searchData) && window.searchData.length > 0) {
-        clearInterval(checkData);
-        this.renderSearchOptions();
-        this.setupEventListeners();
-      }
-    }, 100); // 每100ms检查一次数据是否加载完成
-    
-    // 超时保护（5秒后如果还没数据则使用默认结构）
-    setTimeout(() => {
-      if (!window.searchData || !Array.isArray(window.searchData) || window.searchData.length === 0) {
-        clearInterval(checkData);
-        console.warn('搜索数据未加载，使用默认UI结构');
-        this.renderSearchOptions(); // 即使没有数据也渲染基础UI
-        this.setupEventListeners();
-      }
-    }, 5000);
+ // 直接使用本地数据初始化
+  if (typeof window.searchData !== 'undefined' && Array.isArray(window.searchData) && window.searchData.length > 0) {
+    this.renderSearchOptions();
+    this.setupEventListeners();
+  } else {
+    console.warn('未找到有效的本地搜索数据');
+  }
   }
 };
 
