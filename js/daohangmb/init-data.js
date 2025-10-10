@@ -1,6 +1,6 @@
 // 数据加载与处理https://dhsssj.xnss.fun/js/shuju/sshuju.js
 (function() {
-    const WORKER_URL = "https://dhsssj.xnss.fun";
+    const WORKER_URL = "";
     const MAX_RETRIES = 3;
     
     // 备份与恢复数据
@@ -97,7 +97,7 @@
     try {
         fetchDataWithRetry().then(data => {
             window.navigationData = data.navigationData;
-            window.searchData = data.searchData;
+
             console.log('导航数据加载成功，共', window.navigationData.length, '个分类');
             
             // 使用方块导航渲染器
@@ -112,7 +112,7 @@
             
             const backupData = getBackupData();
             window.navigationData = backupData.navigationData;
-            window.searchData = backupData.searchData;
+
             
             // 使用方块导航渲染器
             BlockNavRenderer.render(window.navigationData);
@@ -132,7 +132,7 @@
         console.error('初始化数据处理失败:', error);
         // 使用默认数据作为最后的保障
         window.navigationData = window.DEFAULT_NAV_DATA;
-        window.searchData = [];
+
         BlockNavRenderer.render(window.navigationData);
     }
 
