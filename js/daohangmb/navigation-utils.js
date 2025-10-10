@@ -86,6 +86,12 @@ const NavigationUtils = {
    * 初始化导航
    */
   init: function() {
+    // 尝试从全局变量获取远程加载的数据
+    if (typeof window.navigationData !== 'undefined' && Array.isArray(window.navigationData)) {
+      this.generateNavigation('.list ul', window.navigationData);
+      return;
+    }
+
     // 双重检查导航数据
     if (typeof navigationData !== 'undefined') {
       if (Array.isArray(navigationData)) {
@@ -93,21 +99,13 @@ const NavigationUtils = {
       } else {
         console.error('导航数据格式错误，应为数组');
         // 使用默认数据
-        this.generateNavigation('.list ul', [
-          {
-            title: "默认导航",
-            links: [
-              { name: "百度", url: "https://www.baidu.com", rel: "nofollow", target: "_blank" },
-              { name: "谷歌", url: "https://www.google.com", rel: "nofollow", target: "_blank" }
-            ]
-          }
-        ]);
+        this.useDefaultData();
       }
     } else {
       console.warn('导航数据未加载，尝试从缓存获取');
       // 尝试从本地缓存获取
       try {
-        const navBackup = localStorage.getItem('navDataBackup');
+        const navBackup = localStorage.getItem('navBackupData'); // 使用与主数据相同的缓存键
         if (navBackup) {
           const backupData = JSON.parse(navBackup);
           if (Array.isArray(backupData)) {
@@ -121,16 +119,24 @@ const NavigationUtils = {
       }
       
       // 使用默认数据作为最后的 fallback
-      this.generateNavigation('.list ul', [
-        {
-          title: "默认导航",
-          links: [
-            { name: "百度", url: "https://www.baidu.com", rel: "nofollow", target: "_blank" },
-            { name: "谷歌", url: "https://www.google.com", rel: "nofollow", target: "_blank" }
-          ]
-        }
-      ]);
+      this.useDefaultData();
     }
+  },
+  
+  /**
+   * 使用默认导航数据
+   */
+  useDefaultData: function() {
+    const defaultData = typeof DEFAULT_NAV_DATA !== 'undefined' ? DEFAULT_NAV_DATA : [
+      {
+        title: "默认导航",
+        links: [
+          { name: "百度", url: "https://www.baidu.com", rel: "nofollow", target: "_blank" },
+          { name: "谷歌", url: "https://www.google.com", rel: "nofollow", target: "_blank" }
+        ]
+      }
+    ];
+    this.generateNavigation('.list ul', defaultData);
   },
   
   /**
@@ -138,21 +144,21 @@ const NavigationUtils = {
    * @param {Object} category - 新分类对象
    */
   addCategory: function(category) {
-    if (typeof navigationData !== 'undefined' && category && category.title) {
+    if (typeof window.navigationData !== 'undefined' && category && category.title) {
       // 确保导航数据是数组
-      if (!Array.isArray(navigationData)) {
-        navigationData = [];
+      if (!Array.isArray(window.navigationData)) {
+        window.navigationData = [];
       }
       // 验证分类数据
       const safeCategory = {
         title: category.title,
         links: Array.isArray(category.links) ? category.links : []
       };
-      navigationData.push(safeCategory);
-      this.generateNavigation('.list ul', navigationData);
+      window.navigationData.push(safeCategory);
+      this.generateNavigation('.list ul', window.navigationData);
       // 更新缓存
       try {
-        localStorage.setItem('navDataBackup', JSON.stringify(navigationData));
+        localStorage.setItem('navBackupData', JSON.stringify(window.navigationData));
         localStorage.setItem('navDataTimestamp', Date.now().toString());
       } catch (e) {
         console.error('添加分类后更新缓存失败:', e);
@@ -172,7 +178,7 @@ const NavigationUtils = {
     this.generateNavigation('.list ul', safeData);
     // 更新缓存
     try {
-      localStorage.setItem('navDataBackup', JSON.stringify(safeData));
+      localStorage.setItem('navBackupData', JSON.stringify(safeData));
       localStorage.setItem('navDataTimestamp', Date.now().toString());
     } catch (e) {
       console.error('更新导航数据后更新缓存失败:', e);
@@ -182,5 +188,20 @@ const NavigationUtils = {
 
 // 页面加载完成后初始化导航
 document.addEventListener('DOMContentLoaded', function() {
-  NavigationUtils.init();
+  // 等待远程数据加载完成后再初始化
+  const checkDataLoaded = setInterval(() => {
+    if (typeof window.navigationData !== 'undefined') {
+      clearInterval(checkDataLoaded);
+      NavigationUtils.init();
+    }
+  }, 100);
+  
+  // 超时保护 - 如果5秒后还没有数据则直接初始化
+  setTimeout(() => {
+    clearInterval(checkDataLoaded);
+    if (typeof window.navigationData === 'undefined') {
+      console.warn('远程数据加载超时，使用备用方案初始化导航');
+      NavigationUtils.init();
+    }
+  }, 5000);
 });
