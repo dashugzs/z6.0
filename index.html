@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-    <script type="text/javascript"> if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) { window.location.href = "m.html"; } </script>
 <head> 
     <meta charset="UTF-8" /> 
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
@@ -16,17 +15,29 @@
     <meta name="keywords" content="信仰圣光.一款业余的导航网站">
     <meta name="description" content="可能是最简洁的搜索导航，给你简单舒爽的搜索体验。">
     <link rel="shortcut icon" href="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" type="image/png" /> 
-    <link rel="stylesheet" href="css/sa1.css" />  
-    <link rel="stylesheet" href="css/settings.css" />
-    <link rel="stylesheet" href="css/s-custom.css" />
-    <link rel="stylesheet" href="css/main.css" />
-    <script src="js/a2jquery1.min.js"></script>
-    <script src="js/navigation-utils.js"></script>
-    <script src="js/search-utils.js"></script>
-    <!-- 引入新的方块导航渲染工具 -->
-    <script src="js/block-nav-renderer.js"></script>
-    <!-- 新增搜索表单处理JS -->
-    <script src="js/msearch-form-handler.js"></script>
+    
+    <!-- 样式表引入 -->
+    <link rel="stylesheet" href="css/s/sa1.css" />  
+    <link rel="stylesheet" href="css/s/settings.css" />
+    <link rel="stylesheet" href="css/s/s-custom.css" />
+    <link rel="stylesheet" href="css/s/main.css" />
+    
+    <!-- 前置JavaScript -->
+    <script src="js/daohangmb/a2jquery1.min.js"></script>
+    <script src="js/daohangmb/navigation-utils.js"></script>
+    <script src="js/sousuo/search-utils.js"></script>
+    <script src="js/sousuo/sousuogn.js"></script>
+    <script src="js/dbdhl/navbar.js" defer></script>
+</head> 
+
+<body>
+    <!-- 移动设备检测与跳转 -->
+    <script type="text/javascript"> 
+        if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) { 
+            window.location.href = "m.html"; 
+        } 
+    </script>
+
     <!-- 导航面板 -->
     <div class="list closed"> 
         <ul>
@@ -34,128 +45,10 @@
         </ul> 
     </div>
 
+    <!-- 横幅区域 -->
 
-</head> 
-<link rel="stylesheet" href="js/dhl/css/ai.css">
-<div class="mod-header">
-  <div class="cat">
-    <div class="cat-box" data-cat="engine">
-      <div class="layout">
-        <div class="cat-group">
-          <h3 class="cat-tit"><div class="cat-ico"><i class="ico-lan"></i></div>小游戏</h3>
-          <ul class="cat-list">
-            <li class="cat-item">
-              <div class="cat-item-main">
-                <span>模拟器</span>
-              </div>
-              <div class="cat-item-sub">
-                <div class="cat-item-row">
-                  <a href="https://fc.xiaoniuss.top/"target="_blank">FC模拟器<i class="cat-tag is-beta"></i></a>
-                </div>
-              </div>
-            </li>
-            <li class="cat-item">
-              <div class="cat-item-main">
-                <span>棋牌</span>
-              </div>
-              <div class="cat-item-sub">
-                <div class="cat-item-row">
-                  <a href="https://c.xiaoniuss.top/wzq/ "target="_blank">五子棋</a>
-                  <a href="https://c.xiaoniuss.top/xq/"target="_blank">象棋<i class="cat-tag is-new"></i></a>
-                  <a href="https://c.xiaoniuss.top/zhizhu/"target="_blank">蜘蛛纸牌<i class="cat-tag is-new"></i></a>
-                </div>
-              </div>
-            </li>
-            <li class="cat-item">
-              <div class="cat-item-main">
-                <a href="https://c.xiaoniuss.top/2048/"target="_blank">2048<i class="cat-tag is-hot"></i></a>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="cat-group">
-          <h3 class="cat-tit"><div class="cat-ico"><i class="ico-image"></i></div>小插件</h3>
-          <ul class="cat-list">
-            <li class="cat-item">
-              <div class="cat-item-main">
-                <span>开发者工具<i class="cat-tag is-hot"></i></span>
-              </div>
-              <div class="cat-item-sub">
-                <div class="cat-item-row">
-                  <a href="https://c.xiaoniuss.top/ys/"target="_blank">色值选择器</a>
-                  <a href="https://c.xiaoniuss.top/bjq/"target="_blank">代码编辑器</a>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="cat-group">
-          <h3 class="cat-tit"><div class="cat-ico"><i class="ico-voice"></i></div>导航产品</h3>
-          <ul class="cat-list">
-            <li class="cat-item">
-              <div class="cat-item-main">
-                <span>行业运营</span>
-              </div>
-              <div class="cat-item-sub">
-                <div class="cat-item-row">
-                  <a href="https://xydh.fun/guoxiaohan"target="_blank">运营官1号</a>
-                  <a href="https://xydh.fun/dianshang"target="_blank">运营官<i class="cat-tag is-new"></i></a>
-                  <a href="https://b.xiaoniuss.top"target="_blank">小牛书签<i class="cat-tag is-new"></i></a>
-                </div>
-              </div>
-            </li>
-            <li class="cat-item">
-              <div class="cat-item-main">
-                <a href="https://xiaoniuss.top"target="_blank">小牛搜索<i class="cat-tag is-new"></i></a>
-              </div>
-            </li>
-            <li class="cat-item">
-              <div class="cat-item-main">
-                <span>小牛搜索简洁版(即将开放)</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="layout clearfix">
-    <a href="" class="mod-header-logo"></a>
-
-    <div class="mod-header-nav">
-      <ul id="jmod-header-nav">
-        <li id="nav-header-serv" class="top-cat hassub" data-cat="engine">
-          <h2><a href="javascript:void(0);">旗下产品</a><i class="top-cat-arrow"></i></h2>
-        </li><!---->
-        <li id="nav-header-accelerator" class="top-cat"><h2><a href="https://xiaoniuss.top/"target="_blank">主站首页</a></h2></li>
-        <li id="nav-header-info" class="top-cat"><h2><a href="https://y.xiaoniuss.top/"target="_blank">小游戏平台</a></h2></li>
-        <li id="nav-header-hr" class="top-cat"><h2><a href="https://v.xiaoniuss.top/"target="_blank">vip视频解析</a></h2></li>
-        <li id="nav-header-join" class="top-cat"><h2><a href="https://xydh.fun/guoxiaohan"target="_blank">运营官1号</a></h2></li>
-        <li id="nav-header-doc" class="top-cat"><h2><a href="https://c.xiaoniuss.top/"target="_blank">小插件</a></h2></li>
-        <li id="nav-header-doc" class="top-cat"><h2><a href="https://b.xiaoniuss.top/zhuye"target="_blank">网址发布页</a></h2></li>
-      </ul>
-      <i class="jmod-nav-slider slider hidden" style="transform: translateX(0px);"></i>
-    </div>
-
-    <div class="mod-header-user">
-      <a href="https://support.qq.com/products/336749" target="_blank" class="try jmod-header-try">留言板</a>
-      <a href="https://support.qq.com/products/336749" target="_blank" class="console jmod-header-console hidden">留言板</a>
-    </div>
-  </div>
-
-</div>
-
-  <div class="banner jmod_banner">
-    <div class="ban cur" style="background-color: rgba(30, 31, 33, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); height: 62px;">
-    </div>
-  </div>
-<script src="js/dhl/js/jquery.min.js"></script>
-<script src="js/dhl/js/ai.js"></script>
-<body>
-    <!-- 仅保留设置按钮容器及设置按钮 -->
+    <!-- 功能按钮区域 -->
     <div id="button-container">
-
         <div id="menu" class="edge-button bottom-button">
             <span class="button-text">导航</span>
         </div>
@@ -166,7 +59,6 @@
 
     <!-- 搜索模块容器 (上1/3) -->
     <div id="search-container">
-        <!-- 搜索模块 - 直接从index.html复制 -->
         <div id="search" class="s-search">
             <div id="search-list" class="hide-type-list">
                 <div class="s-type">
@@ -179,9 +71,9 @@
             </div>
             <form action="https://www.baidu.com/s?wd=" method="get" target="_blank" id="super-search-fm">
                 <input type="text" id="search-text" placeholder="输入关键字搜索" style="outline:0" />
-<button type="submit">
-  <!-- 替换原图标为图片链接，alt属性用于图片加载失败时的提示文字 -->
-  <img src="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" alt="输入图标" style="width: 30px; height: 30px; vertical-align: middle;">
+                <button type="submit">
+                    <img src="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" alt="搜索图标" style="width: 30px; height: 30px; vertical-align: middle;">
+                </button>
                 <ul id="ul" class="ko"></ul>
             </form>
             <input type="checkbox" id="set-search-blank" class="bubble-3" autocomplete="off" style="display:none"/>
@@ -195,18 +87,23 @@
         </div>
     </div>
 
+    <!-- 页脚 -->
     <div class="footer">
-        <!--<div class="site-info">小牛搜索-XiaoNiuSs.Top</div>-->
+            <!-- <div class="site-info">小牛搜索-XiaoNiuSs.Top</div>-->
     </div>
 
-    <script src="js/a3sousuo.js"></script> 
-    <script src="js/wallpaper-config.js" defer></script>
-    <script src="js/settings.js" defer></script>
-    <script src="js/notices.js" defer></script>
+    <!-- 背景元素 -->
+    <div class="bgo"></div> 
 
-    <!-- 新的方块导航渲染器 -->
+    <!-- 后置JavaScript -->
+    <script src="js/1a3sousuo.js"></script> 
+    <script src="js/bizhibeij/wallpaper-config.js" defer></script>
+    <script src="js/shezhimb/settings.js" defer></script>
+    <script src="js/shezhimb/notices.js" defer></script>
+
+    <!-- 方块导航渲染器 -->
     <script>
-        // 方块导航渲染工具 - 专门处理m.html的方块式导航面板渲染
+        // 方块导航渲染工具 - 专门处理方块式导航面板渲染
         const BlockNavRenderer = {
             /**
              * 渲染方块式导航面板
@@ -301,6 +198,7 @@
         };
     </script>
 
+    <!-- 默认导航数据 -->
     <script>
         // 默认导航数据 - 确保数据安全
         const DEFAULT_NAV_DATA = [
@@ -324,65 +222,51 @@
             {
                 title: "工具导航",
                 links: [
-                    { name: "翻译", url: "https://fanyi.baidu.com", rel: "nofollow", target: "_blank" },
-                    { name: "地图", url: "https://map.baidu.com", rel: "nofollow", target: "_blank" },
-                    { name: "天气", url: "https://tianqi.baidu.com", rel: "nofollow", target: "_blank" },
-                    { name: "快递", url: "https://www.kuaidi100.com", rel: "nofollow", target: "_blank" },
-                    { name: "日历", url: "https://www.rili.com", rel: "nofollow", target: "_blank" },
-                    { name: "计算器", url: "https://www.jisuanqi.com", rel: "nofollow", target: "_blank" },
-                    { name: "词典", url: "https://www.zdic.net", rel: "nofollow", target: "_blank" }
+                    { name: "翻译", url: "https://fanyi.baidu.com", rel: "nofollow", target: "_blank" }
                 ]
             }
         ];
+    </script>
 
-        function getBackupData() {
-            try {
-                const navBackup = localStorage.getItem('navDataBackup');
-                const searchBackup = localStorage.getItem('searchDataBackup');
-                // 备份数据验证
-                const navData = navBackup ? JSON.parse(navBackup) : [];
-                return {
-                    navigationData: Array.isArray(navData) ? navData : [],
-                    searchData: searchBackup ? JSON.parse(searchBackup) : []
-                };
-            } catch (e) {
-                console.error('读取备份数据失败:', e);
-                return { navigationData: [], searchData: [] };
-            }
-        }
-
-        function saveBackupData(data) {
-            try {
-                if (data.navigationData) {
-                    localStorage.setItem('navDataBackup', JSON.stringify(data.navigationData));
-                }
-                if (data.searchData) {
-                    localStorage.setItem('searchDataBackup', JSON.stringify(data.searchData));
-                }
-            } catch (e) {
-                console.error('保存备份数据失败:', e);
-            }
-        }
-
-        // 增强版数据加载逻辑：增加重试、缓存和备份机制
-        (async function loadRemoteData() {
-            const API_URL = 'js/sshuju.js';
-            const MAX_RETRIES = 2; // 最大重试次数
-            let retryCount = 0;
-
-            async function fetchDataWithRetry() {
+    <!-- 数据加载与初始化逻辑 -->
+    <script>
+        // 数据加载与处理
+        (function() {
+            const WORKER_URL = "js/shuju/sshuju.js";
+            const MAX_RETRIES = 3;
+            
+            // 备份与恢复数据
+            function saveBackupData(data) {
                 try {
-                    // 使用AbortController设置超时
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 8000);
-                    
-                    const response = await fetch(API_URL, {
-                        signal: controller.signal,
-                        cache: 'no-store' // 禁用缓存，确保获取最新数据
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    
+                    localStorage.setItem('navBackupData', JSON.stringify(data));
+                } catch (e) {
+                    console.warn('无法保存备份数据到localStorage:', e);
+                }
+            }
+            
+            function getBackupData() {
+                try {
+                    const backup = localStorage.getItem('navBackupData');
+                    if (backup) {
+                        const data = JSON.parse(backup);
+                        return {
+                            navigationData: Array.isArray(data.navigationData) ? data.navigationData : DEFAULT_NAV_DATA,
+                            searchData: Array.isArray(data.searchData) ? data.searchData : []
+                        };
+                    }
+                } catch (e) {
+                    console.warn('无法从localStorage获取备份数据:', e);
+                }
+                return {
+                    navigationData: DEFAULT_NAV_DATA,
+                    searchData: []
+                };
+            }
+            
+            // 带重试机制的数据获取
+            async function fetchDataWithRetry(retryCount = 0) {
+                try {
+                    const response = await fetch(WORKER_URL);
                     if (!response.ok) {
                         throw new Error(`HTTP错误: ${response.status}`);
                     }
@@ -413,30 +297,16 @@
                                         url: link?.url || '#',
                                         rel: link?.rel || 'nofollow',
                                         target: link?.target || '_blank'
-                                    })) 
-                                    : []
-                            })) 
-                            : DEFAULT_NAV_DATA,
-                            
-                        searchData: Array.isArray(appData.searchData)
-                            ? appData.searchData.map(cat => ({
-                                id: cat?.id || `group-${Date.now()}`,
-                                title: cat?.title || '未命名搜索分类',
-                                options: Array.isArray(cat?.options)
-                                    ? cat.options.map(opt => ({
-                                        id: opt?.id || `opt-${Date.now()}`,
-                                        value: opt?.value || '#',
-                                        placeholder: opt?.placeholder || '请输入搜索内容',
-                                        name: opt?.name || '未命名搜索',
-                                        checked: opt?.checked || false
                                     }))
                                     : []
                             }))
-                            : []
+                            : [],
+                        searchData: appData.searchData || []
                     };
                     
-                    // 确保导航数据至少有默认值
-                    if (!Array.isArray(cleanData.navigationData) || cleanData.navigationData.length === 0) {
+                    // 如果导航数据为空，使用默认数据
+                    if (cleanData.navigationData.length === 0) {
+                        console.warn('远程导航数据为空，使用默认数据');
                         cleanData.navigationData = DEFAULT_NAV_DATA;
                     }
                     
@@ -447,57 +317,55 @@
                     if (retryCount < MAX_RETRIES) {
                         retryCount++;
                         console.log(`数据加载失败，正在重试（${retryCount}/${MAX_RETRIES}）:`, error);
-                        return fetchDataWithRetry();
+                        return fetchDataWithRetry(retryCount);
                     }
                     throw error;
                 }
             }
 
             try {
-                const data = await fetchDataWithRetry();
-                
-                window.navigationData = data.navigationData;
-                window.searchData = data.searchData;
-                console.log('导航数据加载成功，共', window.navigationData.length, '个分类');
-                
-                // 使用新的方块导航渲染器
-                BlockNavRenderer.render(window.navigationData);
-                
-                if (window.SearchUtils) {
-                    SearchUtils.renderSearchOptions();
-                    SearchUtils.setupEventListeners();
-                }
-                
+                fetchDataWithRetry().then(data => {
+                    window.navigationData = data.navigationData;
+                    window.searchData = data.searchData;
+                    console.log('导航数据加载成功，共', window.navigationData.length, '个分类');
+                    
+                    // 使用方块导航渲染器
+                    BlockNavRenderer.render(window.navigationData);
+                    
+                    if (window.SearchUtils) {
+                        SearchUtils.renderSearchOptions();
+                        SearchUtils.setupEventListeners();
+                    }
+                }).catch(error => {
+                    console.error('所有加载尝试失败，使用备份数据:', error);
+                    
+                    const backupData = getBackupData();
+                    window.navigationData = backupData.navigationData;
+                    window.searchData = backupData.searchData;
+                    
+                    // 使用方块导航渲染器
+                    BlockNavRenderer.render(window.navigationData);
+                    
+                    if (window.SearchUtils) {
+                        SearchUtils.renderSearchOptions();
+                        SearchUtils.setupEventListeners();
+                    }
+                    
+                    const alertEl = document.createElement('div');
+                    alertEl.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;background:#ff4444;color:white;border-radius:4px;z-index:9999';
+                    alertEl.textContent = '数据加载失败，已使用默认导航数据';
+                    document.body.appendChild(alertEl);
+                    setTimeout(() => alertEl.remove(), 3000);
+                });
             } catch (error) {
-                console.error('所有加载尝试失败，使用备份数据:', error);
-                
-                const backupData = getBackupData();
-                window.navigationData = backupData.navigationData;
-                window.searchData = backupData.searchData;
-                
-                // 使用新的方块导航渲染器
+                console.error('初始化数据处理失败:', error);
+                // 使用默认数据作为最后的保障
+                window.navigationData = DEFAULT_NAV_DATA;
+                window.searchData = [];
                 BlockNavRenderer.render(window.navigationData);
-                
-                if (window.SearchUtils) {
-                    SearchUtils.renderSearchOptions();
-                    SearchUtils.setupEventListeners();
-                }
-                
-                const alertEl = document.createElement('div');
-                alertEl.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;background:#ff4444;color:white;border-radius:4px;z-index:9999';
-                alertEl.textContent = '数据加载失败，已使用默认导航数据';
-                document.body.appendChild(alertEl);
-                setTimeout(() => alertEl.remove(), 3000);
             }
         })();
     </script>
-
-    <div class="bgo"></div> 
 </body>
 
 </html>
-
-
-
-
-
