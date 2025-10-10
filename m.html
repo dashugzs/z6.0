@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head> 
+    <meta charset="UTF-8" /> 
+    <!-- 视图与设备适配 -->
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    <meta name="apple-touch-fullscreen" content="yes" /> 
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+    <meta name="full-screen" content="yes" />
+    <meta name="browsermode" content="application" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="x5-page-mode" content="app" /> 
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+
+    <!-- 网站信息 -->
+    <title>小牛搜索- XiaoNiuss.Top</title> 
+    <meta name="keywords" content="信仰圣光.一款业余的导航网站">
+    <meta name="description" content="可能是最简洁的搜索导航，给你简单舒爽的搜索体验。">
+    <link rel="shortcut icon" href="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" type="image/png" /> 
+
+    <!-- 核心样式表 -->
+    <link rel="stylesheet" href="css/s/sa1.css" />  
+    <link rel="stylesheet" href="css/s/settings.css" />
+    <link rel="stylesheet" href="css/s/s-custom.css" />
+    <link rel="stylesheet" href="css/s/main.css" />
+
+    <!-- 前置脚本（基础依赖） -->
+    <script src="js/daohangmb/a2jquery1.min.js"></script>
+    <script src="js/daohangmb/navigation-utils.js"></script>
+    <script src="js/sousuo/sousuogn.js"></script>
+</head> 
+
+<body>
+    <!-- 导航面板（动态生成内容） -->
+    <div class="list closed"> 
+        <ul></ul> 
+    </div>
+
+    <!-- 功能按钮区 -->
+    <div id="button-container">
+        <div id="menu" class="edge-button bottom-button">
+            <span class="button-text">导航</span>
+        </div>
+        <div id="settings-button" class="edge-button bottom-button">
+            <span class="button-text">设置</span>
+        </div>
+    </div>
+
+    <!-- 搜索模块容器 -->
+    <div id="search-container"></div>
+
+    <!-- 页脚 -->
+    <div class="footer"></div>
+
+    <!-- 背景元素 -->
+    <div class="bgo"></div> 
+
+    <!-- 功能脚本（按执行顺序排列） -->
+    <script src="js/1a3sousuo.js"></script> 
+    <script src="js/sousuo/search-module.js"></script>
+    <script src="js/daohangmb/default-nav-data.js"></script>
+    <script src="js/daohangmb/init-data.js"></script>
+    <script src="js/bizhibeij/wallpaper-config.js" defer></script>
+    <script src="js/shezhimb/settings.js" defer></script>
+    <script src="js/shezhimb/notices.js" defer></script>
+</body>
+</html>
