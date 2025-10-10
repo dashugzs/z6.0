@@ -206,7 +206,8 @@ const searchData = [
     ]
   }
 ];
-
+// 将搜索数据暴露到全局
+window.searchData = searchData;
 // 搜索工具类
 const SearchUtils = {
   /**
@@ -386,4 +387,5 @@ const SearchUtils = {
 // 关键：页面加载完成后初始化搜索模块
 document.addEventListener('DOMContentLoaded', () => {
   SearchUtils.renderSearchModule();
+
 });
