@@ -279,3 +279,35 @@
         margin-top: 50px;
     }
 }
+.setting-btn.active {
+    background: #3F9DFF;
+    color: white;
+}
+
+.dark-mode .setting-btn.active {
+    background: #3F9DFF;
+    color: white;
+}
+/* 数据源管理按钮布局优化 */
+.half-width-btn {
+    flex: 1; /* 各占一半宽度 */
+}
+
+.grid-button-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 每行5个按钮 */
+    gap: 8px; /* 按钮间距 */
+}
+
+.grid-btn {
+    padding: 6px 0; /* 适当调整按钮内边距 */
+    font-size: 13px; /* 调整字体大小 */
+    text-align: center;
+}
+
+/* 确保选中状态在刷新后保持 */
+.setting-btn.data-source-btn.active {
+    background: #3F9DFF;
+    color: white;
+    box-shadow: 0 2px 5px rgba(63, 157, 255, 0.3);
+}
