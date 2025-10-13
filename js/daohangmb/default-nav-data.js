@@ -1,7 +1,7 @@
 // 默认导航数据 - 确保数据安全
 window.DEFAULT_NAV_DATA = [
         {
-            title: "本地数据",
+            title: "默认数据",
             links: [
                 { name: "小牛搜索", url: "https://xiaoniuss.top/", rel: "nofollow", target: "_blank" },
                 { name: "小牛书签", url: "https://b.xiaoniuss.top/", rel: "nofollow", target: "_blank" },
@@ -342,4 +342,5 @@ window.DEFAULT_NAV_DATA = [
             ]
 
     }
+
 ];
