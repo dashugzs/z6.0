@@ -128,23 +128,26 @@ function createSettingsElements() {
             </div>
         </div>
 
-        <!-- 新增数据源管理部分 -->
-        <div class="settings-section">
-            <h3>数据源管理</h3>
-            <div class="setting-buttons">
-                <button class="setting-btn" id="data-source-default">默认</button>
-                <button class="setting-btn" id="data-source-local">本地</button>
-                <button class="setting-btn" id="data-source-template">模板</button>
-            </div>
-            <div style="margin: 10px 0;">
-                <input type="text" id="custom-data-url" placeholder="输入接口链接" style="width: 100%; padding: 8px; box-sizing: border-box;">
-            </div>
-            <div style="text-align: center; margin: 10px 0;">
-                <button class="setting-btn" id="apply-data-url">应用链接数据</button>
-            </div>
-            <input type="file" id="local-data-file" accept=".js" style="display: none;">
-        </div>
+<div class="settings-section">
+    <h3>数据源管理</h3>
 
+    <div style="margin: 10px 0;">
+        <input type="text" id="custom-data-url" placeholder="输入接口链接" style="width: 100%; padding: 8px; box-sizing: border-box;">
+    </div>
+<div style="margin: 10px 0; display: flex; gap: 10px;">
+    <button class="setting-btn half-width-btn" id="apply-data-url">应用链接数据</button>
+    <button class="setting-btn data-source-btn half-width-btn" data-source="template" id="data-source-template">本地数据模板</button>
+</div>
+<div class="setting-buttons grid-button-container">
+    <button class="setting-btn data-source-btn grid-btn" data-source="default" id="data-source-default">默认</button>
+    <button class="setting-btn data-source-btn grid-btn" data-source="local" id="data-source-local">本地</button>
+    <button class="setting-btn data-source-btn grid-btn" data-source="cloud" id="data-source-cloud">云端</button>
+    <button class="setting-btn data-source-btn grid-btn" data-source="hot" id="data-source-hot">热门</button>
+    <button class="setting-btn data-source-btn grid-btn" data-source="ecommerce" id="data-source-ecommerce">电商</button>
+    <button class="setting-btn data-source-btn grid-btn" data-source="dev" id="data-source-dev">开发</button>
+</div>
+    <input type="file" id="local-data-file" accept=".js" style="display: none;">
+</div>
         <div class="settings-section">
             <h3>壁纸设置</h3>
             <div class="setting-buttons">
