@@ -1,6 +1,6 @@
 // 数据加载与处理https://dhsssj.xnss.fun/js/shuju/sshuju.js
 (function() {
-let WORKER_URL = "https://dhsssj.xnss.fun";
+let WORKER_URL = "";
 try {
     const saved = localStorage.getItem('dataSourceSettings');
     if (saved) {
@@ -151,6 +151,7 @@ try {
     }
 
 })();
+
 
 
 
