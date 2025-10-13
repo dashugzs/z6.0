@@ -1,0 +1,300 @@
+// 数据源管理功能
+document.addEventListener('DOMContentLoaded', function() {
+    // 初始化数据源管理事件监听
+    initDataSourceListeners();
+    
+    // 加载保存的数据源设置
+    loadSavedDataSource();
+});
+
+// 初始化数据源管理事件监听
+function initDataSourceListeners() {
+    // 默认数据源按钮
+// 修改后
+document.getElementById('data-source-default').addEventListener('click', function(e) {
+    e.stopPropagation();
+    setDataSource('default');
+    document.getElementById('custom-data-url').value = '';
+    
+    // 清除缓存的导航数据
+    localStorage.removeItem('navBackupData');
+    
+    // 重新加载默认数据
+    const defaultData = {
+        navigationData: window.DEFAULT_NAV_DATA,
+        searchData: []
+    };
+    saveBackupData(defaultData);
+    updateNavigationUI(defaultData);
+    
+    // 新增：强制重新渲染导航
+    if (window.BlockNavRenderer) {
+        BlockNavRenderer.render(defaultData.navigationData);
+    }
+    if (window.SearchUtils) {
+        SearchUtils.renderSearchOptions();
+    }
+});
+    
+    // 本地文件按钮
+    document.getElementById('data-source-local').addEventListener('click', function(e) {
+        e.stopPropagation();
+        document.getElementById('local-data-file').click();
+    });
+    
+    // 本地数据模板下载按钮
+    document.getElementById('data-source-template').addEventListener('click', function(e) {
+        e.stopPropagation();
+        downloadDataSourceTemplate();
+    });
+    
+    // 本地文件上传处理
+    document.getElementById('local-data-file').addEventListener('change', function(e) {
+        e.stopPropagation();
+        const file = e.target.files[0];
+        if (file) {
+            if (file.name !== ' .js') {
+                alert('请上传. js文件');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const content = event.target.result;
+                    localStorage.setItem('localDataSourceContent', content);
+                    setDataSource('local');
+                    reloadNavigationDataFromLocalFile(content);
+                } catch (error) {
+                    console.error('解析本地数据文件失败:', error);
+                    alert('文件格式错误，请检查文件内容');
+                }
+            };
+            reader.readAsText(file);
+        }
+    });
+    
+    // 应用链接接口按钮
+document.getElementById('apply-data-url').addEventListener('click', function(e) {
+    e.stopPropagation();
+    let url = document.getElementById('custom-data-url').value.trim();
+    if (url) {
+        // 自动添加http/https前缀
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+            document.getElementById('custom-data-url').value = url;
+        }
+        setDataSource('custom', url);
+        reloadNavigationData(url);
+    } else {
+        alert('请输入接口链接');
+    }
+});
+}
+
+// 设置数据源类型
+function setDataSource(type, url = '') {
+    const data = {
+        type: type,
+        url: url
+    };
+    localStorage.setItem('dataSourceSettings', JSON.stringify(data));
+}
+
+// 加载保存的数据源设置
+function loadSavedDataSource() {
+    try {
+        const saved = localStorage.getItem('dataSourceSettings');
+        if (saved) {
+            const data = JSON.parse(saved);
+            if (data.type === 'custom' && data.url) {
+                document.getElementById('custom-data-url').value = data.url;
+            }
+        }
+    } catch (error) {
+        console.error('加载保存的数据源设置失败:', error);
+    }
+}
+
+// 下载数据源模板文件
+function downloadDataSourceTemplate() {
+    const templateUrl = 'js/daohangmb/shuju.js';
+    const a = document.createElement('a');
+    a.href = templateUrl;
+    a.download = 'shuju.js';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+// 从本地文件重新加载导航数据
+function reloadNavigationDataFromLocalFile(content) {
+    try {
+        const jsonStr = content.replace(/^const\s+appData\s*=\s*/, '').replace(/;$/, '');
+        const appData = JSON.parse(jsonStr);
+        
+        if (!Array.isArray(appData.navigationData)) {
+            throw new Error('导航数据不是数组');
+        }
+        
+        const cleanData = {
+            navigationData: appData.navigationData
+                ? appData.navigationData.map(cat => ({
+                    title: cat?.title || '未命名分类',
+                    links: Array.isArray(cat?.links) 
+                        ? cat.links.map(link => ({
+                            name: link?.name || '未命名链接',
+                            url: link?.url || '#',
+                            rel: link?.rel || 'nofollow',
+                            target: link?.target || '_blank'
+                        }))
+                        : []
+                }))
+                : [],
+            searchData: appData.searchData || []
+        };
+        
+        if (cleanData.navigationData.length === 0) {
+            console.warn('本地文件导航数据为空，使用默认数据');
+            cleanData.navigationData = window.DEFAULT_NAV_DATA;
+        }
+        
+        saveBackupData(cleanData);
+        updateNavigationUI(cleanData);
+        
+    } catch (error) {
+        console.error('加载本地数据失败:', error);
+        alert('加载本地数据失败: ' + error.message);
+    }
+}
+
+// 重新加载导航数据
+function reloadNavigationData(url) {
+    if (url === null) {
+        const defaultData = {
+            navigationData: window.DEFAULT_NAV_DATA,
+            searchData: []
+        };
+        saveBackupData(defaultData);
+        updateNavigationUI(defaultData);
+        return;
+    }
+    
+    fetchDataWithRetry(url).then(data => {
+        updateNavigationUI(data);
+    }).catch(error => {
+        console.error('加载数据失败:', error);
+        alert('加载数据失败: ' + error.message);
+        const defaultData = {
+            navigationData: window.DEFAULT_NAV_DATA,
+            searchData: []
+        };
+        updateNavigationUI(defaultData);
+    });
+}
+
+// 使用指定URL获取数据
+function fetchDataWithRetry(url, retryCount = 0) {
+    const MAX_RETRIES = 3;
+    
+    return fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP错误: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(dataText => {
+            try {
+                const jsonStr = dataText.replace(/^const\s+appData\s*=\s*/, '').replace(/;$/, '');
+                const appData = JSON.parse(jsonStr);
+                
+                if (!Array.isArray(appData.navigationData)) {
+                    throw new Error('导航数据不是数组');
+                }
+                if (!Array.isArray(appData.searchData)) {
+                    throw new Error('搜索数据不是数组');
+                }
+                
+                const cleanData = {
+                    navigationData: appData.navigationData
+                        ? appData.navigationData.map(cat => ({
+                            title: cat?.title || '未命名分类',
+                            links: Array.isArray(cat?.links) 
+                                ? cat.links.map(link => ({
+                                    name: link?.name || '未命名链接',
+                                    url: link?.url || '#',
+                                    rel: link?.rel || 'nofollow',
+                                    target: link?.target || '_blank'
+                                }))
+                                : []
+                        }))
+                        : [],
+                    searchData: appData.searchData || []
+                };
+                
+                if (cleanData.navigationData.length === 0) {
+                    console.warn('远程导航数据为空，使用默认数据');
+                    cleanData.navigationData = window.DEFAULT_NAV_DATA;
+                }
+                
+                saveBackupData(cleanData);
+                return cleanData;
+                
+            } catch (error) {
+                if (retryCount < MAX_RETRIES) {
+                    retryCount++;
+                    console.log(`数据加载失败，正在重试（${retryCount}/${MAX_RETRIES}）:`, error);
+                    return fetchDataWithRetry(url, retryCount);
+                }
+                throw error;
+            }
+        });
+}
+
+// 更新导航UI
+// 修改后
+function updateNavigationUI(data) {
+    window.navigationData = data.navigationData;
+    console.log('导航数据更新成功，共', window.navigationData.length, '个分类');
+    
+    // 强制刷新导航面板
+    if (window.BlockNavRenderer) {
+        // 先清空容器再重新渲染
+        const navContainer = document.getElementById('navigation-container');
+        if (navContainer) {
+            navContainer.innerHTML = '<div class="horizontal-navigation"></div>';
+        }
+        BlockNavRenderer.render(window.navigationData);
+    }
+    
+    // 强制刷新右侧导航
+    if (window.NavigationUtils) {
+        // 先清空列表再重新渲染
+        const listContainer = document.querySelector('.list ul');
+        if (listContainer) {
+            listContainer.innerHTML = '';
+        }
+        NavigationUtils.updateNavigation(window.navigationData);
+    }
+    
+    if (window.SearchUtils) {
+        SearchUtils.renderSearchOptions();
+    }
+    
+    // 显示更新提示
+    const alertEl = document.createElement('div');
+    alertEl.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;background:#4CAF50;color:white;border-radius:4px;z-index:9999';
+    alertEl.textContent = '数据源已更新成功';
+    document.body.appendChild(alertEl);
+    setTimeout(() => alertEl.remove(), 2000);
+}
+
+// 保存备份数据
+function saveBackupData(data) {
+    try {
+        localStorage.setItem('navBackupData', JSON.stringify(data));
+    } catch (e) {
+        console.warn('无法保存备份数据到localStorage:', e);
+    }
+}
