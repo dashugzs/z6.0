@@ -9,45 +9,71 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // 初始化数据源管理事件监听
 function initDataSourceListeners() {
-    // 默认数据源按钮
-// 修改后
-document.getElementById('data-source-default').addEventListener('click', function(e) {
-    e.stopPropagation();
-    setDataSource('default');
-    document.getElementById('custom-data-url').value = '';
-    
-    // 清除缓存的导航数据
-    localStorage.removeItem('navBackupData');
-    
-    // 重新加载默认数据
-    const defaultData = {
-        navigationData: window.DEFAULT_NAV_DATA,
-        searchData: []
+    // 数据源URL映射
+    const dataSourceUrls = {
+        cloud: 'https://dhsssj.xnss.fun/cloud',
+        hot: 'https://dhsssj.xnss.fun/hot',
+        ecommerce: 'https://dhsssj.xnss.fun/ecommerce',
+        dev: 'https://dhsssj.xnss.fun/dev'
     };
-    saveBackupData(defaultData);
-    updateNavigationUI(defaultData);
     
-    // 新增：强制重新渲染导航
-    if (window.BlockNavRenderer) {
-        BlockNavRenderer.render(defaultData.navigationData);
-    }
-    if (window.SearchUtils) {
-        SearchUtils.renderSearchOptions();
-    }
-});
-    
-    // 本地文件按钮
-    document.getElementById('data-source-local').addEventListener('click', function(e) {
-        e.stopPropagation();
-        document.getElementById('local-data-file').click();
+    // 统一处理数据源按钮点击
+    document.querySelectorAll('.data-source-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const sourceType = this.dataset.source;
+            
+            // 设置活跃状态
+            setActiveDataSourceButton(sourceType);
+            
+            switch(sourceType) {
+                case 'default':
+                    setDataSource('default');
+                    document.getElementById('custom-data-url').value = '';
+                    
+                    // 清除缓存的导航数据
+                    localStorage.removeItem('navBackupData');
+                    
+                    // 重新加载默认数据
+                    const defaultData = {
+                        navigationData: window.DEFAULT_NAV_DATA,
+                        searchData: []
+                    };
+                    saveBackupData(defaultData);
+                    updateNavigationUI(defaultData);
+                    
+                    // 强制重新渲染导航
+                    if (window.BlockNavRenderer) {
+                        BlockNavRenderer.render(defaultData.navigationData);
+                    }
+                    if (window.SearchUtils) {
+                        SearchUtils.renderSearchOptions();
+                    }
+                    break;
+                    
+                case 'local':
+                    document.getElementById('local-data-file').click();
+                    break;
+                    
+                case 'template':
+                    downloadDataSourceTemplate();
+                    break;
+                    
+                // 处理新增的数据源类型
+                case 'cloud':
+                case 'hot':
+                case 'ecommerce':
+                case 'dev':
+                    const url = dataSourceUrls[sourceType];
+                    if (url) {
+                        document.getElementById('custom-data-url').value = url;
+                        setDataSource('custom', url);
+                        reloadNavigationData(url);
+                    }
+                    break;
+            }
+        });
     });
-    
-    // 本地数据模板下载按钮
-    document.getElementById('data-source-template').addEventListener('click', function(e) {
-        e.stopPropagation();
-        downloadDataSourceTemplate();
-    });
-    
     // 本地文件上传处理
     document.getElementById('local-data-file').addEventListener('change', function(e) {
         e.stopPropagation();
@@ -75,23 +101,72 @@ document.getElementById('data-source-default').addEventListener('click', functio
     });
     
     // 应用链接接口按钮
-document.getElementById('apply-data-url').addEventListener('click', function(e) {
-    e.stopPropagation();
-    let url = document.getElementById('custom-data-url').value.trim();
-    if (url) {
-        // 自动添加http/https前缀
-        if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            url = 'https://' + url;
-            document.getElementById('custom-data-url').value = url;
+    // 应用链接接口按钮
+    document.getElementById('apply-data-url').addEventListener('click', function(e) {
+        e.stopPropagation();
+        let url = document.getElementById('custom-data-url').value.trim();
+        if (url) {
+            // 自动添加http/https前缀
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+                document.getElementById('custom-data-url').value = url;
+            }
+            setDataSource('custom', url);
+            reloadNavigationData(url);
+            
+            // 清除其他按钮的活跃状态
+            setActiveDataSourceButton(null);
+        } else {
+            alert('请输入接口链接');
         }
-        setDataSource('custom', url);
-        reloadNavigationData(url);
-    } else {
-        alert('请输入接口链接');
+    });
+    
+    // 设置活跃按钮状态
+function setActiveDataSourceButton(sourceType) {
+    document.querySelectorAll('.data-source-btn').forEach(btn => {
+        if (btn.dataset.source === sourceType) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    // 保存选中状态到本地存储
+    if (sourceType) {
+        localStorage.setItem('activeDataSource', sourceType);
     }
-});
 }
 
+// 在初始化时加载保存的选中状态
+document.addEventListener('DOMContentLoaded', function() {
+    const savedSource = localStorage.getItem('activeDataSource');
+    if (savedSource) {
+        setActiveDataSourceButton(savedSource);
+    }
+});
+    
+    // 加载保存的按钮状态
+    function loadDataSourceButtonState() {
+        try {
+            const saved = localStorage.getItem('dataSourceSettings');
+            if (saved) {
+                const data = JSON.parse(saved);
+                
+                // 检查是否是预设数据源
+                const presetSources = Object.keys(dataSourceUrls);
+                if (presetSources.includes(data.type)) {
+                    setActiveDataSourceButton(data.type);
+                } else if (data.type === 'default' || data.type === 'local' || data.type === 'template') {
+                    setActiveDataSourceButton(data.type);
+                }
+            }
+        } catch (error) {
+            console.error('加载数据源按钮状态失败:', error);
+        }
+    }
+    
+    // 初始加载按钮状态
+    loadDataSourceButtonState();
+}
 // 设置数据源类型
 function setDataSource(type, url = '') {
     const data = {
@@ -99,6 +174,15 @@ function setDataSource(type, url = '') {
         url: url
     };
     localStorage.setItem('dataSourceSettings', JSON.stringify(data));
+    
+    // 更新按钮活跃状态
+    document.querySelectorAll('.data-source-btn').forEach(btn => {
+        if (btn.dataset.source === type) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
 }
 
 // 加载保存的数据源设置
