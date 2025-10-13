@@ -97,6 +97,9 @@ function loadOtherSettings() {
     
     // 渲染自定义壁纸
     renderCustomWallpapers();
+    let darkMode = getSetting('darkMode');
+    if (!darkMode) darkMode = 'auto';
+    updateDarkModeButtons(darkMode);
 }
 
 // 创建设置相关的DOM元素
@@ -515,4 +518,5 @@ function updateSearchStyle() {
         searchInput.style.backgroundColor = isDarkMode ? 'var(--search-input-dark)' : 'var(--search-input-light)';
     }
 }
+
 
