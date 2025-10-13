@@ -134,13 +134,13 @@ function createSettingsElements() {
             <div class="setting-buttons">
                 <button class="setting-btn" id="data-source-default">默认</button>
                 <button class="setting-btn" id="data-source-local">本地</button>
-                <button class="setting-btn" id="data-source-template">本地数据模板</button>
+                <button class="setting-btn" id="data-source-template">模板</button>
             </div>
             <div style="margin: 10px 0;">
                 <input type="text" id="custom-data-url" placeholder="输入接口链接" style="width: 100%; padding: 8px; box-sizing: border-box;">
             </div>
             <div style="text-align: center; margin: 10px 0;">
-                <button class="setting-btn" id="apply-data-url">应用链接接口</button>
+                <button class="setting-btn" id="apply-data-url">应用链接数据</button>
             </div>
             <input type="file" id="local-data-file" accept=".js" style="display: none;">
         </div>
@@ -535,6 +535,7 @@ function updateSearchStyle() {
         searchInput.style.backgroundColor = isDarkMode ? 'var(--search-input-dark)' : 'var(--search-input-light)';
     }
 }
+
 
 
 
