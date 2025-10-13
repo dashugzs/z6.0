@@ -53,7 +53,7 @@ document.getElementById('data-source-default').addEventListener('click', functio
         e.stopPropagation();
         const file = e.target.files[0];
         if (file) {
-            if (file.name !== ' .js') {
+            if (!file.name.endsWith('.js')) {
                 alert('请上传. js文件');
                 return;
             }
