@@ -145,6 +145,8 @@ function createSettingsElements() {
     <button class="setting-btn data-source-btn grid-btn" data-source="hot" id="data-source-hot">热门</button>
     <button class="setting-btn data-source-btn grid-btn" data-source="ecommerce" id="data-source-ecommerce">电商</button>
     <button class="setting-btn data-source-btn grid-btn" data-source="dev" id="data-source-dev">开发</button>
+    <button class="setting-btn data-source-btn grid-btn" data-source="yule" id="data-source-yule">娱乐</button>
+    <button class="setting-btn data-source-btn grid-btn" data-source="ziyuan" id="data-source-ziyuan">资源</button>
 </div>
     <input type="file" id="local-data-file" accept=".js" style="display: none;">
 </div>
@@ -178,7 +180,7 @@ function createSettingsElements() {
         
         <div class="settings-section">
             <h3>用户中心</h3>
-            <a href="login.html" id="login-btn" target="_blank">管理员登录</a>
+            <a href="admin.html" id="login-btn" target="_blank">管理员登录</a>
             <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=niu@xnss.fun" id="login-btn" target="_blank">联系邮箱:niu@xnss.fun</a>
 
         </div>
@@ -538,7 +540,6 @@ function updateSearchStyle() {
         searchInput.style.backgroundColor = isDarkMode ? 'var(--search-input-dark)' : 'var(--search-input-light)';
     }
 }
-
 
 
 
