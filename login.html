@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>管理员登录</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 500px; margin: 50px auto; padding: 20px; }
+    .container { padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+    .form-group { margin: 15px 0; }
+    label { display: block; margin-bottom: 5px; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .error { color: red; margin: 10px 0; }
+    .loading { color: #666; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>管理员登录</h2>
+    <div class="form-group">
+      <label>访问链接：</label>
+      <input type="text" id="workerUrl" placeholder="例如：https://xnss.fun" value="https://xnss.fun">
+    </div>
+    <div class="form-group">
+      <label>管理密钥：</label>
+      <input type="password" id="adminKey" placeholder="输入管理密钥">
+    </div>
+    <button onclick="login()">登录</button>
+    <div id="loginStatus" class="error"></div>
+  </div>
+
+  <script>
+    async function login() {
+      const workerUrl = document.getElementById("workerUrl").value.trim();
+      const adminKey = document.getElementById("adminKey").value.trim();
+      const statusEl = document.getElementById("loginStatus");
+      
+      // 清空状态信息
+      statusEl.textContent = "";
+      
+      // 基本验证
+      if (!workerUrl) {
+        statusEl.textContent = "请输入访问链接";
+        return;
+      }
+      
+      if (!adminKey) {
+        statusEl.textContent = "请输入管理密钥";
+        return;
+      }
+      
+      // 验证链接格式
+      try {
+        new URL(workerUrl);
+      } catch (e) {
+        statusEl.textContent = "请输入有效的URL";
+        return;
+      }
+      
+      // 显示加载状态
+      statusEl.textContent = "正在验证...";
+      statusEl.className = "loading";
+      
+      try {
+        // 发送验证请求
+        const response = await fetch(workerUrl, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${adminKey}`,
+            "Accept": "application/json"
+          },
+          timeout: 5000 // 5秒超时
+        });
+        
+        // 检查响应状态
+        if (!response.ok) {
+          throw new Error(`验证失败: ${response.statusText}`);
+        }
+        
+        // 尝试解析响应内容（不严格要求格式，只要能成功获取数据即可）
+        try {
+          await response.text(); // 只需要确认能成功获取数据
+        } catch (e) {
+          // 内容解析失败不影响验证，只要状态码正确即可
+          console.log("响应内容解析警告:", e);
+        }
+        
+        // 验证成功，保存信息并跳转
+        localStorage.setItem("workerUrl", workerUrl);
+        localStorage.setItem("adminKey", adminKey);
+        window.location.href = "admin.html";
+        
+      } catch (e) {
+        // 验证失败处理
+        statusEl.textContent = `验证失败: ${e.message || '请检查链接和密钥是否正确'}`;
+        statusEl.className = "error";
+        console.error("登录验证错误:", e);
+      }
+    }
+  </script>
+</body>
+</html>
