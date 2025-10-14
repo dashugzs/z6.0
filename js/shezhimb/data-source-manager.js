@@ -13,8 +13,8 @@ function initDataSourceListeners() {
     const dataSourceUrls = {
         cloud: 'https://dhsssj.xnss.fun/cloud',
         hot: 'https://dhsssj.xnss.fun/hot',
-        ecommerce: 'https://dhsssj.xnss.fun/ecommerce',
-        dev: 'https://dhsssj.xnss.fun/dev'
+        ecommerce: 'https://shuju.xnss.fun/dianshang',
+        dev: 'https://shuju.xnss.fun/kaifazhe'
     };
     
     // 统一处理数据源按钮点击
@@ -395,3 +395,4 @@ function saveBackupData(data) {
         console.warn('无法保存备份数据到localStorage:', e);
     }
 }
+
