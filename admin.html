@@ -20,19 +20,16 @@
     .tab-btn.active { background: #007bff; color: white; }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
+    .logout-btn { float: right; background: #dc3545; }
+    .logout-btn:hover { background: #bb2d3b; }
   </style>
 </head>
 <body>
-  <h1>小牛导航与搜索数据管理</h1>
+  <h1>
+    小牛导航与搜索数据管理
+    <button class="logout-btn" onclick="logout()">退出登录</button>
+  </h1>
   
-  <!-- 管理员验证 -->
-  <div class="container">
-    <h3>管理员验证</h3>
-    <input type="password" id="adminKey" placeholder="输入管理密钥（ADMIN_KEY）">
-    <button onclick="authenticate()">验证</button>
-    <div id="authStatus" class="error"></div>
-  </div>
-
   <!-- 标签切换 -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('navigation')">导航数据管理</button>
@@ -103,8 +100,14 @@
   </div>
 
   <script>
-    const WORKER_URL = "https://dhsssj.xnss.fun";
-    let isAuthenticated = false;
+    // 检查是否已登录，如果未登录则跳转到登录页面
+    if (!localStorage.getItem("adminKey") || !localStorage.getItem("workerUrl")) {
+      window.location.href = "login.html";
+    }
+    
+    // 从localStorage获取配置
+    let WORKER_URL = localStorage.getItem("workerUrl");
+    let isAuthenticated = true; // 已从登录页面验证
     // 初始化确保为数组，避免null/undefined
     let appData = {
       navigationData: [],
@@ -119,17 +122,18 @@
       document.querySelector(`.tab-btn[onclick="switchTab('${tabName}')"]`).classList.add('active');
     }
 
-    // 验证管理员身份
-    function authenticate() {
-      const key = document.getElementById("adminKey").value;
-      if (!key) {
-        document.getElementById("authStatus").textContent = "请输入密钥";
-        return;
+    // 退出登录
+    function logout() {
+      if (confirm("确定要退出登录吗？")) {
+        localStorage.removeItem("adminKey");
+        localStorage.removeItem("workerUrl");
+        window.location.href = "login.html";
       }
-      localStorage.setItem("adminKey", key);
-      isAuthenticated = true;
-      document.getElementById("authStatus").textContent = "验证成功！";
-      loadData(); // 加载数据
+    }
+
+    // 页面加载时自动加载数据
+    window.onload = function() {
+      loadData();
     }
 
     // 加载现有数据并初始化（增强错误处理和数组校验）
@@ -489,7 +493,6 @@
     }
 
     async function addSearchOption(categoryIndex) {
-      // 此处省略原有代码（保持不变）
       if (!Array.isArray(appData.searchData)) {
         appData.searchData = [];
         alert("搜索数据异常，已重置");
