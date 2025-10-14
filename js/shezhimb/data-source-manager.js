@@ -27,29 +27,32 @@ function initDataSourceListeners() {
             setActiveDataSourceButton(sourceType);
             
             switch(sourceType) {
-                case 'default':
-                    setDataSource('default');
-                    document.getElementById('custom-data-url').value = '';
-                    
-                    // 清除缓存的导航数据
-                    localStorage.removeItem('navBackupData');
-                    
-                    // 重新加载默认数据
-                    const defaultData = {
-                        navigationData: window.DEFAULT_NAV_DATA,
-                        searchData: []
-                    };
-                    saveBackupData(defaultData);
-                    updateNavigationUI(defaultData);
-                    
-                    // 强制重新渲染导航
-                    if (window.BlockNavRenderer) {
-                        BlockNavRenderer.render(defaultData.navigationData);
-                    }
-                    if (window.SearchUtils) {
-                        SearchUtils.renderSearchOptions();
-                    }
-                    break;
+case 'default':
+    setDataSource('default');
+    document.getElementById('custom-data-url').value = '';
+    
+    // 清除缓存的导航数据
+    localStorage.removeItem('navBackupData');
+    
+    // 重新加载默认数据
+    const defaultData = {
+        navigationData: window.DEFAULT_NAV_DATA,
+        searchData: []
+    };
+    saveBackupData(defaultData);
+    updateNavigationUI(defaultData);
+    
+    // 强制重新渲染导航
+    if (window.BlockNavRenderer) {
+        BlockNavRenderer.render(defaultData.navigationData);
+    }
+    if (window.SearchUtils) {
+        SearchUtils.renderSearchOptions();
+    }
+    // 显示提示并刷新页面
+    alert('数据源已更新成功，即将刷新页面');
+    setTimeout(() => window.location.reload(), 1000);
+    break;
                     
                 case 'local':
                     document.getElementById('local-data-file').click();
@@ -60,17 +63,20 @@ function initDataSourceListeners() {
                     break;
                     
                 // 处理新增的数据源类型
-                case 'cloud':
-                case 'hot':
-                case 'ecommerce':
-                case 'dev':
-                    const url = dataSourceUrls[sourceType];
-                    if (url) {
-                        document.getElementById('custom-data-url').value = url;
-                        setDataSource('custom', url);
-                        reloadNavigationData(url);
-                    }
-                    break;
+case 'cloud':
+case 'hot':
+case 'ecommerce':
+case 'dev':
+    const url = dataSourceUrls[sourceType];
+    if (url) {
+        document.getElementById('custom-data-url').value = url;
+        setDataSource('custom', url);
+        reloadNavigationData(url);
+        // 显示提示并刷新页面
+        alert('数据源已更新成功，即将刷新页面');
+        setTimeout(() => window.location.reload(), 1000);
+    }
+    break;
             }
         });
     });
@@ -85,41 +91,48 @@ function initDataSourceListeners() {
             }
             
             const reader = new FileReader();
-            reader.onload = function(event) {
-                try {
-                    const content = event.target.result;
-                    localStorage.setItem('localDataSourceContent', content);
-                    setDataSource('local');
-                    reloadNavigationDataFromLocalFile(content);
-                } catch (error) {
-                    console.error('解析本地数据文件失败:', error);
-                    alert('文件格式错误，请检查文件内容');
-                }
-            };
+reader.onload = function(event) {
+    try {
+        const content = event.target.result;
+        localStorage.setItem('localDataSourceContent', content);
+        setDataSource('local');
+        reloadNavigationDataFromLocalFile(content);
+        // 显示提示并刷新页面
+        alert('本地数据源已更新成功，即将刷新页面');
+        setTimeout(() => window.location.reload(), 1000);
+    } catch (error) {
+        console.error('解析本地数据文件失败:', error);
+        alert('文件格式错误，请检查文件内容');
+    }
+};
             reader.readAsText(file);
         }
     });
     
     // 应用链接接口按钮
     // 应用链接接口按钮
-    document.getElementById('apply-data-url').addEventListener('click', function(e) {
-        e.stopPropagation();
-        let url = document.getElementById('custom-data-url').value.trim();
-        if (url) {
-            // 自动添加http/https前缀
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                url = 'https://' + url;
-                document.getElementById('custom-data-url').value = url;
-            }
-            setDataSource('custom', url);
-            reloadNavigationData(url);
-            
-            // 清除其他按钮的活跃状态
-            setActiveDataSourceButton(null);
-        } else {
-            alert('请输入接口链接');
+document.getElementById('apply-data-url').addEventListener('click', function(e) {
+    e.stopPropagation();
+    let url = document.getElementById('custom-data-url').value.trim();
+    if (url) {
+        // 自动添加http/https前缀
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+            document.getElementById('custom-data-url').value = url;
         }
-    });
+        setDataSource('custom', url);
+        reloadNavigationData(url);
+        
+        // 清除其他按钮的活跃状态
+        setActiveDataSourceButton(null);
+        
+        // 显示提示并刷新页面
+        alert('数据源已更新成功，即将刷新页面');
+        setTimeout(() => window.location.reload(), 1000);
+    } else {
+        alert('请输入接口链接');
+    }
+});
     
     // 设置活跃按钮状态
 function setActiveDataSourceButton(sourceType) {
