@@ -1,546 +1,401 @@
+// 数据源管理功能
 document.addEventListener('DOMContentLoaded', function() {
-    // 创建必要的DOM元素
-    createSettingsElements();
+    // 初始化数据源管理事件监听
+    initDataSourceListeners();
     
-    // 初始化事件监听
-    initEventListeners();
-    
-    // 自动检测并应用夜间模式
-    autoDetectDarkMode();
-    
-    // 从本地存储加载其他设置
-    loadOtherSettings();
-    
-    // 加载并渲染公告模块
-    loadNotices();
+    // 加载保存的数据源设置
+    loadSavedDataSource();
 });
 
-// 自动检测并应用夜间模式
-// 自动检测并应用夜间模式
-function autoDetectDarkMode() {
-    // 1. 优先检查用户之前的设置，如果没有设置则使用自动模式
-    let savedMode = getSetting('darkMode');
-    // 关键修复：如果本地存储中没有设置，强制默认为auto并保存
-    if (!savedMode) {
-        savedMode = 'auto';
-        saveSetting('darkMode', 'auto'); // 确保默认值被保存
-    }
-
-    if (savedMode === 'enabled') {
-        enableDarkMode(true);
-        return;
-    } else if (savedMode === 'disabled') {
-        disableDarkMode(true);
-        return;
-    }
+// 初始化数据源管理事件监听
+function initDataSourceListeners() {
+    // 数据源URL映射
+    const dataSourceUrls = {
+        cloud: 'https://dhsssj.xnss.fun/cloud',
+        hot: 'https://dhsssj.xnss.fun/hot',
+        ecommerce: 'https://shuju.xnss.fun/dianshang',
+        dev: 'https://shuju.xnss.fun/kaifazhe',
+        yule: 'https://shuju.xnss.fun/yule',
+        ziyuan: 'https://shuju.xnss.fun/ziyuan'
+    };
     
-    // 2. 检查浏览器/系统偏好
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        enableDarkMode(true);
-        return;
-    }
-    
-    // 3. 根据时间自动切换 (晚上7点到早上6点)
-    const hour = new Date().getHours();
-    const isNightTime = hour >= 19 || hour < 6;
-    if (isNightTime) {
-        enableDarkMode(true);
-        return;
-    }
-    
-    // 默认使用日间模式
-    disableDarkMode(true);
-}
-
-// 从本地存储加载其他设置（除了夜间模式，因为已经自动检测）
-// 从本地存储加载其他设置（除了夜间模式，因为已经自动检测）
-function loadOtherSettings() {
-    // 加载壁纸设置
-    let wallpaper = getSetting('wallpaper');
-    let wallpaperType = getSetting('wallpaperType');
-    
-    // 如果没有保存的壁纸设置，默认使用第4张预设壁纸（索引为3）
-    if ((!wallpaper || !wallpaperType) && wallpaper !== 'none') {
-        if (typeof wallpaperConfig !== 'undefined' && wallpaperConfig.defaultWallpapers && wallpaperConfig.defaultWallpapers.length > 3) {
-            wallpaper = wallpaperConfig.defaultWallpapers[3].fullUrl;
-            wallpaperType = 'default';
-            // 保存默认设置到本地存储
-            saveSetting('wallpaper', wallpaper);
-            saveSetting('wallpaperType', wallpaperType);
-        }
-    }
-    
-    if (wallpaper && wallpaper !== 'none' && wallpaperType) {
-        setWallpaper(wallpaper);
-        // 更新壁纸选中状态
-        if (wallpaperType === 'default' && typeof wallpaperConfig !== 'undefined') {
-            const wallpaperId = wallpaperConfig.defaultWallpapers.find(w => w.fullUrl === wallpaper)?.id;
-            if (wallpaperId) {
-                document.querySelectorAll('#default-wallpapers .wallpaper-thumb').forEach(thumb => {
-                    if (thumb.getAttribute('data-wallpaper') === wallpaperId) {
-                        thumb.classList.add('selected');
-                    }
-                });
-            }
-        } else if (wallpaperType === 'custom') {
-            const customWallpapers = getCustomWallpapers();
-            const index = customWallpapers.indexOf(wallpaper);
-            if (index !== -1) {
-                document.querySelectorAll('#custom-wallpapers .wallpaper-thumb').forEach((thumb, i) => {
-                    if (i === index) {
-                        thumb.classList.add('selected');
-                    }
-                });
-            }
-        }
-    }
-    
-    // 渲染自定义壁纸
-    renderCustomWallpapers();
-    let darkMode = getSetting('darkMode');
-    if (!darkMode) darkMode = 'auto';
-    updateDarkModeButtons(darkMode);
-}
-
-// 创建设置相关的DOM元素
-function createSettingsElements() {
-    // 创建壁纸容器
-    const wallpaperContainer = document.createElement('div');
-    wallpaperContainer.id = 'wallpaper-container';
-    document.body.prepend(wallpaperContainer);
-    
-    // 创建设置按钮
-    const settingsButton = document.createElement('div');
-    settingsButton.id = 'settings-button';
-    settingsButton.innerHTML = '<i class="iconfont icon-setting"></i>';
-    document.body.appendChild(settingsButton);
-    
-    // 创建设置面板
-    const settingsPanel = document.createElement('div');
-    settingsPanel.id = 'settings-panel';
-    settingsPanel.innerHTML = `
-        <div class="settings-section">
-            <h3>夜间模式</h3>
-            <div class="setting-buttons">
-                <button class="setting-btn" id="dark-mode-enable">开启</button>
-                <button class="setting-btn" id="dark-mode-disable">关闭</button>
-                <button class="setting-btn" id="dark-mode-auto">自动</button>
-            </div>
-        </div>
-
-<div class="settings-section">
-    <h3>数据源管理</h3>
-
-    <div style="margin: 10px 0;">
-        <input type="text" id="custom-data-url" placeholder="输入接口链接" style="width: 100%; padding: 8px; box-sizing: border-box;">
-    </div>
-<div style="margin: 10px 0; display: flex; gap: 10px;">
-    <button class="setting-btn half-width-btn" id="apply-data-url">应用链接数据</button>
-    <button class="setting-btn data-source-btn half-width-btn" data-source="template" id="data-source-template">本地数据模板</button>
-</div>
-<div class="setting-buttons grid-button-container">
-    <button class="setting-btn data-source-btn grid-btn" data-source="default" id="data-source-default">默认</button>
-    <button class="setting-btn data-source-btn grid-btn" data-source="local" id="data-source-local">本地</button>
-    <button class="setting-btn data-source-btn grid-btn" data-source="cloud" id="data-source-cloud">云端</button>
-    <button class="setting-btn data-source-btn grid-btn" data-source="hot" id="data-source-hot">热门</button>
-    <button class="setting-btn data-source-btn grid-btn" data-source="ecommerce" id="data-source-ecommerce">电商</button>
-    <button class="setting-btn data-source-btn grid-btn" data-source="dev" id="data-source-dev">开发</button>
-    <button class="setting-btn data-source-btn grid-btn" data-source="yule" id="data-source-yule">娱乐</button>
-    <button class="setting-btn data-source-btn grid-btn" data-source="ziyuan" id="data-source-ziyuan">资源</button>
-</div>
-    <input type="file" id="local-data-file" accept=".js" style="display: none;">
-</div>
-        <div class="settings-section">
-            <h3>壁纸设置</h3>
-            <div class="setting-buttons">
-                <input type="file" id="wallpaper-upload" accept="image/*">
-                <button class="setting-btn" id="add-custom-wallpaper">添加自定义壁纸</button>
-                <button class="setting-btn" id="no-wallpaper">无壁纸</button>
-            </div>
-            <div style="margin-top: 10px;">
-                <h4>默认壁纸</h4>
-                <div class="wallpaper-thumbs-container" id="default-wallpapers">
-                    <!-- 默认壁纸将通过JS动态生成 -->
-                </div>
-                
-                <h4>我的壁纸</h4>
-                <div class="wallpaper-thumbs-container" id="custom-wallpapers">
-                    <!-- 自定义壁纸将在这里动态生成 -->
-                </div>
-            </div>
-        </div>
-        
-        <div class="settings-section" id="notices-container">
-            <h3>公告信息</h3>
-            <div id="notices-content">
-                <!-- 公告内容将通过JS动态生成 -->
-                <div class="notice-placeholder">加载公告中...</div>
-            </div>
-        </div>
-        
-        <div class="settings-section">
-            <h3>用户中心</h3>
-            <a href="admin.html" id="login-btn" target="_blank">管理员登录</a>
-            <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=niu@xnss.fun" id="login-btn" target="_blank">联系邮箱:niu@xnss.fun</a>
-
-        </div>
-    `;
-    document.body.appendChild(settingsPanel);
-
-    // 动态生成默认壁纸缩略图
-    const defaultWallpapersContainer = document.getElementById('default-wallpapers');
-    if (typeof wallpaperConfig !== 'undefined' && wallpaperConfig.defaultWallpapers) {
-        wallpaperConfig.defaultWallpapers.forEach(wallpaper => {
-            const img = document.createElement('img');
-            img.src = wallpaper.thumbUrl;
-            img.className = 'wallpaper-thumb';
-            img.dataset.wallpaper = wallpaper.id;
-            defaultWallpapersContainer.appendChild(img);
-        });
-    }
-}
-
-// 初始化事件监听
-function initEventListeners() {
-    const settingsButton = document.getElementById('settings-button');
-    const settingsPanel = document.getElementById('settings-panel');
-    const menuButton = document.getElementById('menu');
-    const navList = document.querySelector('.list');
-    
-    // 切换设置面板显示/隐藏
-    settingsButton.addEventListener('click', function() {
-        settingsPanel.classList.toggle('open');
-        this.classList.toggle('on');
-        
-        // 导航按钮控制
-        if (settingsPanel.classList.contains('open')) {
-            if (menuButton) menuButton.style.display = 'none';
-            if (navList && !navList.classList.contains('closed')) {
-                navList.classList.add('closed');
-            }
+    // 统一处理数据源按钮点击
+    document.querySelectorAll('.data-source-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const sourceType = this.dataset.source;
             
-            // 新增：隐藏文件选择按钮和文字（延迟确保元素渲染）
-            setTimeout(() => {
-                hideFileSelectionElements();
-            }, 100);
-        } else {
-            if (menuButton) menuButton.style.display = '';
-        }
-    });
+            // 设置活跃状态
+            setActiveDataSourceButton(sourceType);
+            
+            switch(sourceType) {
+case 'default':
+    setDataSource('default');
+    document.getElementById('custom-data-url').value = '';
     
-    // 夜间模式控制
-    document.getElementById('dark-mode-enable').addEventListener('click', function(e) {
-        e.stopPropagation();
-        enableDarkMode();
-        updateDarkModeButtons('enabled');
-        updateSearchStyle();
-    });
+    // 清除缓存的导航数据
+    localStorage.removeItem('navBackupData');
     
-    document.getElementById('dark-mode-disable').addEventListener('click', function(e) {
-        e.stopPropagation();
-        disableDarkMode();
-        updateDarkModeButtons('disabled');
-        updateSearchStyle();
-    });
+    // 重新加载默认数据
+    const defaultData = {
+        navigationData: window.DEFAULT_NAV_DATA,
+        searchData: []
+    };
+    saveBackupData(defaultData);
+    updateNavigationUI(defaultData);
     
-    document.getElementById('dark-mode-auto').addEventListener('click', function(e) {
-        e.stopPropagation();
-        saveSetting('darkMode', 'auto');
-        autoDetectDarkMode();
-        updateDarkModeButtons('auto');
-        updateSearchStyle();
+    // 强制重新渲染导航
+    if (window.BlockNavRenderer) {
+        BlockNavRenderer.render(defaultData.navigationData);
+    }
+    if (window.SearchUtils) {
+        SearchUtils.renderSearchOptions();
+    }
+    // 显示提示并刷新页面
+    alert('数据源已更新成功，即将刷新页面');
+    setTimeout(() => window.location.reload(), 1000);
+    break;
+                    
+                case 'local':
+                    document.getElementById('local-data-file').click();
+                    break;
+                    
+                case 'template':
+                    downloadDataSourceTemplate();
+                    break;
+                    
+                // 处理新增的数据源类型
+case 'cloud':
+case 'hot':
+case 'ecommerce':
+case 'dev':
+case 'yule':
+case 'ziyuan':
+    const url = dataSourceUrls[sourceType];
+    if (url) {
+        document.getElementById('custom-data-url').value = url;
+        setDataSource('custom', url);
+        reloadNavigationData(url);
+        // 显示提示并刷新页面
+        alert('数据源已更新成功，即将刷新页面');
+        setTimeout(() => window.location.reload(), 1000);
+    }
+    break;
+            }
+        });
     });
-    
-    // 壁纸控制
-    document.getElementById('add-custom-wallpaper').addEventListener('click', function(e) {
-        e.stopPropagation();
-        const customWallpapers = getCustomWallpapers();
-        if (customWallpapers.length >= 6) {
-            alert('最多只能添加6张自定义壁纸');
-            return;
-        }
-        document.getElementById('wallpaper-upload').click();
-    });
-    
-    document.getElementById('wallpaper-upload').addEventListener('change', function(e) {
+    // 本地文件上传处理
+    document.getElementById('local-data-file').addEventListener('change', function(e) {
         e.stopPropagation();
         const file = e.target.files[0];
         if (file) {
+            if (!file.name.endsWith('.js')) {
+                alert('请上传. js文件');
+                return;
+            }
+            
             const reader = new FileReader();
-            reader.onload = function(event) {
-                addCustomWallpaper(event.target.result);
-                document.getElementById('wallpaper-upload').value = '';
-                updateSearchStyle();
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-    
-    document.getElementById('no-wallpaper').addEventListener('click', function(e) {
-        e.stopPropagation();
-        removeWallpaper();
-        saveSetting('wallpaper', 'none');
-        saveSetting('wallpaperType', 'none');
-        updateSearchStyle();
-    });
-    
-    // 默认壁纸选择事件
-    document.querySelectorAll('#default-wallpapers .wallpaper-thumb').forEach(thumb => {
-        thumb.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const wallpaperId = this.getAttribute('data-wallpaper');
-            const wallpaper = wallpaperConfig.defaultWallpapers.find(w => w.id === wallpaperId);
-            if (wallpaper) {
-                setWallpaper(wallpaper.fullUrl);
-                saveSetting('wallpaper', wallpaper.fullUrl);
-                saveSetting('wallpaperType', 'default');
-                
-                document.querySelectorAll('.wallpaper-thumb').forEach(t => {
-                    t.classList.remove('selected');
-                });
-                this.classList.add('selected');
-                updateSearchStyle();
-            }
-        });
-    });
-    
-    // 点击页面其他地方关闭设置面板
-    document.addEventListener('click', function(e) {
-        if (!settingsPanel.contains(e.target) && e.target !== settingsButton && 
-            !settingsButton.contains(e.target)) {
-            settingsPanel.classList.remove('open');
-            settingsButton.classList.remove('on');
-            if (menuButton) menuButton.style.display = '';
-        }
-    });
-    
-    // 阻止面板内部事件冒泡
-    settingsPanel.addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
-    
-    // 监听系统外观变化
-    if (window.matchMedia) {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
-            if (getSetting('darkMode') === 'auto' || !getSetting('darkMode')) {
-                autoDetectDarkMode();
-            }
-        });
-    }
-}
-
-// 新增：隐藏文件选择按钮和相关文字
-function hideFileSelectionElements() {
-    // 目标元素选择器（覆盖多种可能的命名）
-    const selectors = {
-        fileInputs: [
-            '#wallpaper-upload',
-            '.wallpaper-setting input[type="file"]',
-            '.wallpaper-upload input'
-        ],
-        fileTexts: [
-            '.no-file-selected',
-            '.file-select-info',
-            '.wallpaper-setting .text-hint'
-        ]
-    };
-    
-    // 隐藏文件输入按钮
-    selectors.fileInputs.forEach(selector => {
-        const element = document.querySelector(selector);
-        if (element) {
-            element.style.display = 'none';
-        }
-    });
-    
-    // 隐藏"未选择文件"文字
-    selectors.fileTexts.forEach(selector => {
-        const element = document.querySelector(selector);
-        if (element) {
-            element.style.display = 'none';
-        }
-    });
-}
-
-// 更新夜间模式按钮状态
-function updateDarkModeButtons(activeMode) {
-    document.getElementById('dark-mode-enable').classList.remove('active');
-    document.getElementById('dark-mode-disable').classList.remove('active');
-    document.getElementById('dark-mode-auto').classList.remove('active');
-    
-    if (activeMode === 'enabled') {
-        document.getElementById('dark-mode-enable').classList.add('active');
-    } else if (activeMode === 'disabled') {
-        document.getElementById('dark-mode-disable').classList.add('active');
-    } else if (activeMode === 'auto') {
-        document.getElementById('dark-mode-auto').classList.add('active');
-    }
-}
-
-// 启用夜间模式
-function enableDarkMode(isInitial = false) {
-    document.body.classList.add('dark-mode');
-    updateSearchStyle();
-    if (!isInitial) {
-        saveSetting('darkMode', 'enabled');
-    }
-}
-
-// 禁用夜间模式
-function disableDarkMode(isInitial = false) {
-    document.body.classList.remove('dark-mode');
-    updateSearchStyle();
-    if (!isInitial) {
-        saveSetting('darkMode', 'disabled');
-    }
-}
-
-// 保存设置到本地存储
-function saveSetting(key, value) {
+reader.onload = function(event) {
     try {
-        localStorage.setItem('xiaoniu_' + key, value);
-    } catch (e) {
-        console.error('无法保存设置到本地存储:', e);
+        const content = event.target.result;
+        localStorage.setItem('localDataSourceContent', content);
+        setDataSource('local');
+        reloadNavigationDataFromLocalFile(content);
+        // 显示提示并刷新页面
+        alert('本地数据源已更新成功，即将刷新页面');
+        setTimeout(() => window.location.reload(), 1000);
+    } catch (error) {
+        console.error('解析本地数据文件失败:', error);
+        alert('文件格式错误，请检查文件内容');
     }
-}
-
-// 从本地存储获取设置
-function getSetting(key) {
-    try {
-        return localStorage.getItem('xiaoniu_' + key);
-    } catch (e) {
-        console.error('无法从本地存储获取设置:', e);
-        return null;
-    }
-}
-
-// 设置壁纸
-function setWallpaper(url) {
-    const container = document.getElementById('wallpaper-container');
-    container.style.backgroundImage = `url(${url})`;
-    container.style.display = 'block';
-}
-
-// 移除壁纸
-function removeWallpaper() {
-    const container = document.getElementById('wallpaper-container');
-    container.style.backgroundImage = 'none';
-    container.style.display = 'none';
-    
-    document.querySelectorAll('.wallpaper-thumb').forEach(thumb => {
-        thumb.classList.remove('selected');
+};
+            reader.readAsText(file);
+        }
     });
-}
-
-// 获取自定义壁纸列表
-function getCustomWallpapers() {
-    const wallpapers = getSetting('customWallpapers');
-    return wallpapers ? JSON.parse(wallpapers) : [];
-}
-
-// 添加自定义壁纸
-function addCustomWallpaper(url) {
-    const customWallpapers = getCustomWallpapers();
-    customWallpapers.push(url);
-    saveSetting('customWallpapers', JSON.stringify(customWallpapers));
     
-    renderCustomWallpapers();
-    
-    setWallpaper(url);
-    saveSetting('wallpaper', url);
-    saveSetting('wallpaperType', 'custom');
-    
-    document.querySelectorAll('.wallpaper-thumb').forEach(t => {
-        t.classList.remove('selected');
-    });
-    const thumbs = document.querySelectorAll('#custom-wallpapers .wallpaper-thumb');
-    if (thumbs.length > 0) {
-        thumbs[thumbs.length - 1].classList.add('selected');
-    }
-}
-
-// 渲染自定义壁纸
-function renderCustomWallpapers() {
-    const container = document.getElementById('custom-wallpapers');
-    container.innerHTML = '';
-    
-    const customWallpapers = getCustomWallpapers();
-    customWallpapers.forEach((wallpaper, index) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'custom-wallpaper-item';
+    // 应用链接接口按钮
+    // 应用链接接口按钮
+document.getElementById('apply-data-url').addEventListener('click', function(e) {
+    e.stopPropagation();
+    let url = document.getElementById('custom-data-url').value.trim();
+    if (url) {
+        // 自动添加http/https前缀
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+            document.getElementById('custom-data-url').value = url;
+        }
+        setDataSource('custom', url);
+        reloadNavigationData(url);
         
-        const img = document.createElement('img');
-        img.src = wallpaper;
-        img.className = 'wallpaper-thumb';
-        img.addEventListener('click', function() {
-            setWallpaper(wallpaper);
-            saveSetting('wallpaper', wallpaper);
-            saveSetting('wallpaperType', 'custom');
-            
-            document.querySelectorAll('.wallpaper-thumb').forEach(t => {
-                t.classList.remove('selected');
-            });
-            this.classList.add('selected');
-            updateSearchStyle();
-        });
+        // 清除其他按钮的活跃状态
+        setActiveDataSourceButton(null);
         
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'delete-wallpaper';
-        deleteBtn.innerHTML = '×';
-        deleteBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            customWallpapers.splice(index, 1);
-            saveSetting('customWallpapers', JSON.stringify(customWallpapers));
-            
-            const currentWallpaper = getSetting('wallpaper');
-            if (currentWallpaper === wallpaper) {
-                removeWallpaper();
-                saveSetting('wallpaper', 'none');
-                saveSetting('wallpaperType', 'none');
-            }
-            
-            renderCustomWallpapers();
-        });
-        
-        wrapper.appendChild(img);
-        wrapper.appendChild(deleteBtn);
-        container.appendChild(wrapper);
-    });
-}
-
-// 加载公告
-function loadNotices() {
-    const container = document.getElementById('notices-content');
-    container.innerHTML = '';
-    
-    if (typeof noticeConfig !== 'undefined' && noticeConfig.notices && noticeConfig.notices.length > 0) {
-        noticeConfig.notices.forEach(notice => {
-            const noticeEl = document.createElement('div');
-            noticeEl.className = 'notice-section';
-            noticeEl.innerHTML = `
-                <h4>${notice.title}</h4>
-                <p>${notice.content}</p>
-            `;
-            container.appendChild(noticeEl);
-        });
+        // 显示提示并刷新页面
+        alert('数据源已更新成功，即将刷新页面');
+        setTimeout(() => window.location.reload(), 1000);
     } else {
-        container.innerHTML = '<div class="notice-placeholder">暂无公告</div>';
+        alert('请输入接口链接');
     }
-}
-
-// 更新搜索框样式（根据当前模式）
-function updateSearchStyle() {
-    const isDarkMode = document.body.classList.contains('dark-mode');
-    const search = document.getElementById('search');
-    const searchInput = document.getElementById('search-text');
+});
     
-    if (search && searchInput) {
-        search.style.background = isDarkMode ? 'var(--search-bg-dark)' : 'var(--search-bg-light)';
-        search.style.boxShadow = isDarkMode ? 'var(--search-shadow-dark)' : 'var(--search-shadow-light)';
-        searchInput.style.backgroundColor = isDarkMode ? 'var(--search-input-dark)' : 'var(--search-input-light)';
+    // 设置活跃按钮状态
+function setActiveDataSourceButton(sourceType) {
+    document.querySelectorAll('.data-source-btn').forEach(btn => {
+        if (btn.dataset.source === sourceType) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    // 保存选中状态到本地存储
+    if (sourceType) {
+        localStorage.setItem('activeDataSource', sourceType);
     }
 }
 
+// 在初始化时加载保存的选中状态
 
+    // 加载保存的按钮状态
+function loadDataSourceButtonState() {
+    try {
+        // 优先读取 activeDataSource（按钮选中状态）
+        const savedSource = localStorage.getItem('activeDataSource');
+        if (savedSource) {
+            setActiveDataSourceButton(savedSource);
+            return; // 若有保存的选中状态，直接应用
+        }
+        
+        // 再从数据源设置中读取类型
+        const saved = localStorage.getItem('dataSourceSettings');
+        if (saved) {
+            const data = JSON.parse(saved);
+            const presetSources = Object.keys(dataSourceUrls); // 包含cloud、hot等预设类型
+            // 匹配预设数据源或特殊类型
+            if (presetSources.includes(data.type) || 
+                ['default', 'local', 'template'].includes(data.type)) {
+                setActiveDataSourceButton(data.type);
+            }
+        }
+    } catch (error) {
+        console.error('加载数据源按钮状态失败:', error);
+    }
+}
+    
+    // 初始加载按钮状态
+    loadDataSourceButtonState();
+}
+// 设置数据源类型
+function setDataSource(type, url = '') {
+    const data = {
+        type: type,
+        url: url
+    };
+    localStorage.setItem('dataSourceSettings', JSON.stringify(data));
+    
+    // 更新按钮活跃状态
+    document.querySelectorAll('.data-source-btn').forEach(btn => {
+        if (btn.dataset.source === type) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
 
+// 加载保存的数据源设置
+function loadSavedDataSource() {
+    try {
+        const saved = localStorage.getItem('dataSourceSettings');
+        if (saved) {
+            const data = JSON.parse(saved);
+            if (data.type === 'custom' && data.url) {
+                document.getElementById('custom-data-url').value = data.url;
+            }
+        }
+    } catch (error) {
+        console.error('加载保存的数据源设置失败:', error);
+    }
+}
 
+// 下载数据源模板文件
+function downloadDataSourceTemplate() {
+    const templateUrl = 'js/daohangmb/shuju.js';
+    const a = document.createElement('a');
+    a.href = templateUrl;
+    a.download = 'shuju.js';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
+// 从本地文件重新加载导航数据
+function reloadNavigationDataFromLocalFile(content) {
+    try {
+        const jsonStr = content.replace(/^const\s+appData\s*=\s*/, '').replace(/;$/, '');
+        const appData = JSON.parse(jsonStr);
+        
+        if (!Array.isArray(appData.navigationData)) {
+            throw new Error('导航数据不是数组');
+        }
+        
+        const cleanData = {
+            navigationData: appData.navigationData
+                ? appData.navigationData.map(cat => ({
+                    title: cat?.title || '未命名分类',
+                    links: Array.isArray(cat?.links) 
+                        ? cat.links.map(link => ({
+                            name: link?.name || '未命名链接',
+                            url: link?.url || '#',
+                            rel: link?.rel || 'nofollow',
+                            target: link?.target || '_blank'
+                        }))
+                        : []
+                }))
+                : [],
+            searchData: appData.searchData || []
+        };
+        
+        if (cleanData.navigationData.length === 0) {
+            console.warn('本地文件导航数据为空，使用默认数据');
+            cleanData.navigationData = window.DEFAULT_NAV_DATA;
+        }
+        
+        saveBackupData(cleanData);
+        updateNavigationUI(cleanData);
+        
+    } catch (error) {
+        console.error('加载本地数据失败:', error);
+        alert('加载本地数据失败: ' + error.message);
+    }
+}
+
+// 重新加载导航数据
+function reloadNavigationData(url) {
+    if (url === null) {
+        const defaultData = {
+            navigationData: window.DEFAULT_NAV_DATA,
+            searchData: []
+        };
+        saveBackupData(defaultData);
+        updateNavigationUI(defaultData);
+        return;
+    }
+    
+    fetchDataWithRetry(url).then(data => {
+        updateNavigationUI(data);
+    }).catch(error => {
+        console.error('加载数据失败:', error);
+        alert('加载数据失败: ' + error.message);
+        const defaultData = {
+            navigationData: window.DEFAULT_NAV_DATA,
+            searchData: []
+        };
+        updateNavigationUI(defaultData);
+    });
+}
+
+// 使用指定URL获取数据
+function fetchDataWithRetry(url, retryCount = 0) {
+    const MAX_RETRIES = 3;
+    
+    return fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP错误: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(dataText => {
+            try {
+                const jsonStr = dataText.replace(/^const\s+appData\s*=\s*/, '').replace(/;$/, '');
+                const appData = JSON.parse(jsonStr);
+                
+                if (!Array.isArray(appData.navigationData)) {
+                    throw new Error('导航数据不是数组');
+                }
+                if (!Array.isArray(appData.searchData)) {
+                    throw new Error('搜索数据不是数组');
+                }
+                
+                const cleanData = {
+                    navigationData: appData.navigationData
+                        ? appData.navigationData.map(cat => ({
+                            title: cat?.title || '未命名分类',
+                            links: Array.isArray(cat?.links) 
+                                ? cat.links.map(link => ({
+                                    name: link?.name || '未命名链接',
+                                    url: link?.url || '#',
+                                    rel: link?.rel || 'nofollow',
+                                    target: link?.target || '_blank'
+                                }))
+                                : []
+                        }))
+                        : [],
+                    searchData: appData.searchData || []
+                };
+                
+                if (cleanData.navigationData.length === 0) {
+                    console.warn('远程导航数据为空，使用默认数据');
+                    cleanData.navigationData = window.DEFAULT_NAV_DATA;
+                }
+                
+                saveBackupData(cleanData);
+                return cleanData;
+                
+            } catch (error) {
+                if (retryCount < MAX_RETRIES) {
+                    retryCount++;
+                    console.log(`数据加载失败，正在重试（${retryCount}/${MAX_RETRIES}）:`, error);
+                    return fetchDataWithRetry(url, retryCount);
+                }
+                throw error;
+            }
+        });
+}
+
+// 更新导航UI
+// 修改后
+function updateNavigationUI(data) {
+    window.navigationData = data.navigationData;
+    console.log('导航数据更新成功，共', window.navigationData.length, '个分类');
+    
+    // 强制刷新导航面板
+    if (window.BlockNavRenderer) {
+        // 先清空容器再重新渲染
+        const navContainer = document.getElementById('navigation-container');
+        if (navContainer) {
+            navContainer.innerHTML = '<div class="horizontal-navigation"></div>';
+        }
+        BlockNavRenderer.render(window.navigationData);
+    }
+    
+    // 强制刷新右侧导航
+    if (window.NavigationUtils) {
+        // 先清空列表再重新渲染
+        const listContainer = document.querySelector('.list ul');
+        if (listContainer) {
+            listContainer.innerHTML = '';
+        }
+        NavigationUtils.updateNavigation(window.navigationData);
+    }
+    
+    if (window.SearchUtils) {
+        SearchUtils.renderSearchOptions();
+    }
+    
+    // 显示更新提示
+    const alertEl = document.createElement('div');
+    alertEl.style = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);padding:10px 20px;background:#4CAF50;color:white;border-radius:4px;z-index:9999';
+    alertEl.textContent = '数据源已更新成功';
+    document.body.appendChild(alertEl);
+    setTimeout(() => alertEl.remove(), 2000);
+}
+
+// 保存备份数据
+function saveBackupData(data) {
+    try {
+        localStorage.setItem('navBackupData', JSON.stringify(data));
+    } catch (e) {
+        console.warn('无法保存备份数据到localStorage:', e);
+    }
+}
