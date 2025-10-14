@@ -94,21 +94,24 @@ body {
     -webkit-backdrop-filter: blur(10px);
     box-shadow: var(--search-shadow-light);
     border-radius: 18px;
-    padding: 15px; /* 减少内边距 */
+    padding: 15px;
     box-sizing: border-box;
-    min-height: 100px; /* 避免内容过短时容器消失 */
-    height: 100%; /* 充满外层容器 */
-    overflow: hidden; /* 禁用中间层滚动 */
+    min-height: 100px; /* 保留最小高度 */
+    height: 100%; /* 保持填充父容器，但后续通过子元素限制 */
+    overflow: hidden;
 }
 
 /* 分类方块容器 */
 .categories-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px; /* 减少分类间间距 */
-    height: 100%; /* 充满父容器 */
-    overflow-y: auto; /* 仅分类容器滚动 */
-    padding-right: 5px; /* 避免滚动条遮挡内容 */
+    display: grid; /* 保持网格布局 */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* 固定列宽 */
+    gap: 15px;
+    /* 关键：取消height:100%，改为max-height+auto，允许内容自适应高度 */
+    max-height: calc(100% - 0px); /* 预留内边距空间 */
+    height: auto; /* 由内容决定高度 */
+    overflow-y: auto;
+    padding-right: 5px;
+    justify-items: center; /* 水平居中对齐 */
 }
 /* 新增滚动条样式 */
 .categories-container::-webkit-scrollbar {
@@ -136,16 +139,26 @@ body {
 
 /* 单个分类方块 */
 .category-block {
-    flex: 1;
+    /* 移除flex: 1避免拉伸 */
+    width: 100%; /* 占满网格列宽 */
     min-width: 280px;
     max-width: 400px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 12px;
-    padding: 12px; /* 减少内边距 */
+    padding: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
 }
-
+@media (max-width: 768px) {
+    .categories-container {
+        grid-template-columns: 1fr; /* 移动端单列布局 */
+    }
+    
+    .category-block {
+        min-width: auto;
+        max-width: none;
+    }
+}
 /* 分类标题 */
 .category-title {
     font-size: 15px;
