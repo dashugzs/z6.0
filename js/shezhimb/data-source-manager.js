@@ -14,7 +14,9 @@ function initDataSourceListeners() {
         cloud: 'https://dhsssj.xnss.fun/cloud',
         hot: 'https://dhsssj.xnss.fun/hot',
         ecommerce: 'https://shuju.xnss.fun/dianshang',
-        dev: 'https://shuju.xnss.fun/kaifazhe'
+        dev: 'https://shuju.xnss.fun/kaifazhe',
+        yule: 'https://shuju.xnss.fun/yule',
+        ziyuan: 'https://shuju.xnss.fun/ziyuan'
     };
     
     // 统一处理数据源按钮点击
@@ -67,6 +69,8 @@ case 'cloud':
 case 'hot':
 case 'ecommerce':
 case 'dev':
+case 'yule':
+case 'ziyuan':
     const url = dataSourceUrls[sourceType];
     if (url) {
         document.getElementById('custom-data-url').value = url;
@@ -395,4 +399,3 @@ function saveBackupData(data) {
         console.warn('无法保存备份数据到localStorage:', e);
     }
 }
-
