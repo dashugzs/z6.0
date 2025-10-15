@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>版本切换框架</title>
+<head> 
+    <meta charset="UTF-8" /> 
+    
+    <!-- 视图与设备适配 -->
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" /> 
+    
+    <!-- 缓存与应用模式 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+    <meta name="browsermode" content="application" /> 
+    
+    <!-- 苹果设备特性 -->
+    <meta name="apple-mobile-web-app-capable" content="yes" /> 
+    <meta name="apple-touch-fullscreen" content="yes" /> 
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" /> 
+    
+    <!-- 全屏特性 -->
+    <meta name="full-screen" content="yes" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="x5-page-mode" content="app" /> 
+    
+    <!-- 页面信息 -->
+    <title>小牛搜索- XiaoNiuss.Top</title> 
+    <meta name="keywords" content="信仰圣光.一款业余的导航网站">
+    <meta name="description" content="可能是最简洁的搜索导航，给你简单舒爽的搜索体验。">
+    <link rel="shortcut icon" href="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" type="image/png" /> 
     <style>
         /* 基础样式重置 */
         * {
@@ -140,15 +161,21 @@
     </style>
 </head>
 <body>
+    <!-- 移动设备检测与跳转 -->
+    <script type="text/javascript"> 
+        if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) { 
+            window.location.href = "m.html"; 
+        } 
+    </script>
     <!-- 版本切换组件 -->
     <div class="version-switch-container" id="versionSwitch">
         <div class="version-panel" id="versionPanel">
             <h3>页面版式切换</h3>
             <div class="version-options">
-                <button class="version-option active" data-version="m/jijd/">极简版本</button>
-                <button class="version-option" data-version="index.html">全新改版</button>
-                <button class="version-option" data-version="index.html">最新版本</button>
-                <button class="version-option" data-version="index.html">测试版本</button>
+                <button class="version-option active" data-version="https://xiaoniuss.top/">全新改版</button>
+                <button class="version-option" data-version="https://xiaoniuss.top/m/jijd/">极简版本</button>
+                <button class="version-option" data-version="https://c.xiaoniuss.top/">最新版本</button>
+                <button class="version-option" data-version="https://b.xiaoniuss.top/">测试版本</button>
                 <!-- 预留添加新版本的位置 -->
                 <!-- <button class="version-option" data-version="new-version.html">新版本</button> -->
             </div>
@@ -159,7 +186,7 @@
     </div>
 
     <!-- 内容框架 -->
-    <iframe id="content-frame" src="index.html"></iframe>
+    <iframe id="content-frame"></iframe>
 
     <script>
         // 获取DOM元素
@@ -190,6 +217,8 @@
                 const versionUrl = e.currentTarget.getAttribute('data-version');
                 // 加载对应的HTML文件
                 contentFrame.src = versionUrl;
+                // 保存用户选择到本地存储
+                localStorage.setItem('selectedVersion', versionUrl);
                 // 保持面板打开状态
                 versionPanel.classList.add('open');
             });
@@ -210,6 +239,33 @@
         // 监听夜间模式变化
         const observer = new MutationObserver(checkDarkMode);
         observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+        // 初始化版本 - 优先使用本地存储的版本
+        function initVersion() {
+            // 从本地存储获取保存的版本
+            const savedVersion = localStorage.getItem('selectedVersion');
+            // 获取默认版本
+            const defaultVersion = document.querySelector('.version-option.active').getAttribute('data-version');
+            
+            if (savedVersion) {
+                // 如果有保存的版本，使用保存的版本
+                contentFrame.src = savedVersion;
+                // 更新按钮选中状态
+                versionOptions.forEach(option => {
+                    if (option.getAttribute('data-version') === savedVersion) {
+                        option.classList.add('active');
+                    } else {
+                        option.classList.remove('active');
+                    }
+                });
+            } else {
+                // 没有保存的版本，使用默认版本
+                contentFrame.src = defaultVersion;
+            }
+        }
+
+        // 初始化版本
+        initVersion();
     </script>
 </body>
 </html>
