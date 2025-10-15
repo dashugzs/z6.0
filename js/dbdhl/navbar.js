@@ -31,7 +31,7 @@ function updateDarkMode() {
     } else {
         // 日间模式固定样式
         navbar.style.background = 'rgba(255,255,255,0.83)';
-        navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+        navbar.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
         navbar.style.backdropFilter = 'blur(10px)';
         navbar.style.webkitBackdropFilter = 'blur(10px)';
     }
