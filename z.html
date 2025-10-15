@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>版本切换框架</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* 版本切换按钮和容器样式 */
+        .version-switch-container {
+            position: fixed;
+            left: 0;
+            top: 10%; /* 上方约3/10位置 */
+            z-index: 999999; /* 最顶层 */
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .version-panel {
+            width: 185px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 0 8px 8px 0;
+            padding: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+            transform: translateX(-100%);
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+
+        .version-panel.open {
+            transform: translateX(0);
+        }
+
+        .version-btn {
+            width: 20px;
+            height: 80px;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 2;
+            transform: translateX(-185px);
+            white-space: nowrap;
+            writing-mode: vertical-rl; /* 竖版排列 */
+            text-orientation: mixed;
+            font-size: 14px;
+            padding: 8px;
+        }
+
+        /* 当面板打开时，按钮移动到面板右侧 */
+        .version-panel.open + .version-btn {
+            transform: translateX(0px);
+        }
+
+        .version-panel h3 {
+            margin: 0 0 14px 0;
+            color: #333;
+            font-size: 14px;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .version-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .version-option {
+            padding: 8px 10px;
+            background: rgba(0,0,0,0.05);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            color: #333;
+        }
+
+        .version-option:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .version-option.active {
+            background: #3F9DFF;
+            color: white;
+        }
+
+        /* 夜间模式适配 */
+        .dark-mode .version-btn {
+            background: rgba(50,50,50,0.8);
+            color: #fff;
+        }
+
+        .dark-mode .version-panel {
+            background: rgba(30,30,30,0.9);
+        }
+
+        .dark-mode .version-panel h3 {
+            color: #fff;
+            border-bottom-color: rgba(255,255,255,0.1);
+        }
+
+        .dark-mode .version-option {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        .dark-mode .version-option:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* 内容容器样式 */
+        #content-frame {
+            width: 100%;
+            height: 100vh;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- 版本切换组件 -->
+    <div class="version-switch-container" id="versionSwitch">
+        <div class="version-panel" id="versionPanel">
+            <h3>页面版式切换</h3>
+            <div class="version-options">
+                <button class="version-option active" data-version="m/jijd/index.html">极简版本</button>
+                <button class="version-option" data-version="index.html">全新改版</button>
+                <button class="version-option" data-version="index.html">最新版本</button>
+                <button class="version-option" data-version="index.html">测试版本</button>
+                <!-- 预留添加新版本的位置 -->
+                <!-- <button class="version-option" data-version="new-version.html">新版本</button> -->
+            </div>
+        </div>
+        <div class="version-btn" id="versionBtn">
+            版本切换
+        </div>
+    </div>
+
+    <!-- 内容框架 -->
+    <iframe id="content-frame" src="index.html"></iframe>
+
+    <script>
+        // 获取DOM元素
+        const versionSwitch = document.getElementById('versionSwitch');
+        const versionPanel = document.getElementById('versionPanel');
+        const versionBtn = document.getElementById('versionBtn');
+        const versionOptions = document.querySelectorAll('.version-option');
+        const contentFrame = document.getElementById('content-frame');
+
+        // 切换面板显示/隐藏
+        versionBtn.addEventListener('click', () => {
+            versionPanel.classList.toggle('open');
+        });
+
+        // 鼠标离开区域自动收起
+        versionSwitch.addEventListener('mouseleave', () => {
+            versionPanel.classList.remove('open');
+        });
+
+        // 版本选择功能
+        versionOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                // 移除所有按钮的选中状态
+                versionOptions.forEach(opt => opt.classList.remove('active'));
+                // 给当前点击的按钮添加选中状态
+                e.currentTarget.classList.add('active');
+                // 获取版本对应的HTML文件
+                const versionUrl = e.currentTarget.getAttribute('data-version');
+                // 加载对应的HTML文件
+                contentFrame.src = versionUrl;
+                // 保持面板打开状态
+                versionPanel.classList.add('open');
+            });
+        });
+
+        // 夜间模式检测
+        function checkDarkMode() {
+            if (document.body.classList.contains('dark-mode')) {
+                document.documentElement.classList.add('dark-mode');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+            }
+        }
+
+        // 初始化检查
+        checkDarkMode();
+
+        // 监听夜间模式变化
+        const observer = new MutationObserver(checkDarkMode);
+        observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    </script>
+</body>
+</html>
