@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>导航与搜索数据管理</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .container { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+    .form-group { margin: 10px 0; }
+    label { display: inline-block; width: 100px; }
+    input, textarea, select { width: 80%; padding: 8px; margin: 5px 0; }
+    button { padding: 8px 15px; margin: 5px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+    button:hover { background: #0056b3; }
+    .category { margin: 15px 0; padding: 10px; background: #f5f5f5; border-radius: 4px; }
+    .error { color: red; }
+    .category-selector { margin: 10px 0; padding: 10px; background: #f0f0f0; border-radius: 4px; }
+    .empty-state { color: #888; padding: 10px; font-style: italic; }
+    /* 标签样式 */
+    .tabs { display: flex; gap: 10px; margin: 20px 0; }
+    .tab-btn { background: #e9ecef; color: #495057; }
+    .tab-btn.active { background: #007bff; color: white; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .logout-btn { float: right; background: #dc3545; }
+    .logout-btn:hover { background: #bb2d3b; }
+  </style>
+</head>
+<body>
+  <h1>
+    小牛导航与搜索数据管理
+    <button class="logout-btn" onclick="logout()">退出登录</button>
+  </h1>
+  
+  <!-- 标签切换 -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('navigation')">导航数据管理</button>
+    <button class="tab-btn" onclick="switchTab('search')">搜索数据管理</button>
+  </div>
+
+  <!-- 导航数据管理区域 -->
+  <div id="navigation-tab" class="tab-content active">
+    <!-- 新增分类 -->
+    <div class="container">
+      <h3>新增导航分类</h3>
+      <div class="form-group">
+        <label>分类标题：</label>
+        <input type="text" id="newCategoryTitle" placeholder="例如：旗下产品">
+      </div>
+      <button onclick="addNavigationCategory()">添加分类</button>
+      <div id="navAddStatus" class="error"></div>
+    </div>
+
+    <!-- 现有分类管理 -->
+    <div class="container">
+      <h3>现有导航分类管理</h3>
+      <div class="category-selector">
+        <label>选择分类：</label>
+        <select id="navigationCategorySelector" onchange="renderSelectedNavigationCategory()">
+          <option value="">-- 请选择分类 --</option>
+        </select>
+        <button onclick="renderAllNavigationCategories()">显示全部</button>
+      </div>
+      <div id="navigationCategoriesContainer"></div>
+    </div>
+  </div>
+
+  <!-- 搜索数据管理区域 -->
+  <div id="search-tab" class="tab-content">
+    <!-- 新增搜索分类 -->
+    <div class="container">
+      <h3>新增搜索分类</h3>
+      <div class="form-group">
+        <label>分类标题：</label>
+        <input type="text" id="newSearchCategoryTitle" placeholder="例如：常用搜索">
+      </div>
+      <button onclick="addSearchCategory()">添加分类</button>
+      <div id="searchAddStatus" class="error"></div>
+    </div>
+
+    <!-- 现有搜索分类管理 -->
+    <div class="container">
+      <h3>现有搜索分类管理</h3>
+      <div class="category-selector">
+        <label>选择分类：</label>
+        <select id="searchCategorySelector" onchange="renderSelectedSearchCategory()">
+          <option value="">-- 请选择分类 --</option>
+        </select>
+        <button onclick="renderAllSearchCategories()">显示全部</button>
+      </div>
+      <div id="searchCategoriesContainer"></div>
+    </div>
+  </div>
+
+  <!-- 全量更新 -->
+  <div class="container">
+    <h3>全量数据更新（JSON格式）</h3>
+    <textarea id="fullData" rows="10" placeholder='{"navigationData":[],"searchData":[]}'></textarea>
+    <br>
+    <button onclick="updateFullData()">更新全量数据</button>
+    <div id="fullDataStatus" class="error"></div>
+  </div>
+
+  <script>
+    // 检查是否已登录，如果未登录则跳转到登录页面
+    if (!localStorage.getItem("adminKey") || !localStorage.getItem("workerUrl")) {
+      window.location.href = "login.html";
+    }
+    
+    // 从localStorage获取配置
+    let WORKER_URL = localStorage.getItem("workerUrl");
+    let isAuthenticated = true; // 已从登录页面验证
+    // 初始化确保为数组，避免null/undefined
+    let appData = {
+      navigationData: [],
+      searchData: []
+    };
+
+    // 切换标签页
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`${tabName}-tab`).classList.add('active');
+      document.querySelector(`.tab-btn[onclick="switchTab('${tabName}')"]`).classList.add('active');
+    }
+
+    // 退出登录
+    function logout() {
+      if (confirm("确定要退出登录吗？")) {
+        localStorage.removeItem("adminKey");
+        localStorage.removeItem("workerUrl");
+        window.location.href = "login.html";
+      }
+    }
+
+    // 页面加载时自动加载数据
+    window.onload = function() {
+      loadData();
+    }
+
+    // 加载现有数据并初始化（增强错误处理和数组校验）
+    async function loadData() {
+      if (!isAuthenticated) return;
+      
+      try {
+        const res = await fetch(WORKER_URL);
+        const dataText = await res.text();
+        let parsedData = { navigationData: [], searchData: [] }; // 默认安全初始化
+
+        // 处理数据格式解析
+        try {
+          // 解析标准格式
+          const jsonStr = dataText.replace(/^const\s+appData\s*=\s*/, '').replace(/;$/, '');
+          parsedData = JSON.parse(jsonStr);
+        } catch (e) {
+          console.warn("标准格式解析失败，尝试旧格式:", e);
+          try {
+            // 尝试解析旧导航数据格式
+            const oldNavData = JSON.parse(dataText.replace("const navigationData = ", "").replace(";", ""));
+            parsedData.navigationData = Array.isArray(oldNavData) ? oldNavData : [];
+            parsedData.searchData = [];
+          } catch (e2) {
+            console.warn("旧格式解析失败，使用空数据:", e2);
+          }
+        }
+        
+        // 强制确保数据为数组
+        parsedData.navigationData = Array.isArray(parsedData.navigationData) ? parsedData.navigationData : [];
+        parsedData.searchData = Array.isArray(parsedData.searchData) ? parsedData.searchData : [];
+
+        // 保存数据
+        appData = { ...parsedData };
+
+        // 更新全量数据文本框
+        document.getElementById("fullData").value = JSON.stringify(appData, null, 2);
+        
+        // 更新选择器和渲染
+        updateNavigationCategorySelector();
+        updateSearchCategorySelector();
+        
+        if (appData.navigationData.length > 0) {
+          document.getElementById("navigationCategorySelector").value = "0";
+          renderSelectedNavigationCategory();
+        } else {
+          document.getElementById("navigationCategoriesContainer").innerHTML = "暂无导航分类数据";
+        }
+        
+        if (appData.searchData.length > 0) {
+          document.getElementById("searchCategorySelector").value = "0";
+          renderSelectedSearchCategory();
+        } else {
+          document.getElementById("searchCategoriesContainer").innerHTML = "暂无搜索分类数据";
+        }
+      } catch (e) {
+        document.getElementById("fullDataStatus").textContent = "加载失败: " + e.message;
+      }
+    }
+
+    // ==================== 导航数据管理 ====================
+    function updateNavigationCategorySelector() {
+      const selector = document.getElementById("navigationCategorySelector");
+      const currentValue = selector.value;
+      selector.innerHTML = '<option value="">-- 请选择分类 --</option>';
+      
+      if (Array.isArray(appData.navigationData)) {
+        appData.navigationData.forEach((cat, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = cat?.title || `未命名分类${index + 1}`;
+          selector.appendChild(option);
+        });
+      }
+      
+      if (currentValue && selector.querySelector(`option[value="${currentValue}"]`)) {
+        selector.value = currentValue;
+      }
+    }
+
+    function renderAllNavigationCategories() {
+      if (!Array.isArray(appData.navigationData) || appData.navigationData.length === 0) {
+        document.getElementById("navigationCategoriesContainer").innerHTML = "暂无导航分类数据";
+        return;
+      }
+      
+      const html = appData.navigationData.map((cat, index) => `
+        <div class="category">
+          <h4>
+            ${cat.title || '未命名分类'} 
+            <button onclick="deleteNavigationCategory(${index})">删除分类</button>
+          </h4>
+          <div>
+            ${cat.links && cat.links.length > 0 ? cat.links.map((link, linkIdx) => `
+              <div class="form-group">
+                链接 ${linkIdx + 1}：
+                <input type="text" placeholder="名称" value="${link.name || ''}" 
+                  onchange="updateNavigationLink(${index}, ${linkIdx}, 'name', this.value)">
+                <input type="text" placeholder="URL" value="${link.url || ''}" 
+                  onchange="updateNavigationLink(${index}, ${linkIdx}, 'url', this.value)">
+                <button onclick="deleteNavigationLink(${index}, ${linkIdx})">删除</button>
+              </div>
+            `).join("") : '<div class="empty-state">暂无链接，请点击"添加链接"按钮</div>'}
+          </div>
+          <button onclick="addNavigationLink(${index})">添加链接</button>
+        </div>
+      `).join("");
+      
+      document.getElementById("navigationCategoriesContainer").innerHTML = html;
+    }
+
+    function renderSelectedNavigationCategory() {
+      const index = document.getElementById("navigationCategorySelector").value;
+      if (index === "" || !Array.isArray(appData.navigationData) || !appData.navigationData[index]) {
+        document.getElementById("navigationCategoriesContainer").innerHTML = "请选择有效的分类";
+        return;
+      }
+      
+      const cat = appData.navigationData[index];
+      const html = `
+        <div class="category">
+          <h4>
+            ${cat.title || '未命名分类'} 
+            <button onclick="deleteNavigationCategory(${index})">删除分类</button>
+          </h4>
+          <div>
+            ${cat.links && cat.links.length > 0 ? cat.links.map((link, linkIdx) => `
+              <div class="form-group">
+                链接 ${linkIdx + 1}：
+                <input type="text" placeholder="名称" value="${link.name || ''}" 
+                  onchange="updateNavigationLink(${index}, ${linkIdx}, 'name', this.value)">
+                <input type="text" placeholder="URL" value="${link.url || ''}" 
+                  onchange="updateNavigationLink(${index}, ${linkIdx}, 'url', this.value)">
+                <button onclick="deleteNavigationLink(${index}, ${linkIdx})">删除</button>
+              </div>
+            `).join("") : '<div class="empty-state">暂无链接，请点击"添加链接"按钮</div>'}
+          </div>
+          <button onclick="addNavigationLink(${index})">添加链接</button>
+        </div>
+      `;
+      
+      document.getElementById("navigationCategoriesContainer").innerHTML = html;
+    }
+
+    async function addNavigationCategory() {
+      const title = document.getElementById("newCategoryTitle").value.trim();
+      if (!title) {
+        document.getElementById("navAddStatus").textContent = "标题不能为空";
+        return;
+      }
+      
+      try {
+        // 确保navigationData是数组
+        if (!Array.isArray(appData.navigationData)) {
+          appData.navigationData = [];
+        }
+        appData.navigationData.push({ title, links: [] });
+        // 关键修复：添加分类后更新全量数据文本框
+        document.getElementById("fullData").value = JSON.stringify(appData, null, 2);
+        await updateFullData();
+        document.getElementById("newCategoryTitle").value = "";
+        document.getElementById("navAddStatus").textContent = "";
+      } catch (e) {
+        document.getElementById("navAddStatus").textContent = "添加失败: " + e.message;
+      }
+    }
+
+    async function deleteNavigationCategory(index) {
+      if (!confirm("确定删除？")) return;
+      try {
+        if (Array.isArray(appData.navigationData)) {
+          appData.navigationData.splice(index, 1);
+          await updateFullData();
+        }
+      } catch (e) {
+        alert("删除失败: " + e.message);
+      }
+    }
+
+    async function addNavigationLink(categoryIndex) {
+      if (!Array.isArray(appData.navigationData)) {
+        appData.navigationData = [];
+        alert("导航数据异常，已重置");
+        return;
+      }
+      const category = appData.navigationData[categoryIndex];
+      if (!category) {
+        alert("分类不存在");
+        return;
+      }
+      // 确保links是数组
+      category.links = Array.isArray(category.links) ? category.links : [];
+      
+      category.links.push({
+        name: "新链接",
+        url: "#",
+        rel: "nofollow",
+        target: "_blank"
+      });
+      document.getElementById("fullData").value = JSON.stringify(appData, null, 2);
+      await updateFullData();
+    }
+
+    function updateNavigationLink(categoryIndex, linkIndex, key, value) {
+      if (!Array.isArray(appData.navigationData)) return;
+      const category = appData.navigationData[categoryIndex];
+      if (!category || !Array.isArray(category.links)) return;
+      
+      category.links[linkIndex][key] = value;
+      document.getElementById("fullData").value = JSON.stringify(appData, null, 2);
+    }
+
+    async function deleteNavigationLink(categoryIndex, linkIndex) {
+      if (!Array.isArray(appData.navigationData)) return;
+      const category = appData.navigationData[categoryIndex];
+      if (!category || !Array.isArray(category.links)) return;
+      
+      category.links.splice(linkIndex, 1);
+      document.getElementById("fullData").value = JSON.stringify(appData, null, 2);
+      await updateFullData();
+    }
+
+    // ==================== 搜索数据管理 ====================
+    function updateSearchCategorySelector() {
+      const selector = document.getElementById("searchCategorySelector");
+      const currentValue = selector.value;
+      selector.innerHTML = '<option value="">-- 请选择分类 --</option>';
+      
+      // 确保是数组再调用forEach
+      if (Array.isArray(appData.searchData)) {
+        appData.searchData.forEach((cat, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = cat?.title || `未命名搜索分类${index + 1}`;
+          selector.appendChild(option);
+        });
+      }
+      
+      // 恢复之前的选中状态（如果存在）
+      if (currentValue && selector.querySelector(`option[value="${currentValue}"]`)) {
+        selector.value = currentValue;
+      }
+    }
+
+    function renderAllSearchCategories() {
+      if (!Array.isArray(appData.searchData) || appData.searchData.length === 0) {
+        document.getElementById("searchCategoriesContainer").innerHTML = "暂无搜索分类数据";
+        return;
+      }
+      
+      const html = appData.searchData.map((cat, index) => `
+        <div class="category">
+          <h4>
+            ${cat.title || '未命名搜索分类'} 
+            <button onclick="deleteSearchCategory(${index})">删除分类</button>
+          </h4>
+          <div>
+            ${cat.options && cat.options.length > 0 ? cat.options.map((opt, optIdx) => `
+              <div class="form-group">
+                搜索引擎 ${optIdx + 1}：
+                <input type="text" placeholder="名称" value="${opt.name || ''}" 
+                  onchange="updateSearchOption(${index}, ${optIdx}, 'name', this.value)">
+                <input type="text" placeholder="URL" value="${opt.value || ''}" 
+                  onchange="updateSearchOption(${index}, ${optIdx}, 'value', this.value)">
+                <input type="text" placeholder="占位文本" value="${opt.placeholder || ''}" 
+                  onchange="updateSearchOption(${index}, ${optIdx}, 'placeholder', this.value)">
+                <label>
+                  <input type="checkbox" ${opt.checked ? 'checked' : ''} 
+                    onchange="updateSearchOption(${index}, ${optIdx}, 'checked', this.checked)">
+                  默认选中
+                </label>
+                <button onclick="deleteSearchOption(${index}, ${optIdx})">删除</button>
+              </div>
+            `).join("") : '<div class="empty-state">暂无搜索引擎，请点击"添加搜索引擎"按钮</div>'}
+          </div>
+          <button onclick="addSearchOption(${index})">添加搜索引擎</button>
+        </div>
+      `).join("");
+      
+      document.getElementById("searchCategoriesContainer").innerHTML = html;
+    }
+
+    function renderSelectedSearchCategory() {
+      const index = document.getElementById("searchCategorySelector").value;
+      if (index === "" || !Array.isArray(appData.searchData) || !appData.searchData[index]) {
+        document.getElementById("searchCategoriesContainer").innerHTML = "请选择有效的分类";
+        return;
+      }
+      
+      const cat = appData.searchData[index];
+      const html = `
+        <div class="category">
+          <h4>
+            ${cat.title || '未命名搜索分类'} 
+            <button onclick="deleteSearchCategory(${index})">删除分类</button>
+          </h4>
+          <div>
+            ${cat.options && cat.options.length > 0 ? cat.options.map((opt, optIdx) => `
+              <div class="form-group">
+                搜索引擎 ${optIdx + 1}：
+                <input type="text" placeholder="名称" value="${opt.name || ''}" 
+                  onchange="updateSearchOption(${index}, ${optIdx}, 'name', this.value)">
+                <input type="text" placeholder="URL" value="${opt.value || ''}" 
+                  onchange="updateSearchOption(${index}, ${optIdx}, 'value', this.value)">
+                <input type="text" placeholder="占位文本" value="${opt.placeholder || ''}" 
+                  onchange="updateSearchOption(${index}, ${optIdx}, 'placeholder', this.value)">
+                <label>
+                  <input type="checkbox" ${opt.checked ? 'checked' : ''} 
+                    onchange="updateSearchOption(${index}, ${optIdx}, 'checked', this.checked)">
+                  默认选中
+                </label>
+                <button onclick="deleteSearchOption(${index}, ${optIdx})">删除</button>
+              </div>
+            `).join("") : '<div class="empty-state">暂无搜索引擎，请点击"添加搜索引擎"按钮</div>'}
+          </div>
+          <button onclick="addSearchOption(${index})">添加搜索引擎</button>
+        </div>
+      `;
+      
+      document.getElementById("searchCategoriesContainer").innerHTML = html;
+    }
+
+    async function addSearchCategory() {
+      const title = document.getElementById("newSearchCategoryTitle").value.trim();
+      if (!title) {
+        document.getElementById("searchAddStatus").textContent = "标题不能为空";
+        return;
+      }
+      
+      try {
+        // 确保searchData是数组
+        if (!Array.isArray(appData.searchData)) {
+          appData.searchData = [];
+        }
+        const id = "group-" + Math.random().toString(36).substr(2, 6);
+        appData.searchData.push({ id, title, options: [] });
+        // 关键修复：添加分类后更新全量数据文本框
+        document.getElementById("fullData").value = JSON.stringify(appData, null, 2);
+        await updateFullData();
+        document.getElementById("newSearchCategoryTitle").value = "";
+        document.getElementById("searchAddStatus").textContent = "";
+      } catch (e) {
+        document.getElementById("searchAddStatus").textContent = "添加失败: " + e.message;
+      }
+    }
+
+    async function deleteSearchCategory(index) {
+      if (!confirm("确定删除？")) return;
+      try {
+        if (Array.isArray(appData.searchData)) {
+          appData.searchData.splice(index, 1);
+          await updateFullData();
+        }
+      } catch (e) {
+        alert("删除失败: " + e.message);
+      }
+    }
+
+    async function addSearchOption(categoryIndex) {
+      if (!Array.isArray(appData.searchData)) {
+        appData.searchData = [];
+        alert("搜索数据异常，已重置");
+        return;
+      }
+      const category = appData.searchData[categoryIndex];
+      if (!category) {
+        alert("分类不存在");
+        return;
+      }
+      // 确保options是数组
+      category.options = Array.isArray(category.options) ? category.options : [];
+      
+      category.options.push({
+        id: "opt-" + Math.random().toString(36).substr(2, 6),
+        name: "新搜索引擎",
+        value: "https://example.com/search?q=",
+        placeholder: "请输入搜索内容",
+        checked: false
+      });
+      document.getElementById("fullData").value = JSON.stringify(appData, null, 2);
+      await updateFullData();
+    }
+
+    function updateSearchOption(categoryIndex, optionIndex, key, value) {
+      if (!Array.isArray(appData.searchData)) return;
+      const category = appData.searchData[categoryIndex];
+      if (!category || !Array.isArray(category.options)) return;
+      
+      category.options[optionIndex][key] = value;
+      document.getElementById("fullData").value = JSON.stringify(appData, null, 2);
+    }
+
+    async function deleteSearchOption(categoryIndex, optionIndex) {
+      if (!Array.isArray(appData.searchData)) return;
+      const category = appData.searchData[categoryIndex];
+      if (!category || !Array.isArray(category.options)) return;
+      
+      category.options.splice(optionIndex, 1);
+      document.getElementById("fullData").value = JSON.stringify(appData, null, 2);
+      await updateFullData();
+    }
+
+    async function updateFullData() {
+      if (!isAuthenticated) {
+        alert("请先验证管理员身份");
+        return;
+      }
+      
+      try {
+        const fullDataStr = document.getElementById("fullData").value;
+        const parsed = JSON.parse(fullDataStr);
+        
+        // 验证数据结构
+        if (!parsed.navigationData || !Array.isArray(parsed.navigationData)) {
+          throw new Error("导航数据必须是数组");
+        }
+        if (!parsed.searchData || !Array.isArray(parsed.searchData)) {
+          throw new Error("搜索数据必须是数组");
+        }
+        
+        // 保存到本地
+        appData = parsed;
+        
+        // 提交到服务器
+        const response = await fetch(WORKER_URL, {
+          method: "PUT",
+          body: fullDataStr,
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${localStorage.getItem("adminKey")}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error("服务器响应错误: " + await response.text());
+        }
+        
+        // 更新选择器和重新渲染
+        updateNavigationCategorySelector();
+        updateSearchCategorySelector();
+        renderSelectedNavigationCategory();
+        renderSelectedSearchCategory();
+        
+        document.getElementById("fullDataStatus").textContent = "数据更新成功";
+        setTimeout(() => {
+          document.getElementById("fullDataStatus").textContent = "";
+        }, 2000);
+      } catch (e) {
+        document.getElementById("fullDataStatus").textContent = "更新失败: " + e.message;
+      }
+    }
+  </script>
+</body>
+</html>
