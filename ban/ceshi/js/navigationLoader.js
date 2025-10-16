@@ -1,205 +1,226 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('search-container');
-    if (container) {
-        container.innerHTML = `
-            <div class="s-search mx-auto text-center" style="color: white; padding: 20px;">
-                <p>加载中...</p>
-            </div>
-        `;
-    }
-    setTimeout(loadSearchData, 300);
-});
+// 动态添加样式（保持不变）
+function addNavigationStyles() {
+    const style = document.createElement('style');
+    style.textContent = `
+        /* 新增容器样式 - 与搜索容器保持一致的宽度和毛玻璃效果 */
+        .new-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .glass-container {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        
+        /* 导航容器样式 - 占新增容器1/3宽度 */
+        .navigation-container {
+            width: 33.333%;
+            color: white;
+        }
+        
+        .navigation-title {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .nav-category {
+            margin-bottom: 20px;
+        }
+        
+        .category-name {
+            font-size: 16px;
+            margin-bottom: 10px;
+            text-align: left;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .nav-link-item {
+            width: calc(25% - 8px); /* 一行显示4个 */
+            box-sizing: border-box;
+        }
+        
+        .nav-link {
+            display: block;
+            padding: 6px 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            text-align: center;
+            font-size: 12px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255, 103, 0, 0.8);
+            transform: scale(1.05);
+        }
+        
+        /* 左侧内容区样式 - 占新增容器2/3宽度 */
+        .content-area {
+            width: 66.666%;
+        }
+    `;
+    document.head.appendChild(style);
+}
 
-function loadSearchData() {
-    const container = document.getElementById('search-container');
-    if (!container) {
-        console.error('未找到搜索容器 #search-container');
-        return;
-    }
+// 创建导航容器（保持不变）
+function createNavigationContainer() {
+    const searchContainer = document.querySelector('.search-container');
+    if (!searchContainer) return;
+    
+    // 创建新容器（搜索框下方）
+    const newContainer = document.createElement('div');
+    newContainer.className = 'new-container';
+    
+    const glassContainer = document.createElement('div');
+    glassContainer.className = 'glass-container';
+    
+    // 左侧内容区
+    const contentArea = document.createElement('div');
+    contentArea.className = 'content-area';
+    
+    // 右侧导航容器
+    const navContainer = document.createElement('div');
+    navContainer.className = 'navigation-container';
+    
+    const navTitle = document.createElement('div');
+    navTitle.className = 'navigation-title';
+    navTitle.textContent = '网址导航';
+    
+    const navContent = document.createElement('div');
+    navContent.className = 'navigation-content';
+    
+    navContainer.appendChild(navTitle);
+    navContainer.appendChild(navContent);
+    
+    glassContainer.appendChild(contentArea);
+    glassContainer.appendChild(navContainer);
+    newContainer.appendChild(glassContainer);
+    
+    // 添加到搜索容器下方
+    searchContainer.parentNode.insertBefore(newContainer, searchContainer.nextSibling);
+    
+    return navContent;
+}
 
-    const dataUrl = 'https://shuju.xnss.fun/default'; 
+// 渲染导航数据（保持不变）
+function renderNavigationData(navigationData, container) {
+    if (!navigationData || !container) return;
+    
+    navigationData.forEach(category => {
+        const categoryDiv = document.createElement('div');
+        categoryDiv.className = 'nav-category';
+        
+        // 分类名称
+        const categoryName = document.createElement('div');
+        categoryName.className = 'category-name';
+        categoryName.textContent = category.title;
+        
+        // 链接容器
+        const linksDiv = document.createElement('div');
+        linksDiv.className = 'nav-links';
+        
+        // 添加链接
+        category.links.forEach(link => {
+            const linkItem = document.createElement('div');
+            linkItem.className = 'nav-link-item';
+            
+            const aTag = document.createElement('a');
+            aTag.href = link.url;
+            aTag.className = 'nav-link';
+            aTag.textContent = link.name;
+            aTag.target = link.target || '_blank';
+            aTag.rel = link.rel || 'nofollow';
+            
+            linkItem.appendChild(aTag);
+            linksDiv.appendChild(linkItem);
+        });
+        
+        categoryDiv.appendChild(categoryName);
+        categoryDiv.appendChild(linksDiv);
+        container.appendChild(categoryDiv);
+    });
+}
+
+// 修正数据加载逻辑（参考搜索模块）
+function loadNavigationData(container) {
+    // 与搜索模块使用相同的数据源
+    const dataUrl = 'https://shuju.xnss.fun/default';
     const timeoutTimer = setTimeout(() => {
-        showError('搜索数据加载超时');
+        container.innerHTML = '<p style="text-align: center; padding: 20px;">导航数据加载超时</p>';
     }, 10000);
 
-    // 关键：通过fetch获取脚本内容，手动修正变量作用域
     fetch(dataUrl)
         .then(response => {
-            if (!response.ok) throw new Error('数据源请求失败');
-            return response.text(); // 获取脚本文本内容
+            if (!response.ok) throw new Error(`HTTP错误: ${response.status}`);
+            return response.text();
         })
         .then(scriptContent => {
             clearTimeout(timeoutTimer);
-            // 在原脚本后追加代码：将局部appData赋值给window.appData
+            // 完全参考搜索模块的处理方式，确保变量作用域正确
             const modifiedScript = `${scriptContent}\nwindow.appData = appData;`;
             
-            // 创建Blob对象并生成URL（避免跨域和脚本注入风险）
             const blob = new Blob([modifiedScript], { type: 'text/javascript' });
             const blobUrl = URL.createObjectURL(blob);
 
-            // 加载处理后的脚本
             const script = document.createElement('script');
             script.src = blobUrl;
             script.onload = function() {
-                URL.revokeObjectURL(blobUrl); // 释放资源
-                // 验证数据结构
-                if (window.appData && Array.isArray(window.appData.searchData)) {
-                    renderSearchBox(window.appData.searchData);
+                URL.revokeObjectURL(blobUrl);
+                // 验证数据结构（关键修复点）
+                if (window.appData && 
+                    window.appData.hasOwnProperty('navigationData') && 
+                    Array.isArray(window.appData.navigationData)) {
+                    renderNavigationData(window.appData.navigationData, container);
                 } else {
-                    showError('搜索数据格式错误');
+                    container.innerHTML = `
+                        <p style="text-align: center; padding: 20px;">
+                            导航数据格式错误<br>
+                            预期结构: { navigationData: [...] }
+                        </p>
+                    `;
                 }
             };
             script.onerror = function() {
-                showError('处理后的脚本加载失败');
+                container.innerHTML = '<p style="text-align: center; padding: 20px;">导航脚本解析失败</p>';
             };
             document.head.appendChild(script);
         })
         .catch(error => {
             clearTimeout(timeoutTimer);
-            console.error('数据加载失败:', error);
-            showError('搜索数据加载失败，请检查网络');
+            console.error('导航数据加载失败:', error);
+            container.innerHTML = `<p style="text-align: center; padding: 20px;">加载失败: ${error.message}</p>`;
         });
 }
-// 渲染搜索框（保持与原页面样式一致）
-function renderSearchBox(searchData) {
-    const container = document.getElementById('search-container');
-    if (!container) return;
 
-    let html = `
-        <div class="s-search">
-            <div id="search" class="s-search mx-auto">
-                <div class="big-title text-center mb-3 mb-md-5 mt-2">
-                    <p class="h1" style="color: #fff;letter-spacing: 6px;">小牛搜索</p>
-                </div>
-                
-                <div id="search-list-menu" class="hide-type-list">
-                    <div class="s-type text-center">
-                        <div class="s-type-list big">
-                            <div class="anchor" style="position: absolute; left: 50%; opacity: 0;"></div>
-    `;
-
-    // 生成分类标签
-    searchData.forEach(group => {
-        html += `<label for="${group.id}" data-id="${group.id}" ${group.id === 'group-a' ? 'class="active"' : ''}>
-                    <span>${group.title}</span>
-                </label>`;
-    });
-
-    html += `
-                        </div>
-                    </div>
-                </div>
-                
-                <form id="search-form" class="super-search-fm">
-                    <input type="text" id="search-text" class="form-control smart-tips search-key" 
-                           placeholder="输入关键字搜索" style="outline:0" autocomplete="off">
-                    <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
-                
-                <div id="search-list" class="hide-type-list">
-    `;
-
-    // 生成搜索分组
-    searchData.forEach(group => {
-        html += `
-            <div class="search-group ${group.id} ${group.id === 'group-a' ? 'active' : ''}">
-                <ul class="search-type">
-        `;
-
-        group.options.forEach(option => {
-            html += `
-                <li>
-                    <input hidden="" type="radio" name="type" id="${option.id}"
-                           value="${option.value}" data-placeholder="${option.placeholder || '输入搜索内容'}" 
-                           ${option.checked ? 'checked="checked"' : ''}>
-                    <label for="${option.id}"><span class="text-muted">${option.name}</span></label>
-                </li>
-            `;
-        });
-
-        html += `
-                </ul>
-            </div>
-        `;
-    });
-
-    html += `
-                </div>
-                <div class="card search-smart-tips" style="display: none">
-                    <ul></ul>
-                </div>
-            </div>
-        </div>
-    `;
-
-    container.innerHTML = html;
-    initSearchEvents();
-}
-
-// 初始化搜索事件（与原页面逻辑一致）
-function initSearchEvents() {
-    const typeLabels = document.querySelectorAll('.s-type-list label');
-    const searchGroups = document.querySelectorAll('.search-group');
-    const radioInputs = document.querySelectorAll('input[name="type"]');
-    const searchForm = document.getElementById('search-form');
-    const searchInput = document.getElementById('search-text');
-
-    // 分类标签切换
-    typeLabels.forEach(label => {
-        label.addEventListener('click', function() {
-            typeLabels.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            const groupId = this.dataset.id;
-            searchGroups.forEach(group => {
-                group.classList.remove('active');
-                if (group.classList.contains(groupId)) {
-                    group.classList.add('active');
-                }
-            });
-            // 自动选中第一个选项
-            const firstRadio = document.querySelector(`.${groupId} input[type="radio"]`);
-            if (firstRadio) {
-                firstRadio.checked = true;
-                searchInput.placeholder = firstRadio.dataset.placeholder || '输入搜索内容';
-            }
-        });
-    });
-
-    // 选项切换时更新占位符
-    radioInputs.forEach(radio => {
-        radio.addEventListener('change', function() {
-            searchInput.placeholder = this.dataset.placeholder || '输入搜索内容';
-        });
-    });
-
-    // 初始化第一个选项的占位符
-    const firstChecked = document.querySelector('input[name="type"]:checked');
-    if (firstChecked) {
-        searchInput.placeholder = firstChecked.dataset.placeholder || '输入搜索内容';
-    }
-
-    // 表单提交
-    searchForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const searchText = searchInput.value.trim();
-        const selectedRadio = document.querySelector('input[name="type"]:checked');
-        if (selectedRadio && searchText) {
-            const url = selectedRadio.value + encodeURIComponent(searchText);
-            window.open(url, '_blank');
-        }
-    });
-}
-
-function showError(message) {
-    const container = document.getElementById('search-container');
-    if (container) {
-        container.innerHTML = `
-            <div class="s-search mx-auto text-center" style="color: white; padding: 20px;">
-                <p>${message}</p>
-                <button onclick="window.location.reload()" style="margin-top:10px; padding:5px 15px; border:none; border-radius:4px; background:rgba(255,255,255,0.2); color:white; cursor:pointer;">
-                    刷新页面
-                </button>
-            </div>
-        `;
+// 初始化导航功能
+function initNavigation() {
+    addNavigationStyles();
+    const navContentContainer = createNavigationContainer();
+    if (navContentContainer) {
+        loadNavigationData(navContentContainer);
     }
 }
+
+// 页面加载完成后初始化（与搜索模块保持一致的时机）
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(initNavigation, 300); // 与搜索加载延迟一致，避免资源竞争
+});
