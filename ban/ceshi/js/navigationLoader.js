@@ -1,33 +1,18 @@
-// 动态添加样式（保持不变）
+// navigationLoader.js
+// 负责导航模块的加载和渲染，依赖fangkuai.js提供的容器
+
+// 动态添加导航样式
 function addNavigationStyles() {
     const style = document.createElement('style');
     style.textContent = `
-        /* 新增容器样式 - 与搜索容器保持一致的宽度和毛玻璃效果 */
-        .new-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .glass-container {
-            background-color: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 20px;
-            display: flex;
-            gap: 20px;
-        }
-        
-        /* 导航容器样式 - 占新增容器1/3宽度 */
+        /* 导航容器样式 - 占方块容器2/3宽度，左对齐 */
         .navigation-container {
-            width: 33.333%;
             color: white;
+            text-align: left;
         }
         
         .navigation-title {
-            text-align: center;
+            text-align: left;
             font-size: 18px;
             margin-bottom: 15px;
             padding-bottom: 10px;
@@ -48,11 +33,11 @@ function addNavigationStyles() {
         .nav-links {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 9px;
         }
         
         .nav-link-item {
-            width: calc(25% - 8px); /* 一行显示4个 */
+            width: calc(16.666% - 8px); /* 一行显示6个 */
             box-sizing: border-box;
         }
         
@@ -73,31 +58,17 @@ function addNavigationStyles() {
             transform: scale(1.05);
         }
         
-        /* 左侧内容区样式 - 占新增容器2/3宽度 */
+        /* 右侧内容区样式 - 占方块容器1/3宽度 */
         .content-area {
-            width: 66.666%;
+            width: 33.333%;
         }
     `;
     document.head.appendChild(style);
 }
 
-// 创建导航容器（保持不变）
+// 创建导航容器
 function createNavigationContainer() {
-    const searchContainer = document.querySelector('.search-container');
-    if (!searchContainer) return;
-    
-    // 创建新容器（搜索框下方）
-    const newContainer = document.createElement('div');
-    newContainer.className = 'new-container';
-    
-    const glassContainer = document.createElement('div');
-    glassContainer.className = 'glass-container';
-    
-    // 左侧内容区
-    const contentArea = document.createElement('div');
-    contentArea.className = 'content-area';
-    
-    // 右侧导航容器
+    // 创建左侧导航容器
     const navContainer = document.createElement('div');
     navContainer.className = 'navigation-container';
     
@@ -111,17 +82,19 @@ function createNavigationContainer() {
     navContainer.appendChild(navTitle);
     navContainer.appendChild(navContent);
     
-    glassContainer.appendChild(contentArea);
-    glassContainer.appendChild(navContainer);
-    newContainer.appendChild(glassContainer);
+    // 创建右侧内容区
+    const contentArea = document.createElement('div');
+    contentArea.className = 'content-area';
     
-    // 添加到搜索容器下方
-    searchContainer.parentNode.insertBefore(newContainer, searchContainer.nextSibling);
+    // 将导航容器添加到方块容器中，占2/3宽度
+    window.fangkuai.addToContainer(navContainer, '66.666%');
+    // 将右侧内容区添加到方块容器中，占1/3宽度
+    window.fangkuai.addToContainer(contentArea, '33.333%');
     
     return navContent;
 }
 
-// 渲染导航数据（保持不变）
+// 渲染导航数据
 function renderNavigationData(navigationData, container) {
     if (!navigationData || !container) return;
     
@@ -160,7 +133,7 @@ function renderNavigationData(navigationData, container) {
     });
 }
 
-// 修正数据加载逻辑（参考搜索模块）
+// 加载导航数据
 function loadNavigationData(container) {
     // 与搜索模块使用相同的数据源
     const dataUrl = 'https://shuju.xnss.fun/default';
@@ -175,7 +148,7 @@ function loadNavigationData(container) {
         })
         .then(scriptContent => {
             clearTimeout(timeoutTimer);
-            // 完全参考搜索模块的处理方式，确保变量作用域正确
+            // 处理脚本内容，确保变量作用域正确
             const modifiedScript = `${scriptContent}\nwindow.appData = appData;`;
             
             const blob = new Blob([modifiedScript], { type: 'text/javascript' });
@@ -185,7 +158,7 @@ function loadNavigationData(container) {
             script.src = blobUrl;
             script.onload = function() {
                 URL.revokeObjectURL(blobUrl);
-                // 验证数据结构（关键修复点）
+                // 验证数据结构
                 if (window.appData && 
                     window.appData.hasOwnProperty('navigationData') && 
                     Array.isArray(window.appData.navigationData)) {
@@ -214,13 +187,19 @@ function loadNavigationData(container) {
 // 初始化导航功能
 function initNavigation() {
     addNavigationStyles();
-    const navContentContainer = createNavigationContainer();
-    if (navContentContainer) {
-        loadNavigationData(navContentContainer);
-    }
+    // 等待fangkuai容器初始化完成
+    const checkContainer = setInterval(() => {
+        if (window.fangkuai && document.querySelector('.glass-container')) {
+            clearInterval(checkContainer);
+            const navContentContainer = createNavigationContainer();
+            if (navContentContainer) {
+                loadNavigationData(navContentContainer);
+            }
+        }
+    }, 100);
 }
 
-// 页面加载完成后初始化（与搜索模块保持一致的时机）
+// 页面加载完成后初始化
 document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(initNavigation, 300); // 与搜索加载延迟一致，避免资源竞争
+    setTimeout(initNavigation, 350); // 稍晚于方块容器初始化
 });
