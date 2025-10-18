@@ -644,3 +644,80 @@ body.dark-mode {
   position: absolute; /* 保持原有定位方式 */
   z-index: 100 !important; /* 强制覆盖原有z-index，需大于搜索框的z-index:99 */
 }
+/* 在 xin/css/s/sa1.css 中添加或修改以下样式 */
+
+/* 搜索结果容器样式调整 */
+#ul.ko {
+    position: absolute;
+    top: 100%; /* 与输入框底部对齐 */
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 5px 0;
+    background: var(--search-input-light);
+    border-radius: 0 0 15px 15px;
+    box-shadow: var(--search-shadow-light);
+    max-height: calc(6 * 30px); /* 最多显示6项，每项约30px高 */
+    overflow-y: auto; /* 超出时显示滚动条 */
+    z-index: 100;
+    box-sizing: border-box;
+}
+
+/* 搜索结果项样式调整 */
+.wei {
+    list-style: none;
+    position: relative;
+    text-indent: 40px; /* 与输入框的text-indent保持一致 */
+    margin: 0;
+    padding: 0;
+    height: 30px; /* 固定高度，确保6项正好填满容器 */
+}
+/* 搜索下拉框夜间模式单独适配 */
+.dark-mode #ul.ko {
+    background: var(--search-input-dark);
+    box-shadow: var(--search-shadow-dark);
+}
+
+.dark-mode #ul.ko .wei {
+    background: transparent;
+}
+
+.dark-mode #ul.ko .wei:hover {
+    background: rgba(70, 70, 70, 0.44);
+}
+
+.dark-mode #ul.ko .a {
+    color: #f0f0f0;
+}
+
+.dark-mode #ul.ko .a span {
+    color: #aaa;
+}
+/* 搜索结果链接样式优化 */
+.wei .a {
+    width: calc(100% - 80px); /* 减去缩进宽度 */
+    height: 30px;
+    line-height: 30px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 滚动条样式优化 */
+#ul.ko::-webkit-scrollbar {
+    width: 6px;
+}
+
+#ul.ko::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+#ul.ko::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+}
+
+#ul.ko::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.25);
+}
