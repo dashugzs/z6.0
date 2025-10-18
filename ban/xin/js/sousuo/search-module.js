@@ -233,7 +233,8 @@ const SearchUtils = {
           <!-- 搜索组由JS动态生成 -->
         </div>
         <form action="https://www.baidu.com/s?wd=" method="get" target="_blank" id="super-search-fm">
-          <input type="text" id="search-text" placeholder="输入关键字搜索" style="outline:0" />
+          <input type="text" id="search-text" placeholder="输入关键字搜索" style="outline:0" autocomplete="off"/>
+
           <button type="submit">
             <img src="https://img.alicdn.com/imgextra/i3/2327995847/O1CN01fhXl2q1t3yYaZYRnO_!!2327995847.png" alt="搜索图标" style="width: 30px; height: 30px; vertical-align: middle;">
           </button>
