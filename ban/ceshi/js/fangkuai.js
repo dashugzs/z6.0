@@ -1,3 +1,4 @@
+// 修改后的cs/js/fangkuai.js代码（配合解决遮挡问题）
 // fangkuai.js
 // 负责管理方块容器，提供添加子容器的接口
 
@@ -10,6 +11,8 @@ function addFangkuaiStyles() {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 100; /* 低于搜索容器 */
         }
         
         .glass-container {
@@ -40,8 +43,15 @@ function createFangkuaiContainer() {
     
     fangkuaiContainer.appendChild(glassContainer);
     
-    // 添加到搜索容器下方
-    searchContainer.parentNode.insertBefore(fangkuaiContainer, searchContainer.nextSibling);
+    // 添加到搜索容器下方，确保有足够间距避免重叠
+    const contentPlaceholder = document.querySelector('.content-placeholder');
+    if (contentPlaceholder) {
+        contentPlaceholder.parentNode.insertBefore(fangkuaiContainer, contentPlaceholder.nextSibling);
+    } else {
+        // 添加额外的margin-top确保与搜索框保持距离
+        fangkuaiContainer.style.marginTop = '20px';
+        searchContainer.parentNode.insertBefore(fangkuaiContainer, searchContainer.nextSibling);
+    }
     
     return glassContainer;
 }
