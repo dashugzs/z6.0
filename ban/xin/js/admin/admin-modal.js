@@ -82,10 +82,10 @@ document.addEventListener('DOMContentLoaded', function() {
         buttonsSection.innerHTML = `
             <h2 style="text-align: center; margin-bottom: 20px;">管理员功能</h2>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                <button class="admin-function-btn" data-url="https://shuju.xnss.fun">功能1</button>
-                <button class="admin-function-btn" data-url="https://shuju.xnss.fun">功能2</button>
-                <button class="admin-function-btn" data-url="https://shuju.xnss.fun">功能3</button>
-                <button class="admin-function-btn" data-url="https://shuju.xnss.fun">功能4</button>
+                <button class="admin-function-btn" data-url="https://github.com">Github</button>
+                <button class="admin-function-btn" data-url="https://dash.cloudflare.com">cloudflare</button>
+                <button class="admin-function-btn" data-url="https://xiaoniuss.top/guali1x2sa/login.html">数据管理</button>
+                <button class="admin-function-btn" data-url="https://xiaoniuss.top/guali1x2sa/login-master">账户管理</button>
             </div>
             <button id="close-admin-modal" 
                     style="width: 100%; padding: 10px; 
