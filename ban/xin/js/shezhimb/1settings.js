@@ -180,7 +180,7 @@ function createSettingsElements() {
         
         <div class="settings-section">
             <h3>用户中心</h3>
-            <a href="admin.html" id="login-btn" target="_blank">管理员登录</a>
+            <a id="login-btn" class="admin-login-link">管理员登录</a>
             <a href="https://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=niu@xnss.fun" id="login-btn" target="_blank">联系邮箱:niu@xnss.fun</a>
 
         </div>
