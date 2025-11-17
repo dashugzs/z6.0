@@ -4,13 +4,42 @@ document.addEventListener('DOMContentLoaded', function() {
     const CORRECT_KEY = 'xnss'; // 替换为实际密钥
     
     // 获取管理员登录按钮并修改行为
-    const loginBtn = document.querySelector('#login-btn[href="admin.html"]');
-    if (loginBtn) {
-        loginBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            createAndShowAdminModal();
+// 优化选择器，匹配所有id为login-btn的管理员按钮（包括动态创建的）
+function bindAdminLoginEvent() {
+    const loginBtns = document.querySelectorAll('#login-btn');
+    loginBtns.forEach(btn => {
+        // 避免重复绑定事件
+        if (!btn.dataset.eventBound) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault(); // 阻止任何默认行为（即使后续添加了href也能生效）
+                createAndShowAdminModal();
+            });
+            btn.dataset.eventBound = 'true';
+        }
+    });
+}
+
+// 初始绑定
+bindAdminLoginEvent();
+
+// 监听DOM变化，确保动态创建的按钮（如设置面板中的按钮）也能被绑定
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === 1) { // 元素节点
+                if (node.querySelector('#login-btn') || node.id === 'login-btn') {
+                    bindAdminLoginEvent();
+                }
+            }
         });
-    }
+    });
+});
+
+// 观察整个文档的DOM变化
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
     
     // 创建并显示管理员弹窗
     function createAndShowAdminModal() {
