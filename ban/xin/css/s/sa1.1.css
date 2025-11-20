@@ -20,7 +20,7 @@
 
 /* 搜索模块基础样式 - 新增磨玻璃效果 */
 #search {
-    width: 717px;
+    width: 650px;
     margin: 0px auto 0px;/*搜索框上下空位占位*/
     position: absolute;
     z-index: 99;
