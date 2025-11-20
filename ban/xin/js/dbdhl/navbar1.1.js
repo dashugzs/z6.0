@@ -114,10 +114,7 @@ function updateDarkMode() {
     // 添加5个预留导航项
     const leftNavItems = [
         { text: '小牛书签', url: 'https://b.xiaoniuss.top/' },
-        { text: '小牛插件', url: 'https://c.xiaoniuss.top/' },
-        { text: '视频解析', url: 'https://v.xiaoniuss.top/' },
         { text: '小牛TV', url: 'https://tv.xiaoniuss.top' },
-        { text: '运营官1号', url: 'https://xydh.fun/guoxiaohan' },
         { text: '代码工具', url: 'https://c.xiaoniuss.top/bjq/' },
         { text: '色值选择', url: 'https://c.xiaoniuss.top/ys/' }
     ];
@@ -145,8 +142,7 @@ function updateDarkMode() {
     // 添加3个预留导航项
     const rightNavItems = [
         { text: '豆包AI', url: 'https://www.doubao.com/' },
-        { text: '文心一言', url: 'https://yiyan.baidu.com/' },
-        { text: 'DeepSeek', url: 'https://www.deepseek.com/en' }
+        { text: '文心一言', url: 'https://yiyan.baidu.com/' }
     ];
     // 创建右侧导航项
     rightNavItems.forEach(item => {
