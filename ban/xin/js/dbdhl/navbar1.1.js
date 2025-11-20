@@ -170,6 +170,6 @@ function updateDarkMode() {
     // 调整搜索框位置，避免被导航条遮挡
     const searchContainer = document.getElementById('search');
     if (searchContainer) {
-        searchContainer.style.top = 'calc(20% + 10px)'; // 原top值加上导航条高度
+        searchContainer.style.top = 'calc(25% + 10px)'; // 原top值加上导航条高度
     }
 });
