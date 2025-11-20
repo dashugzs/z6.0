@@ -82,7 +82,7 @@ body {
 
 #navigation-container {
     /* 移除负margin，使用固定padding-top确保与搜索框的间距 */
-    height: calc(35.999vh - 9px);
+    height: calc(37.999vh - 9px);
     padding: 3px 1px 1px; /* 顶部增加固定留白 */
     box-sizing: border-box;
     overflow: hidden;
