@@ -22,8 +22,8 @@ function autoDetectDarkMode() {
     let savedMode = getSetting('darkMode');
     // 关键修复：如果本地存储中没有设置，强制默认为auto并保存
     if (!savedMode) {
-        savedMode = 'auto';
-        saveSetting('darkMode', 'auto'); // 确保默认值被保存
+        savedMode = 'enabled'; // 从auto改为enabled
+        saveSetting('darkMode', 'enabled'); // 保存默认开启状态确保默认值被保存
     }
 
     if (savedMode === 'enabled') {
