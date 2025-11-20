@@ -72,7 +72,7 @@ body {
 #search-container {
     /* 使用固定最小高度确保留白区域 */
     min-height: 220px;
-    height: 63.233%;
+    height: 37.666%;
     padding: 57px 0; /* 固定上下留白 */
     display: flex;
     align-items: center;
