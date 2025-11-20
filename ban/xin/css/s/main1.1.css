@@ -1,0 +1,299 @@
+
+#top-navbar {
+    /* 确保基础样式 */
+    background: rgba(180,180,180,0.8);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.dark-mode #top-navbar {
+    background: rgba(30, 31, 33, 0.8) !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+}
+/* 顶部导航栏基础样式（日间模式） */
+.mod-header {
+    background-color: rgba(180,180,180,0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* 夜间模式下的顶部导航栏样式 */
+.dark-mode .mod-header {
+    background-color: rgba(30, 31, 33, 0.8);
+}
+
+.dark-mode .mod-header-nav .top-cat a {
+    color: #ddd;
+}
+
+.dark-mode .mod-header-nav .top-cat a:hover {
+    color: #fff;
+}
+
+.dark-mode .mod-header-user .try,
+.dark-mode .mod-header-user .console {
+    color: #000;
+}
+
+.dark-mode .mod-header-user .try:hover,
+.dark-mode .mod-header-user .console:hover {
+    color: #fff;
+}
+
+.dark-mode .cat-tit {
+    color: #ddd;
+}
+
+.dark-mode .cat-item a {
+    color: #bbb;
+}
+
+.dark-mode .cat-item a:hover {
+    color: #fff;
+}
+
+.dark-mode .cat-tag {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #bbb;
+}
+
+.dark-mode .mod-header-nav .slider {
+    background-color: #61a0ff;
+}
+
+/* 页面布局设置 */
+body {
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 修改后 */
+#search-container {
+    /* 使用固定最小高度确保留白区域 */
+    min-height: 220px;
+    height: 63.233%;
+    padding: 57px 0; /* 固定上下留白 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box; /* 确保padding不影响整体高度计算 */
+}
+
+#navigation-container {
+    /* 移除负margin，使用固定padding-top确保与搜索框的间距 */
+    height: calc(37.666vh - 9px);
+    padding: 3px 1px 1px; /* 顶部增加固定留白 */
+    box-sizing: border-box;
+    overflow: hidden;
+    min-height: 292px;
+    margin-top: 0; /* 移除负margin避免缩放时重叠 */
+}
+
+/* 方块导航布局 */
+.horizontal-navigation {
+    width: 100%;
+    background: var(--search-bg-light);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: var(--search-shadow-light);
+    border-radius: 22px;
+    padding: 7px;
+    box-sizing: border-box;
+    min-height: 100px; /* 保留最小高度 */
+    height: 100%; /* 保持填充父容器，但后续通过子元素限制 */
+    overflow: hidden;
+}
+
+/* 分类方块容器 */
+.categories-container {
+    display: grid; /* 保持网格布局 */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* 固定列宽 */
+    gap: 5px;
+    /* 关键：取消height:100%，改为max-height+auto，允许内容自适应高度 */
+    max-height: calc(100% - 0px); /* 预留内边距空间 */
+    height: auto; /* 由内容决定高度 */
+    overflow-y: auto;
+    padding-right: 5px;
+    justify-items: center; /* 水平居中对齐 */
+}
+/* 新增滚动条样式 */
+.categories-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.categories-container::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+
+.categories-container::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}
+
+/* 夜间模式滚动条适配 */
+.dark-mode .categories-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .categories-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 单个分类方块 */
+.category-block {
+    /* 移除flex: 1避免拉伸 */
+    width: 100%; /* 占满网格列宽 */
+    min-width: 280px;
+    max-width: 400px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+@media (max-width: 768px) {
+    .categories-container {
+        grid-template-columns: 1fr; /* 移动端单列布局 */
+    }
+    
+    .category-block {
+        min-width: auto;
+        max-width: none;
+    }
+}
+/* 分类标题 */
+.category-title {
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0px; /* 减少标题下方间距 */
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(200, 200, 200, 0.3);
+    color: var(--text-color);
+}
+
+/* 链接容器 - 限制为5行高度 */
+.links-container {
+    height: 96px; /* 5行 * 45px = 225px */
+    overflow: hidden;
+    position: relative;
+}
+
+.links-container:hover {
+    overflow-y: auto;
+}
+
+/* 链接网格 - 每行显示3个 */
+.links-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 2fr);
+    gap: 0px; /* 减少链接间间距 */
+}
+
+/* 单个链接样式 - 取消按钮样式，预留8个汉字位置 */
+.nav-link {
+    padding: 0px 5px; /* 减少内边距 */
+    border-radius: 9px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size:13px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: all 0.2s ease;
+    min-width: 0; /* 确保内容不会溢出 */
+    /* 8个汉字宽度（约16px/字） */
+    max-width: 128px;
+    justify-self: center;
+}
+
+.nav-link:hover {
+    background-color: rgba(203, 203, 203, 0.26);
+    transform: translateY(-1px);
+}
+
+/* 空数据提示样式 */
+.empty-state {
+    text-align: center;
+    padding: 20px 10px; /* 减少内边距 */
+    color: #888;
+    font-size: 14px;
+}
+
+.category-empty {
+    color: #888;
+    padding: 5px 0 10px 5px;
+    font-size: 13px;
+    text-align: center;
+    grid-column: 1 / -1;
+}
+
+/* 滚动条样式优化 */
+/* 滚动条样式优化 - 隐藏滚动条但保留功能 */
+.links-container::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+.links-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.links-container::-webkit-scrollbar-thumb {
+    background: transparent;
+}
+
+/* 针对导航容器的全局滚动条隐藏 */
+#navigation-container::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+#navigation-container {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+
+
+/* 夜间模式适配 */
+.dark-mode .horizontal-navigation {
+    background: var(--search-bg-dark);
+    box-shadow: var(--search-shadow-dark);
+}
+
+.dark-mode .category-block {
+    background-color: rgba(50, 50, 50, 0.7);
+}
+
+.dark-mode .nav-link {
+    color: #ddd;
+}
+
+.dark-mode .nav-link:hover {
+    background-color: rgba(100, 100, 100, 0.6);
+}
+
+.dark-mode .empty-state,
+.dark-mode .category-empty {
+    color: #aaa;
+}
+
+.dark-mode .category-title {
+    border-bottom-color: rgba(100, 100, 100, 0.3);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .category-block {
+        min-width: 100%;
+        max-width: 100%;
+    }
+    
+    .links-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
