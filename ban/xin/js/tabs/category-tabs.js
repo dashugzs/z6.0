@@ -7,10 +7,10 @@ const CategoryTabManager = {
         { id: 'development', name: '开发', type: 'data', url: 'https://shuju.xnss.fun/kaifazhe' },
         { id: 'entertainment', name: '娱乐', type: 'data', url: 'https://shuju.xnss.fun/yule' },
         { id: 'resources', name: '资源', type: 'data', url: 'https://shuju.xnss.fun/ziyuan' },
-        { id: 'link6', name: '2048', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/10/index.html' },
-        { id: 'link7', name: '象棋', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/65/index.html' },
-        { id: 'link8', name: '蜘蛛纸牌', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/7/index.html' },
-        { id: 'link9', name: '扫雷', type: 'link', url: 'https://www.doubao.com/' },
+        { id: 'link6', name: '豆包', type: 'link', url: 'https://www.doubao.com/chat/' },
+        { id: 'link7', name: '文心一言', type: 'link', url: 'https://yiyan.baidu.com/' },
+        { id: 'link8', name: 'DeepSeek', type: 'link', url: 'https://chat.deepseek.com/' },
+        { id: 'link9', name: '2048', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/10/index.html' },
         { id: 'link10', name: '推箱子', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/39/index.html' }
     ],
     
