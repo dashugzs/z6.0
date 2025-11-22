@@ -9,7 +9,7 @@ const CategoryTabManager = {
         { id: 'resources', name: '资源', type: 'data', url: 'https://shuju.xnss.fun/ziyuan' },
         { id: 'link6', name: '豆包', type: 'link', url: 'https://www.doubao.com/chat/' },
         { id: 'link7', name: '文心一言', type: 'link', url: 'https://yiyan.baidu.com/' },
-        { id: 'link8', name: 'DeepSeek', type: 'link', url: 'https://chat.deepseek.com/' },
+        { id: 'link8', name: '橘子盘搜', type: 'link', url: 'https://www.nmme.icu/' },
         { id: 'link9', name: '2048', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/10/index.html' },
         { id: 'link10', name: '推箱子', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/39/index.html' }
     ],
