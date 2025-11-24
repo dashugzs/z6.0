@@ -1,6 +1,6 @@
 // xin/js/tabs/game-modal-handler.js
 document.addEventListener('DOMContentLoaded', function() {
-    window.gameTabIds = ['link6', 'link7', 'link8', 'link9', 'link10']; // 支持后续新增ID
+    window.gameTabIds = ['link6', 'link7', 'link8', 'link91', 'link92', 'link93', 'link94', 'link95', 'link96', 'link97', 'link98', 'link99', 'link911', 'link912', 'link913']; // 支持后续新增ID
     const DARK_MODE_KEY = 'darkMode'; // 与设置面板一致的本地存储键名
     const DARK_MODE_TOGGLE = '#dark-mode-toggle'; // 夜间模式开关选择器（需与实际HTML匹配）
 
