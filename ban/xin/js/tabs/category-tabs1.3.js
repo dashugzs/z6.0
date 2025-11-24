@@ -3,9 +3,12 @@ const CategoryTabManager = {
     // 分类配置（新增）
     categoryGroups: [
         { id: 'search-sources', name: '搜索源' },
+        { id: 'houtai', name: '后台' },
         { id: 'video-sources', name: '影视盘' },
         { id: 'ai-models', name: 'AI大模型' },
-        { id: 'entertainment', name: '娱乐一下' }
+        { id: 'youxiang', name: '邮箱' },
+        { id: 'wangpan', name: '网盘' },
+        { id: 'entertainment', name: '娱乐' }
     ],
     
     // 标签数据配置（更新分类关联）
@@ -15,12 +18,27 @@ const CategoryTabManager = {
         { id: 'development', name: '开发', type: 'data', url: 'https://shuju.xnss.fun/kaifazhe', group: 'search-sources' },
         { id: 'entertainment', name: '娱乐', type: 'data', url: 'https://shuju.xnss.fun/yule', group: 'search-sources' },
         { id: 'resources', name: '资源', type: 'data', url: 'https://shuju.xnss.fun/ziyuan', group: 'search-sources' },
+        { id: 'linkh1', name: '淘宝后台', type: 'link', url: 'https://myseller.taobao.com', group: 'houtai' },
+        { id: 'linkh2', name: '京东后台', type: 'link', url: 'https://shop.jd.com/', group: 'houtai' },
+        { id: 'linkh3', name: '拼多多后台', type: 'link', url: 'https://mms.pinduoduo.com/', group: 'houtai' },
+        { id: 'linkh4', name: '抖音电商', type: 'link', url: 'https://fxg.jinritemai.com/', group: 'houtai' },
+        { id: 'linkh5', name: '抖音来客', type: 'link', url: 'https://life.douyin.com/', group: 'houtai' },
+        { id: 'linkh6', name: '快手小店', type: 'link', url: 'https://www.kwaixiaodian.com/', group: 'houtai' },
+        { id: 'linkh7', name: '有赞后台', type: 'link', url: 'https://www.youzan.com/', group: 'houtai' },
         { id: 'link6', name: '豆包', type: 'link', url: 'https://www.doubao.com/chat/', group: 'ai-models' },
         { id: 'link7', name: '文心一言', type: 'link', url: 'https://yiyan.baidu.com/', group: 'ai-models' },
         { id: 'link8', name: '橘子盘搜', type: 'link', url: 'https://www.nmme.icu/', group: 'video-sources' },
         { id: 'link81', name: '百度网盘资源', type: 'link', url: 'https://xiongdipan.com/', group: 'video-sources' },
         { id: 'link82', name: '阿里网盘资源', type: 'link', url: 'https://www.alipansou.com/', group: 'video-sources' },
         { id: 'link83', name: '夸克网盘资源', type: 'link', url: 'https://aipanso.com/', group: 'video-sources' },
+        { id: 'linkq1', name: 'QQ邮箱', type: 'link', url: 'https://mail.qq.com/', group: 'youxiang' },
+        { id: 'linkq2', name: '163邮箱', type: 'link', url: 'https://mail.163.com/', group: 'youxiang' },
+        { id: 'linkq3', name: '126邮箱', type: 'link', url: 'https://mail.126.com/', group: 'youxiang' },
+        { id: 'linkw1', name: '百度网盘', type: 'link', url: 'https://pan.baidu.com/', group: 'wangpan' },
+        { id: 'linkw2', name: '阿里网盘', type: 'link', url: 'https://www.aliyundrive.com/drive', group: 'wangpan' },
+        { id: 'linkw3', name: '夸克网盘', type: 'link', url: 'https://pan.quark.cn/', group: 'wangpan' },
+        { id: 'linkw4', name: '蓝奏网盘', type: 'link', url: 'https://www.lanzou.com/', group: 'wangpan' },
+        { id: 'linkw5', name: '金山文档', type: 'link', url: 'https://www.kdocs.cn/', group: 'wangpan' },
         { id: 'link91', name: 'QQ音乐', type: 'link', url: 'https://y.qq.com/', group: 'entertainment' },
         { id: 'link92', name: '酷狗音乐', type: 'link', url: 'https://www.kugou.com/', group: 'entertainment' },
         { id: 'link93', name: '网易云音乐', type: 'link', url: 'https://music.163.com/', group: 'entertainment' },
