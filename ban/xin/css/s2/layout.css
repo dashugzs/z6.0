@@ -1,0 +1,144 @@
+
+:root {
+  --navbar-height: 60px; /* 桌面端导航栏高度 */
+  --title-vertical-padding: 25px; /* 标题上下所需的基础留白（可根据需求调整） */
+}/* 布局容器基础样式 */
+.layout-container {
+    box-sizing: border-box;
+    position: relative;
+    padding-top: 60px; /* 为顶部导航栏预留空间 */
+    width: 100%;
+}
+
+/* 顶部导航栏 */
+#top-navbar {
+   position: fixed;
+   top: 0;
+   left: 0;
+   height: var(--navbar-height); /* 使用变量 */
+   z-index: 90;
+}
+
+/* 搜索区域容器 */
+#search-container {
+    position: relative;
+    margin: 20px auto; /* 与上方元素保持距离 */
+    width: 100%;
+    z-index: 80;
+}
+
+/* 搜索框 */
+#search {
+    position: relative;
+    margin: 0 auto;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 90%;
+    max-width: 650px;
+    padding: 0px 0;
+}
+
+/* 分类标签容器 */
+#category-tabs-container {
+    position: relative;
+    margin: 15px auto;
+    width: 100%;
+    z-index: 70;
+    padding: 0px 0;
+}
+
+/* 导航容器 */
+#navigation-container {
+    position: relative;
+    margin: 20px auto;
+    margin-bottom: 50px; /* 底部留出空间 */
+    width: 100%;
+    z-index: 60;
+    height: auto;
+    min-height: 292px;
+        /* 限制最大高度为视口高度减去上方元素总高度 */
+    max-height: calc(100vh - 450px);
+    overflow: auto; /* 隐藏容器自身滚动条，由内部容器负责滚动 */
+}
+
+/* 右侧功能按钮 */
+#button-container {
+    position: fixed;
+    right: 0;
+    top: 20%;
+    transform: translateY(-50%);
+    z-index: 2000000;
+}
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+    #search {
+        width: 95%;
+    }
+    
+    #navigation-container {
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    #top-navbar {
+        height: 50px;
+    }
+    
+    #search-container {
+        min-height: 180px;
+    }
+    
+    #navigation-container {
+        margin-top: 10px;
+        max-height: calc(100vh - 380px);
+    }
+}
+
+@media (max-height: 768px) {
+    #search-container {
+        height: 90px;
+        min-height: auto;
+    }
+    
+    #navigation-container {
+        margin-top: 15px;
+        margin-bottom: 40px;
+        max-height: calc(100vh - 350px);
+    }
+}
+/* 网站标题样式 */
+#site-title {
+  text-align: center;
+  /* 顶部内边距 = 导航栏高度 + 基础留白（从导航栏底部开始计算） */
+  padding-top: calc(var(--navbar-height) + var(--title-vertical-padding));
+  /* 底部内边距 = 基础留白（保持与顶部基础留白一致） */
+  padding-bottom: var(--title-vertical-padding);
+  font-size: 40px;
+  font-weight: bold;
+  color: var(--text-color);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --navbar-height: 50px; /* 移动端导航栏高度 */
+    --title-vertical-padding: 15px; /* 移动端可适当减小留白 */
+  }
+  
+  #site-title {
+    font-size: 20px;
+    /* 移动端自动继承变量计算，无需重复写calc */
+  }
+}
+
+/* 5. 小屏手机额外适配 */
+@media (max-width: 375px) {
+  #site-title {
+    font-size: 18px;
+    /* 如需进一步调整留白，可在此处覆盖变量 */
+    /* --title-vertical-padding: 10px; */
+  }
+}
