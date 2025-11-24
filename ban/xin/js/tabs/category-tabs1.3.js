@@ -21,8 +21,16 @@ const CategoryTabManager = {
         { id: 'link81', name: '百度网盘资源', type: 'link', url: 'https://xiongdipan.com/', group: 'video-sources' },
         { id: 'link82', name: '阿里网盘资源', type: 'link', url: 'https://www.alipansou.com/', group: 'video-sources' },
         { id: 'link83', name: '夸克网盘资源', type: 'link', url: 'https://aipanso.com/', group: 'video-sources' },
-        { id: 'link9', name: '2048', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/10/index.html', group: 'entertainment' },
-        { id: 'link10', name: '推箱子', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/39/index.html', group: 'entertainment' }
+        { id: 'link91', name: 'QQ音乐', type: 'link', url: 'https://y.qq.com/', group: 'entertainment' },
+        { id: 'link92', name: '酷狗音乐', type: 'link', url: 'https://www.kugou.com/', group: 'entertainment' },
+        { id: 'link93', name: '网易云音乐', type: 'link', url: 'https://music.163.com/', group: 'entertainment' },
+        { id: 'link94', name: '腾讯视频', type: 'link', url: 'https://v.qq.com/', group: 'entertainment' },
+        { id: 'link95', name: '优酷视频', type: 'link', url: 'https://www.youku.com/', group: 'entertainment' },
+        { id: 'link96', name: '爱奇艺', type: 'link', url: 'https://www.iqiyi.com/', group: 'entertainment' },
+        { id: 'link97', name: '央视网', type: 'link', url: 'https://www.cctv.com/', group: 'entertainment' },
+        { id: 'link98', name: '哔哩哔哩', type: 'link', url: 'https://www.bilibili.com/', group: 'entertainment' },
+        { id: 'link99', name: '2048', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/10/index.html', group: 'entertainment' },
+        { id: 'link911', name: '推箱子', type: 'link', url: 'https://y.xiaoniuss.top/yxmb/39/index.html', group: 'entertainment' }
     ],
     
     // 已加载的数据缓存
