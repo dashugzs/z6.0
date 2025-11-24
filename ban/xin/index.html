@@ -42,6 +42,13 @@
 </head> 
 
 <body>
+    <script>
+    // 优先从localStorage读取模式，无则默认开启深色模式
+    const savedMode = localStorage.getItem('darkMode') || 'enabled';
+    if (savedMode === 'enabled') {
+      document.body.classList.add('dark-mode');
+    }
+    </script>
     <!-- 移动设备检测与跳转 -->
     <script type="text/javascript"> 
         if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) { 
@@ -84,11 +91,11 @@
     <script src="js/shezhimb/settings2.0.js" defer></script>
     <script src="js/shezhimb/notices.js" defer></script>
     <script src="js/shezhimb/data-source-manager.js" defer></script> 
-    <script src="js/fangkuai/block-nav-renderer.js"></script>
+    <script src="js/fangkuai/block-nav-renderer.js" defer></script>
     <!-- 在block-nav-renderer.js之后引入 -->
-    <script src="js/tabs/category-tabs1.3.js"></script>
-    <script src="js/daohangmb/default-nav-data.js"></script>
-    <script src="js/daohangmb/1init-data.js"></script>
+    <script src="js/tabs/category-tabs1.3.js" defer></script>
+    <script src="js/daohangmb/default-nav-data.js" defer></script>
+    <script src="js/daohangmb/1init-data.js" defer></script>
         <!-- 全局搜索功能 -->
     <script src="js/sousuo/global-search.js" defer></script>
     <script src="js/admin/admin-modal.js" defer></script>
