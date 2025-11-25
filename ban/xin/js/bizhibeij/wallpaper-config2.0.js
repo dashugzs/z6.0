@@ -10,8 +10,8 @@ const wallpaperConfig = {
     },
     {
       id: 'default2',
-      thumbUrl: 'https://img.alicdn.com/imgextra/i2/2327995847/O1CN01RMpX341t3ylJvwqMr_!!2327995847.jpg',
-      fullUrl: 'https://img.alicdn.com/imgextra/i2/2327995847/O1CN01RMpX341t3ylJvwqMr_!!2327995847.jpg'
+      thumbUrl: 'https://img.alicdn.com/imgextra/i4/2327995847/O1CN01C4NQLd1t3yatbAfNN_!!2327995847.jpg',
+      fullUrl: 'https://img.alicdn.com/imgextra/i4/2327995847/O1CN01C4NQLd1t3yatbAfNN_!!2327995847.jpg'
     },
     {
       id: 'default3',
