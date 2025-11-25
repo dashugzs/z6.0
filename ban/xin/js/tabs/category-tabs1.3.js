@@ -8,6 +8,7 @@ const CategoryTabManager = {
         { id: 'ai-models', name: 'AI大模型' },
         { id: 'youxiang', name: '邮箱' },
         { id: 'wangpan', name: '网盘' },
+        { id: 'gongju', name: '工具' },
         { id: 'entertainment', name: '娱乐' }
     ],
     
@@ -39,6 +40,9 @@ const CategoryTabManager = {
         { id: 'linkw3', name: '夸克网盘', type: 'link', url: 'https://pan.quark.cn/', group: 'wangpan' },
         { id: 'linkw4', name: '蓝奏网盘', type: 'link', url: 'https://www.lanzou.com/', group: 'wangpan' },
         { id: 'linkw5', name: '金山文档', type: 'link', url: 'https://www.kdocs.cn/', group: 'wangpan' },
+        { id: 'linkg1', name: '代码工具', type: 'link', url: 'https://c.xiaoniuss.top/bjq/', group: 'gongju' },
+        { id: 'linkg2', name: '色值选择', type: 'link', url: 'https://c.xiaoniuss.top/ys/', group: 'gongju' },
+        { id: 'linkg3', name: '小牛TV', type: 'link', url: 'https://tv.xiaoniuss.top/', group: 'gongju' },
         { id: 'link91', name: 'QQ音乐', type: 'link', url: 'https://y.qq.com/', group: 'entertainment' },
         { id: 'link92', name: '酷狗音乐', type: 'link', url: 'https://www.kugou.com/', group: 'entertainment' },
         { id: 'link93', name: '网易云音乐', type: 'link', url: 'https://music.163.com/', group: 'entertainment' },
