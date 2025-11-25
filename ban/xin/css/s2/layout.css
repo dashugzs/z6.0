@@ -1,7 +1,7 @@
 
 :root {
   --navbar-height: 60px; /* 桌面端导航栏高度 */
-  --title-vertical-padding: 25px; /* 标题上下所需的基础留白（可根据需求调整） */
+  --title-vertical-padding: 40px; /* 标题上下所需的基础留白（可根据需求调整） */
 }/* 布局容器基础样式 */
 .layout-container {
     box-sizing: border-box;
@@ -22,7 +22,11 @@
 /* 搜索区域容器 */
 #search-container {
     position: relative;
-    margin: 20px auto; /* 与上方元素保持距离 */
+    /* 原设置：margin: 25px auto; 上下边距均为25px */
+    margin-top: 0px;    /* 上方间距单独设置 */
+    margin-bottom: 50px; /* 下方间距单独设置（值可自定义） */
+    margin-left: auto;
+    margin-right: auto;
     width: 100%;
     z-index: 80;
 }
@@ -35,14 +39,14 @@
     left: 0;
     transform: none;
     width: 90%;
-    max-width: 650px;
+    max-width: 600px;
     padding: 0px 0;
 }
 
 /* 分类标签容器 */
 #category-tabs-container {
     position: relative;
-    margin: 15px auto;
+    margin: 20px auto;
     width: 100%;
     z-index: 70;
     padding: 0px 0;
@@ -89,6 +93,9 @@
     
     #search-container {
         min-height: 180px;
+        /* 平板端上下间距单独设置 */
+        margin-top: 20px;
+        margin-bottom: 25px;
     }
     
     #navigation-container {
@@ -101,6 +108,9 @@
     #search-container {
         height: 90px;
         min-height: auto;
+        /* 小屏高度下上下间距单独设置 */
+        margin-top: 15px;
+        margin-bottom: 20px;
     }
     
     #navigation-container {
