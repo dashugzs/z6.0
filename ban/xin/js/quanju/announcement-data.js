@@ -8,7 +8,7 @@ const announcementData = {
             //linkText:  "立即体验"
         },
         {
-            text: "建议设置浏览器或设备系统为深色模式或夜间模式，页面体验更佳！",
+            text: "建议设置浏览器/设备系统模式为深色模式或夜间模式，页面体验效果更佳！",
             link: null
         },
         {
@@ -24,7 +24,7 @@ const announcementData = {
     ],
     // 轮播配置
     carouselConfig: {
-        interval: 3000, // 切换间隔（毫秒）
+        interval: 6000, // 切换间隔（毫秒）
         animationDuration: 600, // 动画过渡时长（毫秒）
         animationType: "fade" // 动画类型：fade（淡入淡出）/slide（上下滑动）
     },
@@ -40,4 +40,5 @@ const announcementData = {
             linkText: "查看工具"
         }
     ]
+
 };
