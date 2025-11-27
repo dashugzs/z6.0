@@ -42,13 +42,6 @@
 </head> 
 
 <body>
-    <script>
-    // 优先从localStorage读取模式，无则默认开启深色模式
-    const savedMode = localStorage.getItem('darkMode') || 'enabled';
-    if (savedMode === 'enabled') {
-      document.body.classList.add('dark-mode');
-    }
-    </script>
     <!-- 移动设备检测与跳转 -->
     <script type="text/javascript"> 
         if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) { 
@@ -102,6 +95,9 @@
     <script src="ban/xin/js/quanju/hide-link-status.js" defer></script>
     <!--<script src="ban/xin/js/quanju/add-title.js" defer></script> -->
     <script src="ban/xin/js/tabs/game-modal-handler1.3.js" defer></script>
+    <!-- 公告栏相关脚本 -->
+    <script src="ban/xin/js/quanju/announcement-data.js"></script>
+    <script src="ban/xin/js/quanju/announcement-renderer.js"></script>
 </body>
 </html>
 
