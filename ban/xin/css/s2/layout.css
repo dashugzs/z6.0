@@ -24,7 +24,7 @@
     position: relative;
     /* 原设置：margin: 25px auto; 上下边距均为25px */
     margin-top: 0px;    /* 上方间距单独设置 */
-    margin-bottom: 50px; /* 下方间距单独设置（值可自定义） */
+    margin-bottom: 5px; /* 下方间距单独设置（值可自定义） */
     margin-left: auto;
     margin-right: auto;
     width: 100%;
@@ -92,10 +92,10 @@
     }
     
     #search-container {
-        min-height: 180px;
+        min-height: 19px;
         /* 平板端上下间距单独设置 */
-        margin-top: 20px;
-        margin-bottom: 25px;
+        margin-top: 16px;
+        margin-bottom: 1px;
     }
     
     #navigation-container {
@@ -106,7 +106,7 @@
 
 @media (max-height: 768px) {
     #search-container {
-        height: 90px;
+        height: 55px;
         min-height: auto;
         /* 小屏高度下上下间距单独设置 */
         margin-top: 15px;
@@ -151,4 +151,147 @@
     /* 如需进一步调整留白，可在此处覆盖变量 */
     /* --title-vertical-padding: 10px; */
   }
+}
+/* 公告栏容器 */
+#announcement-container {
+    position: relative;
+    margin: 0 auto 60px;
+    width: 90%;
+    max-width: 600px; /* 与搜索框宽度一致 */
+    height: 20px; /* 约搜索框高度一半 */
+    overflow: hidden; /* 隐藏溢出内容 */
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+    border-radius: 8px;
+    background-color: #f5f7fa;
+    color: #333;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    font-size: 16px; /* 基础字体大小，缩小1/3（原16px→12px） */
+}
+
+/* 固定公告标题 */
+.announcement-label {
+    font-weight: 600;
+    color: #3F9DFF;
+    margin-right: 8px;
+    white-space: nowrap;
+    flex-shrink: 0; /* 固定不收缩 */
+    font-size: 11px; /* 标题字体缩小（原16px→11px） */
+}
+
+/* 公告文本 */
+.announcement-text {
+    margin-right: 10px;
+    flex-shrink: 0;
+    font-size: 10px; /* 正文字体缩小（原15px→10px） */
+    line-height: 1.2; /* 行高适配小字体 */
+}
+
+/* 公告链接 */
+.announcement-link {
+    color: #3F9DFF;
+    text-decoration: none;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-size: 10px; /* 链接字体缩小（原15px→10px） */
+    line-height: 1.2;
+}
+
+/* 夜间模式标题颜色 */
+.dark-mode .announcement-label {
+    color: #7cb3ff;
+}
+
+/* 轮播项容器 */
+.announcement-carousel {
+    position: absolute;
+    width: calc(100% - 60px); /* 留出标题空间 */
+    left: 60px; /* 标题宽度+间距 */
+    top: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    transition: 
+        opacity var(--animation-duration) ease, 
+        transform var(--animation-duration) ease;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+/* 激活状态 */
+.announcement-carousel.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 滑动动画类型适配 */
+#announcement-container.slide-mode .announcement-carousel {
+    transition: transform var(--animation-duration) ease;
+}
+
+/* 滚动内容容器 */
+.announcement-scroll-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 滚动文本容器（核心滚动效果） */
+.announcement-text-wrapper {
+    display: flex;
+    align-items: center;
+    animation: scrollText 15s linear infinite;
+    white-space: nowrap;
+}
+
+/* 滚动动画（向左循环滚动） */
+@keyframes scrollText {
+    0% {
+        transform: translateX(100%);
+    }
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+/* 夜间模式适配 */
+.dark-mode #announcement-container {
+    background-color: #414141;
+    color: #e2e8f0;
+}
+
+.dark-mode .announcement-link {
+    color: #7cb3ff;
+}
+
+/* 响应式调整 */
+@media (max-width: 1024px) {
+    #announcement-container {
+        width: 95%;
+        font-size: 11px; /* 移动端进一步缩小 */
+    }
+    
+    .announcement-carousel {
+        width: calc(100% - 55px);
+        left: 55px;
+    }
+    
+    .announcement-label {
+        font-size: 10px; /* 移动端标题缩小 */
+    }
+    
+    .announcement-text, .announcement-link {
+        font-size: 9px; /* 移动端正文/链接缩小 */
+    }
+}
+
+/* 短文本不滚动（可选） */
+.announcement-text-wrapper.short-text {
+    animation: none;
+    transform: translateX(0);
 }
