@@ -17,6 +17,10 @@ const announcementData = {
             linkText: "点击进入"
         },
         {
+            text: "部分壁纸在夜间或日渐模式下会导致页面ui异常，可在设置面板中壁纸设置里点击无壁纸！",
+            link: null
+        },
+        {
             text: "现在支持导入/导出自定义导航数据，数据备份更方便！点击右上侧设置按钮快来体验吧！",
             link: null// "#button-text",
             //linkText: "了解详情"
@@ -42,3 +46,4 @@ const announcementData = {
     ]
 
 };
+
