@@ -1,7 +1,7 @@
 // js/version-check.js
 
 // 1. 定义当前应用版本号
-const CURRENT_APP_VERSION = "1.0.51";
+const CURRENT_APP_VERSION = "1.0.6";
 
 // 2. 检查并清理
 if (localStorage.getItem('appVersion') !== CURRENT_APP_VERSION) {
@@ -22,5 +22,6 @@ if (localStorage.getItem('appVersion') !== CURRENT_APP_VERSION) {
     setTimeout(() => alertEl.remove(), 3000);
 
 }
+
 
 
