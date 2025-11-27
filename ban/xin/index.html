@@ -42,13 +42,7 @@
 </head> 
 
 <body>
-    <script>
-    // 优先从localStorage读取模式，无则默认开启深色模式
-    const savedMode = localStorage.getItem('darkMode') || 'enabled';
-    if (savedMode === 'enabled') {
-      document.body.classList.add('dark-mode');
-    }
-    </script>
+
     <!-- 移动设备检测与跳转 -->
     <script type="text/javascript"> 
         if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) { 
